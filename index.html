@@ -3,363 +3,594 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>山事業 月次経営ダッシュボード</title>
+<title>877事業 経営ダッシュボード 2025-2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif; background: #f5f5f7; color: #1d1d1f; }
 
-  .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: white; padding: 32px 40px; }
-  .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
-  .header p { font-size: 14px; opacity: 0.7; }
+  .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: white; padding: 28px 40px 16px; }
+  .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+  .header .subtitle { font-size: 13px; opacity: 0.6; }
+  .header .store-badge { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; }
+  .header .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .badge-stand { background: rgba(59,130,246,0.3); color: #93c5fd; }
+  .badge-877 { background: rgba(251,146,60,0.3); color: #fdba74; }
+  .badge-both { background: rgba(52,199,89,0.25); color: #86efac; }
 
-  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; padding: 24px 40px; }
-  .kpi-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-  .kpi-card .label { font-size: 12px; color: #86868b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-  .kpi-card .value { font-size: 28px; font-weight: 700; }
-  .kpi-card .sub { font-size: 12px; color: #86868b; margin-top: 4px; }
-  .kpi-card .change { font-size: 13px; margin-top: 4px; }
-  .kpi-card .change.up { color: #34c759; }
-  .kpi-card .change.down { color: #ff3b30; }
+  .nav { display: flex; gap: 0; padding: 0 40px; background: white; border-bottom: 1px solid #e5e5e5; overflow-x: auto; }
+  .nav-item { padding: 14px 20px; cursor: pointer; font-size: 13px; font-weight: 600; color: #86868b; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
+  .nav-item.active { color: #0f3460; border-bottom-color: #0f3460; }
+  .nav-item:hover { color: #1d1d1f; }
 
-  .tabs { display: flex; gap: 0; padding: 0 40px; margin-top: 8px; }
-  .tab { padding: 12px 24px; cursor: pointer; font-size: 14px; font-weight: 600; color: #86868b; border-bottom: 3px solid transparent; transition: all 0.2s; }
-  .tab.active { color: #0f3460; border-bottom-color: #0f3460; }
-  .tab:hover { color: #1d1d1f; }
+  .page { display: none; padding: 24px 40px 40px; }
+  .page.active { display: block; }
 
-  .charts { padding: 24px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-  .chart-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-  .chart-card.full { grid-column: 1 / -1; }
-  .chart-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: #1d1d1f; }
-  .chart-card canvas { width: 100% !important; }
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .kpi-card { background: white; border-radius: 12px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .kpi-card .label { font-size: 11px; color: #86868b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .kpi-card .value { font-size: 24px; font-weight: 700; }
+  .kpi-card .sub { font-size: 11px; color: #86868b; margin-top: 4px; }
+  .kpi-card .change { font-size: 12px; margin-top: 2px; }
+  .change.up { color: #34c759; }
+  .change.down { color: #ff3b30; }
+  .change.neutral { color: #86868b; }
 
-  .note { padding: 16px 40px 32px; font-size: 12px; color: #86868b; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .full { grid-column: 1 / -1; }
+
+  .card { background: white; border-radius: 12px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .card h3 { font-size: 15px; font-weight: 600; margin-bottom: 14px; color: #1d1d1f; display: flex; align-items: center; gap: 8px; }
+  .card h3 .icon { font-size: 16px; }
+  .card canvas { width: 100% !important; }
+
+  .store-label { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 8px; }
+  .store-label.stand { background: #dbeafe; color: #1d4ed8; }
+  .store-label.s877 { background: #ffedd5; color: #c2410c; }
+
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: #f9fafb; padding: 10px 12px; text-align: right; font-weight: 600; color: #6b7280; border-bottom: 2px solid #e5e7eb; white-space: nowrap; }
+  th:first-child { text-align: left; }
+  td { padding: 10px 12px; text-align: right; border-bottom: 1px solid #f3f4f6; white-space: nowrap; }
+  td:first-child { text-align: left; font-weight: 600; }
+  tr:hover td { background: #f9fafb; }
+
+  .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .dot-green { background: #34c759; }
+  .dot-yellow { background: #ffcc00; }
+  .dot-red { background: #ff3b30; }
+  .dot-gray { background: #c7c7cc; }
+
+  .section-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #1d1d1f; }
+  .section-sub { font-size: 12px; color: #86868b; margin-bottom: 20px; }
+
+  .compare-header { display: flex; justify-content: center; gap: 32px; margin-bottom: 20px; }
+  .compare-store { text-align: center; }
+  .compare-store .name { font-size: 18px; font-weight: 700; }
+  .compare-store .period { font-size: 12px; color: #86868b; }
+  .compare-vs { font-size: 24px; font-weight: 700; color: #86868b; align-self: center; }
+
+  .progress-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-top: 6px; }
+  .progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+  .fill-blue { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+  .fill-orange { background: linear-gradient(90deg, #f97316, #fb923c); }
+  .fill-green { background: linear-gradient(90deg, #22c55e, #4ade80); }
+
+  .note { padding: 16px 40px 32px; font-size: 11px; color: #86868b; line-height: 1.6; }
+  .updated { float: right; }
 
   @media (max-width: 900px) {
-    .charts { grid-template-columns: 1fr; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
     .kpi-row { grid-template-columns: repeat(2, 1fr); }
-    .header, .kpi-row, .charts, .tabs, .note { padding-left: 20px; padding-right: 20px; }
+    .header, .page, .note { padding-left: 16px; padding-right: 16px; }
+    .nav { padding: 0 16px; }
   }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>山事業 月次経営ダッシュボード</h1>
-  <p>2024年 / 2025年 月次推移・前年比較</p>
+  <h1>877事業 経営ダッシュボード</h1>
+  <p class="subtitle">877 Mountain Business Dashboard — 2025〜2026年度</p>
+  <div class="store-badge">
+    <span class="badge badge-stand">877Stand（山頂店）</span>
+    <span class="badge badge-877">877（中腹店）</span>
+    <span class="badge badge-both">2店舗統合</span>
+  </div>
 </div>
 
-<div class="tabs">
-  <div class="tab active" onclick="switchYear('2025')">2025年</div>
-  <div class="tab" onclick="switchYear('2024')">2024年</div>
-  <div class="tab" onclick="switchYear('compare')">前年比較</div>
+<div class="nav">
+  <div class="nav-item active" onclick="showPage('overview')">概要</div>
+  <div class="nav-item" onclick="showPage('trend')">月次推移</div>
+  <div class="nav-item" onclick="showPage('category')">カテゴリ分析</div>
+  <div class="nav-item" onclick="showPage('compare')">2店舗比較</div>
+  <div class="nav-item" onclick="showPage('management')">経営分析</div>
+  <div class="nav-item" onclick="showPage('status')">データ状況</div>
 </div>
 
-<div class="kpi-row" id="kpiRow"></div>
-<div class="charts" id="chartsArea"></div>
+<!-- ===== PAGE 1: OVERVIEW ===== -->
+<div class="page active" id="page-overview">
+  <div class="kpi-row" id="overviewKpi"></div>
+  <div class="grid-2">
+    <div class="card full"><h3><span class="icon">📊</span>直近13ヶ月 純売上推移（全店舗）</h3><canvas id="overviewSalesChart"></canvas></div>
+  </div>
+  <div class="grid-2">
+    <div class="card"><h3><span class="icon">👥</span>客数推移</h3><canvas id="overviewCustomerChart"></canvas></div>
+    <div class="card"><h3><span class="icon">💰</span>客単価推移</h3><canvas id="overviewUnitChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ===== PAGE 2: TREND ===== -->
+<div class="page" id="page-trend">
+  <div class="section-title">Stand 月次推移</div>
+  <div class="section-sub">877Stand（山頂店）の13ヶ月分売上データ</div>
+  <div class="grid-2">
+    <div class="card full"><h3><span class="icon">📈</span>純売上 × 客数</h3><canvas id="trendSalesChart"></canvas></div>
+  </div>
+  <div class="grid-2">
+    <div class="card"><h3><span class="icon">📦</span>販売点数推移</h3><canvas id="trendItemsChart"></canvas></div>
+    <div class="card"><h3><span class="icon">🏷️</span>原価率推移</h3><canvas id="trendCostChart"></canvas></div>
+  </div>
+  <div class="card full">
+    <h3><span class="icon">📋</span>Stand 月次データ一覧</h3>
+    <div class="table-wrap" id="trendTable"></div>
+  </div>
+</div>
+
+<!-- ===== PAGE 3: CATEGORY ===== -->
+<div class="page" id="page-category">
+  <div class="section-title">カテゴリ別分析</div>
+  <div class="section-sub">ドリンク・軽食・物販の構成比（カテゴリデータがある月のみ表示）</div>
+  <div class="grid-2">
+    <div class="card"><h3><span class="icon">☕</span>Stand カテゴリ構成比</h3><canvas id="catStandPie"></canvas></div>
+    <div class="card"><h3><span class="icon">🏔️</span>877 カテゴリ構成比</h3><canvas id="cat877Pie"></canvas></div>
+  </div>
+  <div class="grid-2">
+    <div class="card full"><h3><span class="icon">📊</span>カテゴリ別点数推移（Stand）</h3><canvas id="catTrendChart"></canvas></div>
+  </div>
+  <div class="grid-2">
+    <div class="card full">
+      <h3><span class="icon">📋</span>カテゴリ別データ一覧</h3>
+      <div class="table-wrap" id="catTable"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE 4: COMPARE ===== -->
+<div class="page" id="page-compare">
+  <div class="section-title">2店舗比較</div>
+  <div class="section-sub">877Stand（山頂店）vs 877（中腹店）— 2026年2月</div>
+  <div class="compare-header">
+    <div class="compare-store"><span class="store-label stand">Stand</span><div class="name" style="margin-top:4px">877Stand</div><div class="period">山頂店</div></div>
+    <div class="compare-vs">VS</div>
+    <div class="compare-store"><span class="store-label s877">877</span><div class="name" style="margin-top:4px">877</div><div class="period">中腹店</div></div>
+  </div>
+  <div class="kpi-row" id="compareKpi"></div>
+  <div class="grid-2">
+    <div class="card"><h3><span class="icon">📊</span>売上比較</h3><canvas id="compareSalesChart"></canvas></div>
+    <div class="card"><h3><span class="icon">🍰</span>カテゴリ構成比較</h3><canvas id="compareCatChart"></canvas></div>
+  </div>
+  <div class="grid-2">
+    <div class="card full"><h3><span class="icon">📋</span>KPI比較表</h3><div class="table-wrap" id="compareTable"></div></div>
+  </div>
+</div>
+
+<!-- ===== PAGE 5: MANAGEMENT ===== -->
+<div class="page" id="page-management">
+  <div class="section-title">経営分析</div>
+  <div class="section-sub">人件費・経費データは会計PDFから後日投入されます</div>
+  <div class="kpi-row" id="mgmtKpi"></div>
+  <div class="grid-2">
+    <div class="card full"><h3><span class="icon">💹</span>粗利推移（Stand）</h3><canvas id="mgmtProfitChart"></canvas></div>
+  </div>
+  <div class="grid-2">
+    <div class="card"><h3><span class="icon">📊</span>原価率推移</h3><canvas id="mgmtCostRateChart"></canvas></div>
+    <div class="card">
+      <h3><span class="icon">📝</span>経費入力ステータス</h3>
+      <div id="mgmtStatus" style="padding: 12px 0;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE 6: STATUS ===== -->
+<div class="page" id="page-status">
+  <div class="section-title">データ入力状況</div>
+  <div class="section-sub">Notionデータベースの入力進捗</div>
+  <div class="card full">
+    <div class="table-wrap" id="statusTable"></div>
+  </div>
+</div>
+
 <div class="note">
-  ※ 人件費は山事業所属のみ（中山・飛田＋アルバイト全員）。デザイン部門（小林敦子・岩田・根本・田中）は除外。会計営業損益は根本さん作成の売上分析Excelに基づく数値。
+  <span class="updated">最終更新: 2026年3月12日</span>
+  ※ 売上データはスマレジAPIより自動取得。人件費・経費は会計PDF投入後に反映。カテゴリデータ（ドリンク・軽食・物販）は2026年1月以降のみ。<br>
+  ※ 877（中腹店）は2026年2月6日開店。2026年1月はプレオープンのテスト取引（¥600）のため分析対象外。
 </div>
 
 <script>
-const months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+// ===== DATA =====
+const standData = [
+  { month: '2025/02', label: '25年2月', net: 2956510, gross: 2963110, cost: 838859, margin: 2117651, tax: 267521, discount: 6400, txn: 2035, cust: 2025, txnPrice: 1453, custPrice: 1460, items: 4204, returns: 13, costRate: 0.2837 },
+  { month: '2025/03', label: '25年3月', net: 3037280, gross: 3037380, cost: 863074, margin: 2174207, tax: 274712, discount: 0, txn: 1965, cust: 1955, txnPrice: 1546, custPrice: 1554, items: 4083, returns: 22, costRate: 0.2842 },
+  { month: '2025/04', label: '25年4月', net: 3670130, gross: 3675380, cost: 1005023, margin: 2665108, tax: 331714, discount: 5250, txn: 2510, cust: 2494, txnPrice: 1462, custPrice: 1472, items: 4683, returns: 36, costRate: 0.2738 },
+  { month: '2025/05', label: '25年5月', net: 3906880, gross: 3911180, cost: 1095332, margin: 2811548, tax: 353392, discount: 4300, txn: 2526, cust: 2515, txnPrice: 1547, custPrice: 1553, items: 4800, returns: 27, costRate: 0.2804 },
+  { month: '2025/06', label: '25年6月', net: 3583250, gross: 3585250, cost: 1040061, margin: 2543189, tax: 324403, discount: 2000, txn: 2341, cust: 2301, txnPrice: 1531, custPrice: 1557, items: 4099, returns: 80, costRate: 0.2903 },
+  { month: '2025/07', label: '25年7月', net: 3073080, gross: 3079530, cost: 816264, margin: 2256816, tax: 278379, discount: 6450, txn: 1821, cust: 1814, txnPrice: 1688, custPrice: 1694, items: 3206, returns: 14, costRate: 0.2656 },
+  { month: '2025/08', label: '25年8月', net: 3371230, gross: 3378280, cost: 869076, margin: 2502154, tax: 305299, discount: 7050, txn: 2101, cust: 2093, txnPrice: 1605, custPrice: 1611, items: 3962, returns: 15, costRate: 0.2578 },
+  { month: '2025/09', label: '25年9月', net: 4058780, gross: 4062180, cost: 1106808, margin: 2951972, tax: 367823, discount: 3400, txn: 2510, cust: 2497, txnPrice: 1617, custPrice: 1625, items: 4416, returns: 21, costRate: 0.2727 },
+  { month: '2025/10', label: '25年10月', net: 4330320, gross: 4333870, cost: 1240067, margin: 3090253, tax: 392469, discount: 3450, txn: 2711, cust: 2697, txnPrice: 1597, custPrice: 1606, items: 5213, returns: 30, costRate: 0.2864 },
+  { month: '2025/11', label: '25年11月', net: 8793540, gross: 8798290, cost: 2554472, margin: 6239069, tax: 796847, discount: 4450, txn: 5923, cust: 5898, txnPrice: 1485, custPrice: 1491, items: 11345, returns: 60, costRate: 0.2905 },
+  { month: '2025/12', label: '25年12月', net: 3110930, gross: 3118480, cost: 890159, margin: 2220771, tax: 281902, discount: 7350, txn: 2056, cust: 2045, txnPrice: 1513, custPrice: 1521, items: 3855, returns: 21, costRate: 0.2861 },
+  { month: '2026/01', label: '26年1月', net: 4420820, gross: 4428120, cost: 1246430, margin: 3174390, tax: 400611, discount: 6700, txn: 2909, cust: 2903, txnPrice: 1520, custPrice: 1523, items: 5674, returns: 10, costRate: 0.2819, drinkPct: 0.5753, drinkQty: 3264, foodPct: 0.1773, foodQty: 1006, retailPct: 0.2474, retailQty: 1404 },
+  { month: '2026/02', label: '26年2月', net: 2770355, gross: 2776980, cost: 794042, margin: 1976313, tax: 251056, discount: 6625, txn: 1809, cust: 1809, txnPrice: 1531, custPrice: 1531, items: 3412, returns: 0, costRate: 0.2866, drinkPct: 0.577, drinkQty: 1989, foodPct: 0.1726, foodQty: 595, retailPct: 0.2504, retailQty: 863 }
+];
 
-const d2024 = {
-  sales:      [1628166,1209596,1834818,2350862,3018182,2624190,1869260,2837258,3662160,4111450,6020560,4082370],
-  labor:      [327705,276716,238998,282118,386290,284831,322260,370900,443965,498868,605400,869226],
-  profit:     [498697,246522,657621,746028,938481,1253364,155417,872335,1529977,2317636,2621977,2093545],
-  profitRate: [30.6,20.4,35.8,31.7,31.1,47.8,8.3,30.7,41.8,56.4,43.6,51.3],
-  laborRatio: [20.1,22.9,13.0,12.0,12.8,10.9,17.2,13.1,12.1,12.1,10.1,21.3],
-  customers:  [1322,956,1381,1616,1795,1300,1037,1639,2231,2652,4395,2693],
-  unitPrice:  [1232,1265,1329,1455,1681,2019,1803,1731,1641,1550,1370,1516]
+// 877 (中腹�= [
+  { month: '2026/01', label: '26年1月', net: 600, gross: 600, cost: 185, margin: 415, tax: 54, discount: 0, txn: 1, cust: 1, txnPrice: 600, custPrice: 600, items: 1, returns: 0, costRate: 0.3083, memo: 'プレオープン（テスト取引）' },
+  { month: '2026/02', label: '26年2月', net: 1147320, gross: 1149120, cost: 194927, margin: 952393, tax: 104052, discount: 1800, txn: 559, cust: 559, txnPrice: 2053, custPrice: 2053, items: 1303, returns: 0, costRate: 0.1699, drinkPct: 0.2389, drinkQty: 316, foodPct: 0.4044, foodQty: 535, retailPct: 0.3568, retailQty: 472 }
+];
+
+// Helpers
+const fmt = n => '¥' + Math.round(n).toLocaleString();
+const fmtK = n => '¥' + (n/10000).toFixed(0) + '万';
+const fmtPct = n => (n * 100).toFixed(1) + '%';
+const sum = arr => arr.reduce((a,b) => a+b, 0);
+
+const C = {
+  blue: '#3b82f6', blueBg: 'rgba(59,130,246,0.12)',
+  orange: '#f97316', orangeBg: 'rgba(249,115,22,0.12)',
+  green: '#22c55e', greenBg: 'rgba(34,197,94,0.12)',
+  red: '#ef4444', redBg: 'rgba(239,68,68,0.12)',
+  purple: '#8b5cf6', purpleBg: 'rgba(139,92,246,0.12)',
+  gray: '#6b7280', grayBg: 'rgba(107,114,128,0.12)',
+  navy: '#0f3460', navyBg: 'rgba(15,52,96,0.12)',
+  teal: '#14b8a6',
+  pink: '#ec4899',
 };
 
-const d2025 = {
-  sales:      [3766730,2952910,3145430,3678280,3906880,3577450,3073080,3368230,4056880,4330320,8729940,3110930],
-  labor:      [737307,662819,607269,685826,899504,656224,933863,870371,881395,1002933,1194098,811035],
-  profit:     [1652464,1126006,868947,768596,314166,1107236,1009215,1428140,1602602,504361,5985397,-648946],
-  profitRate: [43.9,38.1,27.6,20.9,8.0,31.0,32.8,42.4,39.5,11.6,68.6,-20.9],
-  laborRatio: [19.6,22.4,19.3,18.6,23.0,18.3,30.4,25.8,21.7,23.2,13.7,26.1],
-  customers:  [2428,2035,1965,2510,2526,2341,1821,2101,2510,2711,5923,1430],
-  unitPrice:  [1551,1451,1601,1465,1547,1528,1688,1603,1616,1597,1474,2175]
+const chartDefaults = {
+  responsive: true,
+  plugins: { legend: { labels: { font: { size: 11, family: "'Hiragino Sans','Noto Sans JP',sans-serif" } } } },
+  scales: { y: { ticks: { font: { size: 10 } }, grid: { color: '#f3f4f6' } }, x: { ticks: { font: { size: 10 } }, grid: { display: false } } }
 };
+let allCharts = [];
+function makeChart(id, config) {
+  const ctx = document.getElementById(id);
+  if (!ctx) return null;
+  const c = new Chart(ctx, config);
+  allCharts.push(c);
+  return c;
+}
 
-const colors = {
-  blue: '#0f3460', blueLight: 'rgba(15,52,96,0.15)',
-  orange: '#e94560', orangeLight: 'rgba(233,69,96,0.15)',
-  green: '#34c759', greenLight: 'rgba(52,199,89,0.15)',
-  gray: '#86868b', grayLight: 'rgba(134,134,139,0.15)',
-  purple: '#af52de', teal: '#30b0c7',
-};
+// ===== NAV =====
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
 
-let charts = [];
-let currentYear = '2025';
+// ===== PAGE 1: OVERVIEW =====
+function renderOverview() {
+  const latest = standData[standData.length - 1];
+  const prev = standData[standData.length - 2];
+  const s877Latest = s877Data[s877Data.length - 1];
+  const totalNet = latest.net + s877Latest.net;
+  const totalCust = latest.cust + s877Latest.cust;
 
-function fmt(n) { return '¥' + Math.round(n).toLocaleString(); }
-function fmtM(n) { return '¥' + (n/10000).toFixed(0) + '万'; }
-function sum(arr) { return arr.reduce((a,b) => a+b, 0); }
-function avg(arr) { return sum(arr) / arr.length; }
+  const yoyMonth = standData.find(d => d.month === '2025/02');
+  const yoyChange = yoyMonth ? ((latest.net - yoyMonth.net) / yoyMonth.net * 100).toFixed(1) : null;
 
-function renderKPI(year) {
-  const row = document.getElementById('kpiRow');
-  let d = year === '2024' ? d2024 : d2025;
-  let prev = year === '2025' ? d2024 : null;
+  const kpiHtml = `
+    <div class="kpi-card"><div class="label">全店舗 純売上（${latest.label}）</div><div class="value">${fmtK(totalNet)}</div><div class="sub">Stand ${fmtK(latest.net)} + 877 ${fmtK(s877Latest.net)}</div></div>
+    <div class="kpi-card"><div class="label">Stand 純売上</div><div class="value">${fmtK(latest.net)}</div>${yoyChange ? `<div class="change ${parseFloat(yoyChange)>=0?'down':'up'}">${yoyChange>0?'+':''}${yoyChange}% 前年同月比</div>` : ''}</div>
+    <div class="kpi-card"><div class="label">877 純売上</div><div class="value">${fmtK(s877Latest.net)}</div><div class="sub">開店初月（2/6〜）</div></div>
+    <div class="kpi-card"><div class="label">全店舗 客数</div><div class="value">${totalCust.toLocaleString()}人</div><div class="sub">Stand ${latest.cust.toLocaleString()} + 877 ${s877Latest.cust.toLocaleString()}</div></div>
+    <div class="kpi-card"><div class="label">Stand 客単価</div><div class="value">${fmt(latest.custPrice)}</div><div class="change ${latest.custPrice >= prev.custPrice ? 'up' : 'down'}">前月比 ${latest.custPrice >= prev.custPrice ? '+' : ''}${fmt(latest.custPrice - prev.custPrice)}</div></div>
+    <div class="kpi-card"><div class="label">877 客単価</div><div class="value">${fmt(s877Latest.custPrice)}</div><div class="sub">Stand比 +${fmt(s877Latest.custPrice - latest.custPrice)}</div></div>
+  `;
+  document.getElementById('overviewKpi').innerHTML = kpiHtml;
 
-  const totalSales = sum(d.sales);
-  const totalLabor = sum(d.labor);
-  const totalProfit = sum(d.profit);
-  const avgLaborRatio = (totalLabor / totalSales * 100).toFixed(1);
-  const avgProfitRate = (totalProfit / totalSales * 100).toFixed(1);
-  const totalCustomers = sum(d.customers);
+  // Sales chart - stacked bar for months with both stores
+  const labels = standData.map(d => d.label);
+  const standVals = standData.map(d => d.net);
+  const s877Vals = standData.map(d => {
+    const m = s877Data.find(s => s.month === d.month && !s.memo);
+    return m ? m.net : 0;
+  });
 
-  let salesChange = '', laborChange = '', profitChange = '', custChange = '';
-  if (prev) {
-    const ps = sum(prev.sales);
-    const pl = sum(prev.labor);
-    const pp = sum(prev.profit);
-    const pc = sum(prev.customers);
-    salesChange = `<div class="change ${totalSales > ps ? 'up' : 'down'}">前年比 ${((totalSales/ps-1)*100).toFixed(1)}%</div>`;
-    laborChange = `<div class="change ${totalLabor < pl ? 'up' : 'down'}">前年比 ${((totalLabor/pl-1)*100).toFixed(1)}%</div>`;
-    profitChange = `<div class="change ${totalProfit > pp ? 'up' : 'down'}">前年比 ${((totalProfit/pp-1)*100).toFixed(1)}%</div>`;
-    custChange = `<div class="change ${totalCustomers > pc ? 'up' : 'down'}">前年比 ${((totalCustomers/pc-1)*100).toFixed(1)}%</div>`;
+  makeChart('overviewSalesChart', {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Stand', data: standVals, backgroundColor: C.blue, borderRadius: 4, barPercentage: 0.7 },
+        { label: '877', data: s877Vals, backgroundColor: C.orange, borderRadius: 4, barPercentage: 0.7 }
+      ]
+    },
+    options: { ...chartDefaults, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, stacked: true }, y: { ...chartDefaults.scales.y, stacked: true, ticks: { ...chartDefaults.scales.y.ticks, callback: v => fmtK(v) } } }, plugins: { ...chartDefaults.plugins, tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + fmtK(ctx.raw) } } } }
+  });
+
+  // Customer chart
+  makeChart('overviewCustomerChart', {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Stand', data: standData.map(d => d.cust), borderColor: C.blue, backgroundColor: C.blueBg, fill: true, tension: 0.3, pointRadius: 3 },
+        { label: '877', data: standData.map(d => { const m = s877Data.find(s => s.month === d.month && !s.memo); return m ? m.cust : null; }), borderColor: C.orange, backgroundColor: C.orangeBg, fill: true, tension: 0.3, pointRadius: 3, spanGaps: false }
+      ]
+    },
+    options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: v => v.toLocaleString() + '人' } } } }
+  });
+
+  // Unit price chart
+  makeChart('overviewUnitChart', {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Stand', data: standData.map(d => d.custPrice), borderColor: C.blue, tension: 0.3, pointRadius: 3 },
+        { label: '877', data: standData.map(d => { const m = s877Data.find(s => s.month === d.month && !s.memo); return m ? m.custPrice : null; }), borderColor: C.orange, tension: 0.3, pointRadius: 3, spanGaps: false }
+      ]
+    },
+    options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: v => fmt(v) } } } }
+  });
+}
+
+// ===== PAGE 2: TREND =====
+function renderTrend() {
+  const labels = standData.map(d => d.label);
+
+  makeChart('trendSalesChart', {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: '純売上', data: standData.map(d => d.net), backgroundColor: C.blue, borderRadius: 4, order: 2 },
+        { label: '客数', data: standData.map(d => d.cust), type: 'line', borderColor: C.orange, backgroundColor: 'transparent', yAxisID: 'y1', tension: 0.3, pointRadius: 3, order: 1 }
+      ]
+    },
+    options: {
+      ...chartDefaults,
+      scales: {
+        x: chartDefaults.scales.x,
+        y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: v => fmtK(v) } },
+        y1: { position: 'right', grid: { display: false }, ticks: { font: { size: 10 }, callback: v => v.toLocaleString() + '人' } }
+      }
+    }
+  });
+
+  makeChart('trendItemsChart', {
+    type: 'bar',
+    data: { labels, datasets: [{ label: '販売点数', data: standData.map(d => d.items), backgroundColor: C.purple, borderRadius: 4 }] },
+    options: chartDefaults
+  });
+
+  makeChart('trendCostChart', {
+    type: 'line',
+    data: { labels, datasets: [{ label: '原価率', data: standData.map(d => d.costRate * 100), borderColor: C.red, backgroundColor: C.redBg, fill: true, tension: 0.3, pointRadius: 3 }] },
+    options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, min: 20, max: 35, ticks: { ...chartDefaults.scales.y.ticks, callback: v => v + '%' } } } }
+  });
+
+  // Table
+  let html = '<table><thead><tr><th>月</th><th>純売上</th><th>粗利</th><th>原価率</th><th>客数</th><th>客単価</th><th>取引数</th><th>販売点数</th></tr></thead><tbody>';
+  standData.forEach(d => {
+    html += `<tr><td>${d.label}</td><td>${fmtK(d.net)}</td><td>${fmtK(d.margin)}</td><td>${(d.costRate*100).toFixed(1)}%</td><td>${d.cust.toLocaleString()}</td><td>${fmt(d.custPrice)}</td><td>${d.txn.toLocaleString()}</td><td>${d.items.toLocaleString()}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('trendTable').innerHTML = html;
+}
+
+// ===== PAGE 3: CATEGORY =====
+function renderCategory() {
+  const standCat = standData.filter(d => d.drinkPct);
+  const s877Cat = s877Data.filter(d => d.drinkPct);
+
+  // Stand pie (latest with category data)
+  const sLatest = standCat[standCat.length - 1];
+  if (sLatest) {
+    makeChart('catStandPie', {
+      type: 'doughnut',
+      data: {
+        labels: ['ドリンク', '軽食', '物販'],
+        datasets: [{ data: [sLatest.drinkPct, sLatest.foodPct, sLatest.retailPct], backgroundColor: [C.blue, C.orange, C.green], borderWidth: 0 }]
+      },
+      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 12 } } }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + (ctx.raw * 100).toFixed(1) + '% (' + [sLatest.drinkQty, sLatest.foodQty, sLatest.retailQty][ctx.dataIndex] + '点)' } }, title: { display: true, text: sLatest.label, font: { size: 13 } } } }
+    });
   }
 
-  row.innerHTML = `
-    <div class="kpi-card"><div class="label">年間売上高</div><div class="value">${fmtM(totalSales)}</div><div class="sub">${fmt(totalSales)}</div>${salesChange}</div>
-    <div class="kpi-card"><div class="label">営業損益</div><div class="value">${fmtM(totalProfit)}</div><div class="sub">利益率 ${avgProfitRate}%</div>${profitChange}</div>
-    <div class="kpi-card"><div class="label">人件費</div><div class="value">${fmtM(totalLabor)}</div><div class="sub">人件費比率 ${avgLaborRatio}%</div>${laborChange}</div>
-    <div class="kpi-card"><div class="label">年間客数</div><div class="value">${totalCustomers.toLocaleString()}人</div><div class="sub">平均客単価 ¥${Math.round(totalSales/totalCustomers).toLocaleString()}</div>${custChange}</div>
-  `;
-}
-
-function destroyCharts() {
-  charts.forEach(c => c.destroy());
-  charts = [];
-}
-
-function createChart(canvasId, config) {
-  const ctx = document.getElementById(canvasId).getContext('2d');
-  const chart = new Chart(ctx, config);
-  charts.push(chart);
-  return chart;
-}
-
-const defaultOpts = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: { legend: { position: 'top', labels: { usePointStyle: true, padding: 16, font: { size: 12 } } } },
-  scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => v >= 10000 ? (v/10000)+'万' : v.toLocaleString() } } }
-};
-
-function renderSingleYear(year) {
-  const d = year === '2024' ? d2024 : d2025;
-  const area = document.getElementById('chartsArea');
-
-  area.innerHTML = `
-    <div class="chart-card full"><h3>月次売上高 & 営業損益</h3><div style="height:320px"><canvas id="c1"></canvas></div></div>
-    <div class="chart-card"><h3>人件費 & 人件費比率</h3><div style="height:280px"><canvas id="c2"></canvas></div></div>
-    <div class="chart-card"><h3>客数 & 客単価</h3><div style="height:280px"><canvas id="c3"></canvas></div></div>
-    <div class="chart-card"><h3>利益率推移</h3><div style="height:280px"><canvas id="c4"></canvas></div></div>
-    <div class="chart-card"><h3>人件費比率推移</h3><div style="height:280px"><canvas id="c5"></canvas></div></div>
-  `;
-
-  // Chart 1: Sales & Profit bars
-  createChart('c1', {
-    type: 'bar',
-    data: {
-      labels: months,
-      datasets: [
-        { label: '売上高', data: d.sales, backgroundColor: colors.blueLight, borderColor: colors.blue, borderWidth: 1.5, borderRadius: 4 },
-        { label: '営業損益', data: d.profit, backgroundColor: d.profit.map(v => v >= 0 ? colors.greenLight : colors.orangeLight), borderColor: d.profit.map(v => v >= 0 ? colors.green : colors.orange), borderWidth: 1.5, borderRadius: 4 }
-      ]
-    },
-    options: { ...defaultOpts, scales: { ...defaultOpts.scales, y: { ...defaultOpts.scales.y, ticks: { callback: v => (v/10000)+'万' } } } }
-  });
-
-  // Chart 2: Labor cost bar + ratio line
-  createChart('c2', {
-    type: 'bar',
-    data: {
-      labels: months,
-      datasets: [
-        { label: '人件費', data: d.labor, backgroundColor: colors.orangeLight, borderColor: colors.orange, borderWidth: 1.5, borderRadius: 4, yAxisID: 'y' },
-        { label: '人件費比率 (%)', data: d.laborRatio, type: 'line', borderColor: colors.orange, backgroundColor: 'transparent', pointBackgroundColor: colors.orange, pointRadius: 4, tension: 0.3, yAxisID: 'y1' }
-      ]
-    },
-    options: {
-      ...defaultOpts,
-      scales: {
-        x: { grid: { display: false } },
-        y: { beginAtZero: true, position: 'left', ticks: { callback: v => (v/10000)+'万' } },
-        y1: { beginAtZero: true, position: 'right', max: 70, grid: { drawOnChartArea: false }, ticks: { callback: v => v+'%' } }
-      }
-    }
-  });
-
-  // Chart 3: Customers bar + unit price line
-  createChart('c3', {
-    type: 'bar',
-    data: {
-      labels: months,
-      datasets: [
-        { label: '客数', data: d.customers, backgroundColor: colors.blueLight, borderColor: colors.blue, borderWidth: 1.5, borderRadius: 4, yAxisID: 'y' },
-        { label: '客単価', data: d.unitPrice, type: 'line', borderColor: colors.purple, backgroundColor: 'transparent', pointBackgroundColor: colors.purple, pointRadius: 4, tension: 0.3, yAxisID: 'y1' }
-      ]
-    },
-    options: {
-      ...defaultOpts,
-      scales: {
-        x: { grid: { display: false } },
-        y: { beginAtZero: true, position: 'left', ticks: { callback: v => v.toLocaleString()+'人' } },
-        y1: { beginAtZero: false, position: 'right', min: 1000, max: 2500, grid: { drawOnChartArea: false }, ticks: { callback: v => '¥'+v.toLocaleString() } }
-      }
-    }
-  });
-
-  // Chart 4: Profit rate
-  createChart('c4', {
-    type: 'line',
-    data: {
-      labels: months,
-      datasets: [{
-        label: '利益率',
-        data: d.profitRate,
-        borderColor: colors.green,
-        backgroundColor: colors.greenLight,
-        fill: true,
-        pointBackgroundColor: d.profitRate.map(v => v < 0 ? colors.orange : colors.green),
-        pointRadius: 5,
-        tension: 0.3
-      }]
-    },
-    options: {
-      ...defaultOpts,
-      scales: {
-        x: { grid: { display: false } },
-        y: { ticks: { callback: v => v+'%' } }
+  // 877 pie
+  const eLatest = s877Cat[s877Cat.length - 1];
+  if (eLatest) {
+    makeChart('cat877Pie', {
+      type: 'doughnut',
+      data: {
+        labels: ['ドリンク', '軽食', '物販'],
+        datasets: [{ data: [eLatest.drinkPct, eLatest.foodPct, eLatest.retailPct], backgroundColor: [C.blue, C.orange, C.green], borderWidth: 0 }]
       },
-      plugins: {
-        ...defaultOpts.plugins,
-        annotation: {
-          annotations: { line1: { type: 'line', yMin: 30, yMax: 30, borderColor: colors.gray, borderDash: [5,5], borderWidth: 1 } }
-        }
-      }
-    }
-  });
+      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 12 } } }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + (ctx.raw * 100).toFixed(1) + '% (' + [eLatest.drinkQty, eLatest.foodQty, eLatest.retailQty][ctx.dataIndex] + '点)' } }, title: { display: true, text: eLatest.label, font: { size: 13 } } } }
+    });
+  }
 
-  // Chart 5: Labor ratio trend
-  createChart('c5', {
-    type: 'line',
-    data: {
-      labels: months,
-      datasets: [{
-        label: '人件費比率',
-        data: d.laborRatio,
-        borderColor: colors.orange,
-        backgroundColor: colors.orangeLight,
-        fill: true,
-        pointBackgroundColor: d.laborRatio.map(v => v > 50 ? colors.orange : colors.blue),
-        pointRadius: 5,
-        tension: 0.3
-      }]
-    },
-    options: {
-      ...defaultOpts,
-      scales: {
-        x: { grid: { display: false } },
-        y: { beginAtZero: true, max: 70, ticks: { callback: v => v+'%' } }
-      }
-    }
-  });
-}
-
-function renderCompare() {
-  const area = document.getElementById('chartsArea');
-  area.innerHTML = `
-    <div class="chart-card full"><h3>売上高 前年比較</h3><div style="height:320px"><canvas id="c1"></canvas></div></div>
-    <div class="chart-card"><h3>営業損益 前年比較</h3><div style="height:280px"><canvas id="c2"></canvas></div></div>
-    <div class="chart-card"><h3>客数 前年比較</h3><div style="height:280px"><canvas id="c3"></canvas></div></div>
-    <div class="chart-card"><h3>人件費 前年比較</h3><div style="height:280px"><canvas id="c4"></canvas></div></div>
-    <div class="chart-card"><h3>人件費比率 前年比較</h3><div style="height:280px"><canvas id="c5"></canvas></div></div>
-    <div class="chart-card full"><h3>利益率 前年比較</h3><div style="height:280px"><canvas id="c6"></canvas></div></div>
-  `;
-
-  const barPair = (id, label, data24, data25, yFmt) => {
-    createChart(id, {
+  // Category trend (Stand)
+  if (standCat.length > 0) {
+    makeChart('catTrendChart', {
       type: 'bar',
       data: {
-        labels: months,
+        labels: standCat.map(d => d.label),
         datasets: [
-          { label: '2024', data: data24, backgroundColor: 'rgba(134,134,139,0.3)', borderColor: colors.gray, borderWidth: 1, borderRadius: 4 },
-          { label: '2025', data: data25, backgroundColor: colors.blueLight, borderColor: colors.blue, borderWidth: 1.5, borderRadius: 4 }
+          { label: 'ドリンク', data: standCat.map(d => d.drinkQty), backgroundColor: C.blue, borderRadius: 3 },
+          { label: '軽食', data: standCat.map(d => d.foodQty), backgroundColor: C.orange, borderRadius: 3 },
+          { label: '物販', data: standCat.map(d => d.retailQty), backgroundColor: C.green, borderRadius: 3 }
         ]
       },
-      options: { ...defaultOpts, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: yFmt || (v => (v/10000)+'万') } } } }
+      options: { ...chartDefaults, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, stacked: true }, y: { ...chartDefaults.scales.y, stacked: true, ticks: { ...chartDefaults.scales.y.ticks, callback: v => v.toLocaleString() + '点' } } } }
     });
-  };
-
-  barPair('c1', '売上高', d2024.sales, d2025.sales);
-  barPair('c2', '営業損益', d2024.profit, d2025.profit);
-  barPair('c3', '客数', d2024.customers, d2025.customers, v => v.toLocaleString()+'人');
-  barPair('c4', '人件費', d2024.labor, d2025.labor);
-
-  // Labor ratio line comparison
-  createChart('c5', {
-    type: 'line',
-    data: {
-      labels: months,
-      datasets: [
-        { label: '2024', data: d2024.laborRatio, borderColor: colors.gray, pointBackgroundColor: colors.gray, pointRadius: 4, tension: 0.3, borderDash: [5,5] },
-        { label: '2025', data: d2025.laborRatio, borderColor: colors.orange, pointBackgroundColor: colors.orange, pointRadius: 5, tension: 0.3 }
-      ]
-    },
-    options: { ...defaultOpts, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, max: 70, ticks: { callback: v => v+'%' } } } }
-  });
-
-  // Profit rate line comparison
-  createChart('c6', {
-    type: 'line',
-    data: {
-      labels: months,
-      datasets: [
-        { label: '2024', data: d2024.profitRate, borderColor: colors.gray, pointBackgroundColor: colors.gray, pointRadius: 4, tension: 0.3, borderDash: [5,5] },
-        { label: '2025', data: d2025.profitRate, borderColor: colors.green, pointBackgroundColor: d2025.profitRate.map(v => v < 0 ? colors.orange : colors.green), pointRadius: 5, tension: 0.3 }
-      ]
-    },
-    options: { ...defaultOpts, scales: { x: { grid: { display: false } }, y: { ticks: { callback: v => v+'%' } } } }
-  });
-
-  // KPI for compare mode
-  const row = document.getElementById('kpiRow');
-  const s24 = sum(d2024.sales), s25 = sum(d2025.sales);
-  const p24 = sum(d2024.profit), p25 = sum(d2025.profit);
-  const l24 = sum(d2024.labor), l25 = sum(d2025.labor);
-  const c24 = sum(d2024.customers), c25 = sum(d2025.customers);
-  row.innerHTML = `
-    <div class="kpi-card"><div class="label">売上高</div><div class="value change up">+${((s25/s24-1)*100).toFixed(1)}%</div><div class="sub">${fmtM(s24)} → ${fmtM(s25)}</div></div>
-    <div class="kpi-card"><div class="label">営業損益</div><div class="value change up">+${((p25/p24-1)*100).toFixed(1)}%</div><div class="sub">${fmtM(p24)} → ${fmtM(p25)}</div></div>
-    <div class="kpi-card"><div class="label">人件費</div><div class="value change down">+${((l25/l24-1)*100).toFixed(0)}%</div><div class="sub">${fmtM(l24)} → ${fmtM(l25)}</div></div>
-    <div class="kpi-card"><div class="label">客数</div><div class="value change up">+${((c25/c24-1)*100).toFixed(1)}%</div><div class="sub">${c24.toLocaleString()}人 → ${c25.toLocaleString()}人</div></div>
-  `;
-}
-
-function switchYear(year) {
-  currentYear = year;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
-  destroyCharts();
-
-  if (year === 'compare') {
-    renderCompare();
-  } else {
-    renderKPI(year);
-    renderSingleYear(year);
   }
+
+  // Table
+  const allCat = [...standCat.map(d => ({...d, store: 'Stand'})), ...s877Cat.map(d => ({...d, store: '877'}))];
+  allCat.sort((a,b) => a.month.localeCompare(b.month) || a.store.localeCompare(b.store));
+  let html = '<table><thead><tr><th>月</th><th>店舗</th><th>ドリンク</th><th>軽食 </th><th>物販</th><th>ドリンク比玆</th><th>軽食比玆</th><th>物販比玆</th></tr></thead><tbody>';
+  allCat.forEach(d => {
+    html += `<tr><td>${d.label}</td><td><span class="store-label ${d.store==='Stand'?'stand':'s877'}">${d.store}</span></td><td>${d.drinkQty.toLocaleString()}点</td><td>${d.foodQty.toLocaleString()}点</td><td>${d.retailQty.toLocaleString()}点</td><td>${(d.drinkPct*100).toFixed(1)}%</td><td>${(d.foodPct*100).toFixed(1)}%</td><td>${(d.retailPct*100).toFixed(1)}%</td></tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('catTable').innerHTML = html;
 }
 
-// Initial render
-renderKPI('2025');
-renderSingleYear('2025');
+// ===== PAGE 4: COMPARE =====
+function renderCompare() {
+  const s = standData.find(d => d.month === '2026/02');
+  const e = s877Data.find(d => d.month === '2026/02');
+  if (!s || !e) return;
+
+  const total = s.net + e.net;
+  const kpiHtml = `
+    <div class="kpi-card"><div class="label">合計純売上</div><div class="value">${fmtK(total)}</div><div class="sub">Stand ${(s.net/total*100).toFixed(0)}% / 877 ${(e.net/total*100).toFixed(0)}%</div></div>
+    <div class="kpi-card"><div class="label">Stand 純売上</div><div class="value" style="color:${C.blue}">${fmtK(s.net)}</div></div>
+    <div class="kpi-card"><div class="label">877 純売上</div><div class="value" style="color:${C.orange}">${fmtK(e.net)}</div></div>
+    <div class="kpi-card"><div class="label">Stand 客単価</div><div class="value">${fmt(s.custPrice)}</div></div>
+    <div class="kpi-card"><div class="label">877 客単価</div><div class="value">${fmt(e.custPrice)}</div><div class="change up">+${fmt(e.custPrice - s.custPrice)} vs Stand</div></div>
+  `;
+  document.getElementById('compareKpi').innerHTML = kpiHtml;
+
+  // Sales comparison bar
+  makeChart('compareSalesChart', {
+    type: 'bar',
+    data: {
+      labels: ['純売上', '粗利', '原価', '消費税'],
+      datasets: [
+        { label: 'Stand', data: [s.net, s.margin, s.cost, s.tax], backgroundColor: C.blue, borderRadius: 4 },
+        { label: '877', data: [e.net, e.margin, e.cost, e.tax], backgroundColor: C.orange, borderRadius: 4 }
+      ]
+    },
+    options: { ...chartDefaults, indexAxis: 'y', scales: { x: { ticks: { font: { size: 10 }, callback: v => fmtK(v) }, grid: { color: '#f3f4f6' } }, y: { ticks: { font: { size: 11 } }, grid: { display: false } } } }
+  });
+
+  // Category comparison
+  if (s.drinkPct && e.drinkPct) {
+    makeChart('compareCatChart', {
+      type: 'bar',
+      data: {
+        labels: ['ドリンク', '軽食', '物販'],
+        datasets: [
+          { label: 'Stand', data: [s.drinkPct*100, s.foodPct*100, s.retailPct*100], backgroundColor: C.blue, borderRadius: 4 },
+          { label: '877', data: [e.drinkPct*100, e.foodPct*100, e.retailPct*100], backgroundColor: C.orange, borderRadius: 4 }
+       ]
+      },
+      options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, max: 70, ticks: { ...chartDefaults.scales.y.ticks, callback: v => v + '%' } } } }
+    });
+  }
+
+  // KPI comparison table
+  const rows = [
+    ['純売上', fmt(s.net), fmt(e.net)],
+    ['総売上', fmt(s.gross), fmt(e.gross)],
+    ['原価', fmt(s.cost), fmt(e.cost)],
+    ['粗利', fmt(s.margin), fmt(e.margi�)],
+    ['原価率', fmtPct(s.costRate), fmtPct(e.costRate)],
+    ['消費税', fmt(s.tax), fmt(e.tax)],
+    ['値引き', fmt(s.discount), fmt(e.discount)],
+    ['取引数', s.txn.toLocaleString(), e.txn.toLocaleString()],
+    ['客数', s.cust.toLocaleString(), e.cust.toLocaleString()],
+    ['客単価', fmt(s.custPrice), fmt(e.custPrice)],
+    ['販売点数', s.items.toLocaleString(), e.items.toLocaleString()],
+    ['ドリンク比率', s.drinkPct ? fmtPct(s.drinkPct) : '-', e.drinkPct ? fmtPct(e.drinkPct) : '-'],
+    ['軽食比率', s.foodPct ? fmtPct(s.foodPct) : '-', e.foodPct ? fmtPct(e.foodPct) : '-'],
+    ['物販比率', s.retailPct ? fmtPct(s.retailPct) : '-', e.retailPct ? fmtPct(e.retailPct) : '-'],
+  ];
+  let html = '<table><thead><tr><th>指標</th><th><span class="store-label stand">Stand</span></th><th><span class="store-label s877">877</span></th></tr></thead><tbody>';
+  rows.forEach(r => { html += `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`; });
+  html += '</tbody></table>';
+  document.getElementById('compareTable').innerHTML = html;
+}
+
+// ===== PAGE 5: MANAGEMENT =====
+function renderManagement() {
+  const latestS = standData[standData.length - 1];
+  const latestE = s877Data.find(d => d.month === '2026/02');
+  const totalMargin = latestS.margin + (latestE ? latestE.margin : 0);
+
+  const kpiHtml = `
+    <div class="kpi-card"><div class="label">全店舗 粗利（${latestS.label}）</div><div class="value">${fmtK(totalMargin)}</div></div>
+    <div class="kpi-card"><div class="label">Stand 原価率</div><div class="value">${(latestS.costRate*100).toFixed(1)}%</div></div>
+    <div class="kpi-card"><div class="label">877 原価率</div><div class="value">${latestE ? (latestE.costRate*100).toFixed(1)+'%' : '-'}</div></div>
+    <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">人件費</div><div class="value" style="color:#92400e">未入力</div><div class="sub">会計PDF投入後に反映</div></div>
+    <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">FL比率</div><div class="value" style="color:#92400e">未入力</div><div class="sub">人件費入力後に算出</div></div>
+    <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">営業利益</div><div class="value" style="color:#92400e">未入力</div><div class="sub">全経費入力後に算出</div></div>
+  `;
+  document.getElementById('mgmtKpi').innerHTML = kpiHtml;
+
+  const labels = standData.map(d => d.label);
+  makeChart('mgmtProfitChart', {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Stand 粗利', data: standData.map(d => d.margin), backgroundColor: C.blue, borderRadius: 4 },
+        { label: '877 粗利', data: standData.map(d => { const m = s877Data.find(s => s.month === d.month && !s.memo); return m ? m.margin : 0; }), backgroundColor: C.orange, borderRadius: 4 }
+      ]
+    },
+    options: { ...chartDefaults, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, stacked: true }, y: { ...chartDefaults.scales.y, stacked: true, ticks: { ...chartDefaults.scales.y.ticks, callback: v => fmtK(v) } } } }
+  });
+
+  makeChart('mgmtCostRateChart', {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Stand', data: standData.map(d => d.costRate * 100), borderColor: C.blue, tension: 0.3, pointRadius: 3 },
+        { label: '877', data: standData.map(d => { const m = s877Data.find(s => s.month === d.month && !s.memo); return m ? m.costRate * 100 : null; }), borderColor: C.orange, tension: 0.3, pointRadius: 3, spanGaps: false }
+      ]
+    },
+    options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, min: 10, max: 35, ticks: { ...chartDefaults.scales.y.ticks, callback: v => v + '%' } } } }
+  });
+
+  // Status section
+  let statusHtml = '';
+  const allMonths = [...new Set([...standData.map(d => d.month), ...s877Data.map(d => d.month)])].sort();
+  allMonths.forEach(m => {
+    const sRow = standData.find(d => d.month === m);
+    const eRow = s877Data.find(d => d.month === m);
+    const hasSales = (sRow || eRow);
+    const hasExpense = false; // No expense data yet
+    statusHtml += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;">
+      <span class="status-dot ${hasSales ? 'dot-yellow' : 'dot-gray'}"></span>
+      <span style="font-weight:600;width:70px">${m}</span>
+      <span style="color:${C.gray}">売上${hasSales ? '✓' : '✗'} / 経費${hasExpense ? '✓' : '✗'}</span>
+    </div>`;
+  });
+  document.getElementById('mgmtStatus').innerHTML = statusHtml;
+}
+
+// ===== PAGE 6: STATUS =====
+function renderStatus() {
+  const allMonths = [...new Set([...standData.map(d => d.month), ...s877Data.map(d => d.month)])].sort();
+  let html = '<table><thead><tr><th>年月</th><th>Stand 売上</th><th>Stand カテゴリ</th><th>877 売上</th><th>877 カテゴリ</th><th>人件費</th><th>その他経費</th><th>ステータス</th></tr></thead><tbody>';
+  allMonths.forEach(m => {
+    const sRow = standData.find(d => d.month === m);
+    const eRow = s877Data.find(d => d.month === m);
+    const sCat = sRow && sRow.drinkPct;
+    const eCat = eRow && eRow.drinkPct;
+    const dot = (ok) => ok ? '<span class="status-dot dot-green"></span>✓' : '<span class="status-dot dot-gray"></span>—';
+    const status = (sRow || eRow) ? '<span class="status-dot dot-yellow"></span>売上入力済' : '<span class="status-dot dot-red"></span>未入力';
+    html += `<tr><td style="font-weight:700">${m}</td><td>${dot(sRow)}</td><td>${dot(sCat)}</td><td>${dot(eRow)}</td><td>${dot(eCat)}</td><td><span class="status-dot dot-red"></span>未入力</td><td><span class="status-dot dot-red"></span>未入力</td><td>${status}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('statusTable').innerHTML = html;
+}
+
+// ===== INIT =====
+renderOverview();
+renderTrend();
+renderCategory();
+renderCompare();
+renderManagement();
+renderStatus();
 </script>
 </body>
 </html>
