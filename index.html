@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>山事業 月次経営ダッシュボード</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif; background: #f5f5f7; color: #1d1d1f; }
+
+  .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: white; padding: 32px 40px; }
+  .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .header p { font-size: 14px; opacity: 0.7; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; padding: 24px 40px; }
+  .kpi-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .kpi-card .label { font-size: 12px; color: #86868b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .kpi-card .value { font-size: 28px; font-weight: 700; }
+  .kpi-card .sub { font-size: 12px; color: #86868b; margin-top: 4px; }
+  .kpi-card .change { font-size: 13px; margin-top: 4px; }
+  .kpi-card .change.up { color: #34c759; }
+  .kpi-card .change.down { color: #ff3b30; }
+
+  .tabs { display: flex; gap: 0; padding: 0 40px; margin-top: 8px; }
+  .tab { padding: 12px 24px; cursor: pointer; font-size: 14px; font-weight: 600; color: #86868b; border-bottom: 3px solid transparent; transition: all 0.2s; }
+  .tab.active { color: #0f3460; border-bottom-color: #0f3460; }
+  .tab:hover { color: #1d1d1f; }
+
+  .charts { padding: 24px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .chart-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .chart-card.full { grid-column: 1 / -1; }
+  .chart-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: #1d1d1f; }
+  .chart-card canvas { width: 100% !important; }
+
+  .note { padding: 16px 40px 32px; font-size: 12px; color: #86868b; }
+
+  @media (max-width: 900px) {
+    .charts { grid-template-columns: 1fr; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .header, .kpi-row, .charts, .tabs, .note { padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>山事業 月次経営ダッシュボード</h1>
+  <p>2024年 / 2025年 月次推移・前年比較</p>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchYear('2025')">2025年</div>
+  <div class="tab" onclick="switchYear('2024')">2024年</div>
+  <div class="tab" onclick="switchYear('compare')">前年比較</div>
+</div>
+
+<div class="kpi-row" id="kpiRow"></div>
+<div class="charts" id="chartsArea"></div>
+<div class="note">
+  ※ 人件費は山事業所属のみ（中山・飛田＋アルバイト全員）。デザイン部門（小林敦子・岩田・根本・田中）は除外。会計営業損益は根本さん作成の売上分析Excelに基づく数値。
+</div>
+
+<script>
+const months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+
+const d2024 = {
+  sales:      [1628166,1209596,1834818,2350862,3018182,2624190,1869260,2837258,3662160,4111450,6020560,4082370],
+  labor:      [327705,276716,238998,282118,386290,284831,322260,370900,443965,498868,605400,869226],
+  profit:     [498697,246522,657621,746028,938481,1253364,155417,872335,1529977,2317636,2621977,2093545],
+  profitRate: [30.6,20.4,35.8,31.7,31.1,47.8,8.3,30.7,41.8,56.4,43.6,51.3],
+  laborRatio: [20.1,22.9,13.0,12.0,12.8,10.9,17.2,13.1,12.1,12.1,10.1,21.3],
+  customers:  [1322,956,1381,1616,1795,1300,1037,1639,2231,2652,4395,2693],
+  unitPrice:  [1232,1265,1329,1455,1681,2019,1803,1731,1641,1550,1370,1516]
+};
+
+const d2025 = {
+  sales:      [3766730,2952910,3145430,3678280,3906880,3577450,3073080,3368230,4056880,4330320,8729940,3110930],
+  labor:      [737307,662819,607269,685826,899504,656224,933863,870371,881395,1002933,1194098,811035],
+  profit:     [1652464,1126006,868947,768596,314166,1107236,1009215,1428140,1602602,504361,5985397,-648946],
+  profitRate: [43.9,38.1,27.6,20.9,8.0,31.0,32.8,42.4,39.5,11.6,68.6,-20.9],
+  laborRatio: [19.6,22.4,19.3,18.6,23.0,18.3,30.4,25.8,21.7,23.2,13.7,26.1],
+  customers:  [2428,2035,1965,2510,2526,2341,1821,2101,2510,2711,5923,1430],
+  unitPrice:  [1551,1451,1601,1465,1547,1528,1688,1603,1616,1597,1474,2175]
+};
+
+const colors = {
+  blue: '#0f3460', blueLight: 'rgba(15,52,96,0.15)',
+  orange: '#e94560', orangeLight: 'rgba(233,69,96,0.15)',
+  green: '#34c759', greenLight: 'rgba(52,199,89,0.15)',
+  gray: '#86868b', grayLight: 'rgba(134,134,139,0.15)',
+  purple: '#af52de', teal: '#30b0c7',
+};
+
+let charts = [];
+let currentYear = '2025';
+
+function fmt(n) { return '¥' + Math.round(n).toLocaleString(); }
+function fmtM(n) { return '¥' + (n/10000).toFixed(0) + '万'; }
+function sum(arr) { return arr.reduce((a,b) => a+b, 0); }
+function avg(arr) { return sum(arr) / arr.length; }
+
+function renderKPI(year) {
+  const row = document.getElementById('kpiRow');
+  let d = year === '2024' ? d2024 : d2025;
+  let prev = year === '2025' ? d2024 : null;
+
+  const totalSales = sum(d.sales);
+  const totalLabor = sum(d.labor);
+  const totalProfit = sum(d.profit);
+  const avgLaborRatio = (totalLabor / totalSales * 100).toFixed(1);
+  const avgProfitRate = (totalProfit / totalSales * 100).toFixed(1);
+  const totalCustomers = sum(d.customers);
+
+  let salesChange = '', laborChange = '', profitChange = '', custChange = '';
+  if (prev) {
+    const ps = sum(prev.sales);
+    const pl = sum(prev.labor);
+    const pp = sum(prev.profit);
+    const pc = sum(prev.customers);
+    salesChange = `<div class="change ${totalSales > ps ? 'up' : 'down'}">前年比 ${((totalSales/ps-1)*100).toFixed(1)}%</div>`;
+    laborChange = `<div class="change ${totalLabor < pl ? 'up' : 'down'}">前年比 ${((totalLabor/pl-1)*100).toFixed(1)}%</div>`;
+    profitChange = `<div class="change ${totalProfit > pp ? 'up' : 'down'}">前年比 ${((totalProfit/pp-1)*100).toFixed(1)}%</div>`;
+    custChange = `<div class="change ${totalCustomers > pc ? 'up' : 'down'}">前年比 ${((totalCustomers/pc-1)*100).toFixed(1)}%</div>`;
+  }
+
+  row.innerHTML = `
+    <div class="kpi-card"><div class="label">年間売上高</div><div class="value">${fmtM(totalSales)}</div><div class="sub">${fmt(totalSales)}</div>${salesChange}</div>
+    <div class="kpi-card"><div class="label">営業損益</div><div class="value">${fmtM(totalProfit)}</div><div class="sub">利益率 ${avgProfitRate}%</div>${profitChange}</div>
+    <div class="kpi-card"><div class="label">人件費</div><div class="value">${fmtM(totalLabor)}</div><div class="sub">人件費比率 ${avgLaborRatio}%</div>${laborChange}</div>
+    <div class="kpi-card"><div class="label">年間客数</div><div class="value">${totalCustomers.toLocaleString()}人</div><div class="sub">平均客単価 ¥${Math.round(totalSales/totalCustomers).toLocaleString()}</div>${custChange}</div>
+  `;
+}
+
+function destroyCharts() {
+  charts.forEach(c => c.destroy());
+  charts = [];
+}
+
+function createChart(canvasId, config) {
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  const chart = new Chart(ctx, config);
+  charts.push(chart);
+  return chart;
+}
+
+const defaultOpts = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { position: 'top', labels: { usePointStyle: true, padding: 16, font: { size: 12 } } } },
+  scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => v >= 10000 ? (v/10000)+'万' : v.toLocaleString() } } }
+};
+
+function renderSingleYear(year) {
+  const d = year === '2024' ? d2024 : d2025;
+  const area = document.getElementById('chartsArea');
+
+  area.innerHTML = `
+    <div class="chart-card full"><h3>月次売上高 & 営業損益</h3><div style="height:320px"><canvas id="c1"></canvas></div></div>
+    <div class="chart-card"><h3>人件費 & 人件費比率</h3><div style="height:280px"><canvas id="c2"></canvas></div></div>
+    <div class="chart-card"><h3>客数 & 客単価</h3><div style="height:280px"><canvas id="c3"></canvas></div></div>
+    <div class="chart-card"><h3>利益率推移</h3><div style="height:280px"><canvas id="c4"></canvas></div></div>
+    <div class="chart-card"><h3>人件費比率推移</h3><div style="height:280px"><canvas id="c5"></canvas></div></div>
+  `;
+
+  // Chart 1: Sales & Profit bars
+  createChart('c1', {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [
+        { label: '売上高', data: d.sales, backgroundColor: colors.blueLight, borderColor: colors.blue, borderWidth: 1.5, borderRadius: 4 },
+        { label: '営業損益', data: d.profit, backgroundColor: d.profit.map(v => v >= 0 ? colors.greenLight : colors.orangeLight), borderColor: d.profit.map(v => v >= 0 ? colors.green : colors.orange), borderWidth: 1.5, borderRadius: 4 }
+      ]
+    },
+    options: { ...defaultOpts, scales: { ...defaultOpts.scales, y: { ...defaultOpts.scales.y, ticks: { callback: v => (v/10000)+'万' } } } }
+  });
+
+  // Chart 2: Labor cost bar + ratio line
+  createChart('c2', {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [
+        { label: '人件費', data: d.labor, backgroundColor: colors.orangeLight, borderColor: colors.orange, borderWidth: 1.5, borderRadius: 4, yAxisID: 'y' },
+        { label: '人件費比率 (%)', data: d.laborRatio, type: 'line', borderColor: colors.orange, backgroundColor: 'transparent', pointBackgroundColor: colors.orange, pointRadius: 4, tension: 0.3, yAxisID: 'y1' }
+      ]
+    },
+    options: {
+      ...defaultOpts,
+      scales: {
+        x: { grid: { display: false } },
+        y: { beginAtZero: true, position: 'left', ticks: { callback: v => (v/10000)+'万' } },
+        y1: { beginAtZero: true, position: 'right', max: 70, grid: { drawOnChartArea: false }, ticks: { callback: v => v+'%' } }
+      }
+    }
+  });
+
+  // Chart 3: Customers bar + unit price line
+  createChart('c3', {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [
+        { label: '客数', data: d.customers, backgroundColor: colors.blueLight, borderColor: colors.blue, borderWidth: 1.5, borderRadius: 4, yAxisID: 'y' },
+        { label: '客単価', data: d.unitPrice, type: 'line', borderColor: colors.purple, backgroundColor: 'transparent', pointBackgroundColor: colors.purple, pointRadius: 4, tension: 0.3, yAxisID: 'y1' }
+      ]
+    },
+    options: {
+      ...defaultOpts,
+      scales: {
+        x: { grid: { display: false } },
+        y: { beginAtZero: true, position: 'left', ticks: { callback: v => v.toLocaleString()+'人' } },
+        y1: { beginAtZero: false, position: 'right', min: 1000, max: 2500, grid: { drawOnChartArea: false }, ticks: { callback: v => '¥'+v.toLocaleString() } }
+      }
+    }
+  });
+
+  // Chart 4: Profit rate
+  createChart('c4', {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [{
+        label: '利益率',
+        data: d.profitRate,
+        borderColor: colors.green,
+        backgroundColor: colors.greenLight,
+        fill: true,
+        pointBackgroundColor: d.profitRate.map(v => v < 0 ? colors.orange : colors.green),
+        pointRadius: 5,
+        tension: 0.3
+      }]
+    },
+    options: {
+      ...defaultOpts,
+      scales: {
+        x: { grid: { display: false } },
+        y: { ticks: { callback: v => v+'%' } }
+      },
+      plugins: {
+        ...defaultOpts.plugins,
+        annotation: {
+          annotations: { line1: { type: 'line', yMin: 30, yMax: 30, borderColor: colors.gray, borderDash: [5,5], borderWidth: 1 } }
+        }
+      }
+    }
+  });
+
+  // Chart 5: Labor ratio trend
+  createChart('c5', {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [{
+        label: '人件費比率',
+        data: d.laborRatio,
+        borderColor: colors.orange,
+        backgroundColor: colors.orangeLight,
+        fill: true,
+        pointBackgroundColor: d.laborRatio.map(v => v > 50 ? colors.orange : colors.blue),
+        pointRadius: 5,
+        tension: 0.3
+      }]
+    },
+    options: {
+      ...defaultOpts,
+      scales: {
+        x: { grid: { display: false } },
+        y: { beginAtZero: true, max: 70, ticks: { callback: v => v+'%' } }
+      }
+    }
+  });
+}
+
+function renderCompare() {
+  const area = document.getElementById('chartsArea');
+  area.innerHTML = `
+    <div class="chart-card full"><h3>売上高 前年比較</h3><div style="height:320px"><canvas id="c1"></canvas></div></div>
+    <div class="chart-card"><h3>営業損益 前年比較</h3><div style="height:280px"><canvas id="c2"></canvas></div></div>
+    <div class="chart-card"><h3>客数 前年比較</h3><div style="height:280px"><canvas id="c3"></canvas></div></div>
+    <div class="chart-card"><h3>人件費 前年比較</h3><div style="height:280px"><canvas id="c4"></canvas></div></div>
+    <div class="chart-card"><h3>人件費比率 前年比較</h3><div style="height:280px"><canvas id="c5"></canvas></div></div>
+    <div class="chart-card full"><h3>利益率 前年比較</h3><div style="height:280px"><canvas id="c6"></canvas></div></div>
+  `;
+
+  const barPair = (id, label, data24, data25, yFmt) => {
+    createChart(id, {
+      type: 'bar',
+      data: {
+        labels: months,
+        datasets: [
+          { label: '2024', data: data24, backgroundColor: 'rgba(134,134,139,0.3)', borderColor: colors.gray, borderWidth: 1, borderRadius: 4 },
+          { label: '2025', data: data25, backgroundColor: colors.blueLight, borderColor: colors.blue, borderWidth: 1.5, borderRadius: 4 }
+        ]
+      },
+      options: { ...defaultOpts, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: yFmt || (v => (v/10000)+'万') } } } }
+    });
+  };
+
+  barPair('c1', '売上高', d2024.sales, d2025.sales);
+  barPair('c2', '営業損益', d2024.profit, d2025.profit);
+  barPair('c3', '客数', d2024.customers, d2025.customers, v => v.toLocaleString()+'人');
+  barPair('c4', '人件費', d2024.labor, d2025.labor);
+
+  // Labor ratio line comparison
+  createChart('c5', {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        { label: '2024', data: d2024.laborRatio, borderColor: colors.gray, pointBackgroundColor: colors.gray, pointRadius: 4, tension: 0.3, borderDash: [5,5] },
+        { label: '2025', data: d2025.laborRatio, borderColor: colors.orange, pointBackgroundColor: colors.orange, pointRadius: 5, tension: 0.3 }
+      ]
+    },
+    options: { ...defaultOpts, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, max: 70, ticks: { callback: v => v+'%' } } } }
+  });
+
+  // Profit rate line comparison
+  createChart('c6', {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        { label: '2024', data: d2024.profitRate, borderColor: colors.gray, pointBackgroundColor: colors.gray, pointRadius: 4, tension: 0.3, borderDash: [5,5] },
+        { label: '2025', data: d2025.profitRate, borderColor: colors.green, pointBackgroundColor: d2025.profitRate.map(v => v < 0 ? colors.orange : colors.green), pointRadius: 5, tension: 0.3 }
+      ]
+    },
+    options: { ...defaultOpts, scales: { x: { grid: { display: false } }, y: { ticks: { callback: v => v+'%' } } } }
+  });
+
+  // KPI for compare mode
+  const row = document.getElementById('kpiRow');
+  const s24 = sum(d2024.sales), s25 = sum(d2025.sales);
+  const p24 = sum(d2024.profit), p25 = sum(d2025.profit);
+  const l24 = sum(d2024.labor), l25 = sum(d2025.labor);
+  const c24 = sum(d2024.customers), c25 = sum(d2025.customers);
+  row.innerHTML = `
+    <div class="kpi-card"><div class="label">売上高</div><div class="value change up">+${((s25/s24-1)*100).toFixed(1)}%</div><div class="sub">${fmtM(s24)} → ${fmtM(s25)}</div></div>
+    <div class="kpi-card"><div class="label">営業損益</div><div class="value change up">+${((p25/p24-1)*100).toFixed(1)}%</div><div class="sub">${fmtM(p24)} → ${fmtM(p25)}</div></div>
+    <div class="kpi-card"><div class="label">人件費</div><div class="value change down">+${((l25/l24-1)*100).toFixed(0)}%</div><div class="sub">${fmtM(l24)} → ${fmtM(l25)}</div></div>
+    <div class="kpi-card"><div class="label">客数</div><div class="value change up">+${((c25/c24-1)*100).toFixed(1)}%</div><div class="sub">${c24.toLocaleString()}人 → ${c25.toLocaleString()}人</div></div>
+  `;
+}
+
+function switchYear(year) {
+  currentYear = year;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  destroyCharts();
+
+  if (year === 'compare') {
+    renderCompare();
+  } else {
+    renderKPI(year);
+    renderSingleYear(year);
+  }
+}
+
+// Initial render
+renderKPI('2025');
+renderSingleYear('2025');
+</script>
+</body>
+</html>
