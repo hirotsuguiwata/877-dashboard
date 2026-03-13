@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>877äºæ¥­ çµå¶ããã·ã¥ãã¼ã v1.2</title>
+<title>877事業 経営ダッシュボード v1.2</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -95,71 +95,71 @@
 <body>
 
 <div class="header">
-  <h1>877äºæ¥­ çµå¶ããã·ã¥ãã¼ã</h1>
-  <p class="subtitle">877 Mountain Business Dashboard â 2024ã2026å¹´åº¦ï¼åå¹´æ¯è¼ä»ãï¼</p>
+  <h1>877事業 経営ダッシュボード</h1>
+  <p class="subtitle">877 Mountain Business Dashboard — 2024〜2026年度（前年比較付き）</p>
   <div class="store-badge">
-    <span class="badge badge-stand">877Standï¼å±±é åºï¼</span>
-    <span class="badge badge-877">877ï¼ä¸­è¹åºï¼</span>
-    <span class="badge badge-both">2åºèçµ±å</span>
+    <span class="badge badge-stand">877Stand（山頂店）</span>
+    <span class="badge badge-877">877（中腹店）</span>
+    <span class="badge badge-both">2店舗統合</span>
     <span class="badge badge-ver">v1.2</span>
   </div>
 </div>
 
 <div class="nav">
-  <div class="nav-item active" onclick="showPage('overview')">æ¦è¦</div>
-  <div class="nav-item" onclick="showPage('trend')">ææ¬¡æ¨ç§»</div>
-  <div class="nav-item" onclick="showPage('category')">ã«ãã´ãªåæ</div>
-  <div class="nav-item" onclick="showPage('compare')">2åºèæ¯è¼</div>
-  <div class="nav-item" onclick="showPage('management')">çµå¶åæ</div>
-  <div class="nav-item" onclick="showPage('status')">ãã¼ã¿ç¶æ³</div>
+  <div class="nav-item active" onclick="showPage('overview')">概要</div>
+  <div class="nav-item" onclick="showPage('trend')">月次推移</div>
+  <div class="nav-item" onclick="showPage('category')">カテゴリ分析</div>
+  <div class="nav-item" onclick="showPage('compare')">2店舗比較</div>
+  <div class="nav-item" onclick="showPage('management')">経営分析</div>
+  <div class="nav-item" onclick="showPage('status')">データ状況</div>
 </div>
 
 <!-- ===== PAGE 1: OVERVIEW ===== -->
 <div class="page active" id="page-overview">
   <div class="kpi-row" id="overviewKpi"></div>
   <div class="grid-2">
-    <div class="card full"><h3><span class="icon">ð</span>ç´è¿13ã¶æ ç´å£²ä¸æ¨ç§»ï¼å¨åºè + åå¹´æ¯è¼ï¼</h3><canvas id="overviewSalesChart"></canvas></div>
+    <div class="card full"><h3><span class="icon">📊</span>直近13ヶ月 純売上推移（全店舗 + 前年比較）</h3><canvas id="overviewSalesChart"></canvas></div>
   </div>
   <div class="grid-2">
-    <div class="card"><h3><span class="icon">ð¥</span>å®¢æ°æ¨ç§»ï¼åå¹´æ¯è¼ä»ãï¼</h3><canvas id="overviewCustomerChart"></canvas></div>
-    <div class="card"><h3><span class="icon">ð°</span>å®¢åä¾¡æ¨ç§»</h3><canvas id="overviewUnitChart"></canvas></div>
+    <div class="card"><h3><span class="icon">👥</span>客数推移（前年比較付き）</h3><canvas id="overviewCustomerChart"></canvas></div>
+    <div class="card"><h3><span class="icon">💰</span>客単価推移</h3><canvas id="overviewUnitChart"></canvas></div>
   </div>
 </div>
 
 <!-- ===== PAGE 2: TREND ===== -->
 <div class="page" id="page-trend">
-  <div class="section-title">å¨åºè ææ¬¡æ¨ç§»</div>
-  <div class="section-sub">877Standï¼å±±é åºï¼+ 877ï¼ä¸­è¹åºï¼ã®å£²ä¸ãã¼ã¿ãç°è²ã®ç ´ç·ã¯åå¹´åæï¼2024å¹´ï¼ã®å®ç¸¾ã</div>
+  <div class="section-title">全店舗 月次推移</div>
+  <div class="section-sub">877Stand（山頂店）+ 877（中腹店）の売上データ。灰色の破線は前年同月（2024年）の実績。</div>
   <div class="grid-2">
-    <div class="card full"><h3><span class="icon">ð</span>ç´å£²ä¸ï¼Stand + 877ï¼Ã åå¹´æ¯è¼</h3><canvas id="trendSalesChart"></canvas></div>
+    <div class="card full"><h3><span class="icon">📈</span>純売上（Stand + 877）× 前年比較</h3><canvas id="trendSalesChart"></canvas></div>
   </div>
   <div class="grid-2">
-    <div class="card"><h3><span class="icon">ð¦</span>è²©å£²ç¹æ°æ¨ç§»ï¼å¨åºèï¼</h3><canvas id="trendItemsChart"></canvas></div>
-    <div class="card"><h3><span class="icon">ð·ï¸</span>åä¾¡çæ¨ç§»ï¼å¨åºèï¼</h3><canvas id="trendCostChart"></canvas></div>
+    <div class="card"><h3><span class="icon">📦</span>販売点数推移（全店舗）</h3><canvas id="trendItemsChart"></canvas></div>
+    <div class="card"><h3><span class="icon">🏷️</span>原価率推移（全店舗）</h3><canvas id="trendCostChart"></canvas></div>
   </div>
   <div class="grid-2">
-    <div class="card full"><h3><span class="icon">ð</span>å®¢æ° Ã å®¢åä¾¡æ¨ç§»ï¼åå¹´æ¯è¼ä»ãï¼</h3><canvas id="trendCustChart"></canvas></div>
+    <div class="card full"><h3><span class="icon">📊</span>客数 × 客単価推移（前年比較付き）</h3><canvas id="trendCustChart"></canvas></div>
   </div>
   <div class="card full">
-    <h3><span class="icon">ð</span>ææ¬¡ãã¼ã¿ä¸è¦§ï¼åå¹´åææ¯ä»ãï¼</h3>
+    <h3><span class="icon">📋</span>月次データ一覧（前年同月比付き）</h3>
     <div class="table-wrap" id="trendTable"></div>
   </div>
 </div>
 
 <!-- ===== PAGE 3: CATEGORY ===== -->
 <div class="page" id="page-category">
-  <div class="section-title">ã«ãã´ãªå¥åæ</div>
-  <div class="section-sub">ããªã³ã¯ã»è»½é£ã»ç©è²©ã®æ§ææ¯ï¼ã«ãã´ãªãã¼ã¿ãããæã®ã¿è¡¨ç¤ºï¼</div>
+  <div class="section-title">カテゴリ別分析</div>
+  <div class="section-sub">ドリンク・軽食・物販の構成比（カテゴリデータがある月のみ表示）</div>
   <div class="grid-2">
-    <div class="card"><h3><span class="icon">â</span>Stand ã«ãã´ãªæ§ææ¯</h3><canvas id="catStandPie"></canvas></div>
-    <div class="card"><h3><span class="icon">ðï¸</span>877 ã«ãã´ãªæ§ææ¯</h3><canvas id="cat877Pie"></canvas></div>
+    <div class="card"><h3><span class="icon">☕</span>Stand カテゴリ構成比</h3><canvas id="catStandPie"></canvas></div>
+    <div class="card"><h3><span class="icon">🏔️</span>877 カテゴリ構成比</h3><canvas id="cat877Pie"></canvas></div>
   </div>
   <div class="grid-2">
-    <div class="card full"><h3><span class="icon">ð</span>ã«ãã´ãªå¥ç¹æ°æ¨ç§»ï¼å¨åºèï¼</h3><canvas id="catTrendChart"></canvas></div>
+    <div class="card full"><h3><span class="icon">📊</span>カテゴリ別点数推移（全店舗）</h3><canvas id="catTrendChart"></canvas></div>
   </div>
   <div class="grid-2">
     <div class="card full">
-      <h3><span class="icon">ð</span>ã«ãã´ãªå¥ãã¼ã¿ä¸è¦§</h3>
+      <h3><span class="icon">📋</span>カテゴリ別データ一覧</h3>
       <div class="table-wrap" id="catTable"></div>
     </div>
   </div>
@@ -167,35 +167,35 @@
 
 <!-- ===== PAGE 4: COMPARE ===== -->
 <div class="page" id="page-compare">
-  <div class="section-title">2åºèæ¯è¼</div>
-  <div class="section-sub">877Standï¼å±±é åºï¼vs 877ï¼ä¸­è¹åºï¼â 2026å¹´2æ</div>
+  <div class="section-title">2店舗比較</div>
+  <div class="section-sub">877Stand（山頂店）vs 877（中腹店）— 2026年2月</div>
   <div class="compare-header">
-    <div class="compare-store"><span class="store-label stand">Stand</span><div class="name" style="margin-top:4px">877Stand</div><div class="period">å±±é åº</div></div>
+    <div class="compare-store"><span class="store-label stand">Stand</span><div class="name" style="margin-top:4px">877Stand</div><div class="period">山頂店</div></div>
     <div class="compare-vs">VS</div>
-    <div class="compare-store"><span class="store-label s877">877</span><div class="name" style="margin-top:4px">877</div><div class="period">ä¸­è¹åº</div></div>
+    <div class="compare-store"><span class="store-label s877">877</span><div class="name" style="margin-top:4px">877</div><div class="period">中腹店</div></div>
   </div>
   <div class="kpi-row" id="compareKpi"></div>
   <div class="grid-2">
-    <div class="card"><h3><span class="icon">ð</span>å£²ä¸æ¯è¼</h3><canvas id="compareSalesChart"></canvas></div>
-    <div class="card"><h3><span class="icon">ð°</span>ã«ãã´ãªæ§ææ¯è¼</h3><canvas id="compareCatChart"></canvas></div>
+    <div class="card"><h3><span class="icon">📊</span>売上比較</h3><canvas id="compareSalesChart"></canvas></div>
+    <div class="card"><h3><span class="icon">🍰</span>カテゴリ構成比較</h3><canvas id="compareCatChart"></canvas></div>
   </div>
   <div class="grid-2">
-    <div class="card full"><h3><span class="icon">ð</span>KPIæ¯è¼è¡¨</h3><div class="table-wrap" id="compareTable"></div></div>
+    <div class="card full"><h3><span class="icon">📋</span>KPI比較表</h3><div class="table-wrap" id="compareTable"></div></div>
   </div>
 </div>
 
 <!-- ===== PAGE 5: MANAGEMENT ===== -->
 <div class="page" id="page-management">
-  <div class="section-title">çµå¶åæ</div>
-  <div class="section-sub">äººä»¶è²»ã»çµè²»ãã¼ã¿ã¯ä¼è¨PDFããå¾æ¥æå¥ããã¾ã</div>
+  <div class="section-title">経営分析</div>
+  <div class="section-sub">人件費・経費データは会計PDFから後日投入されます</div>
   <div class="kpi-row" id="mgmtKpi"></div>
   <div class="grid-2">
-    <div class="card full"><h3><span class="icon">ð¹</span>ç²å©æ¨ç§»ï¼å¨åºèï¼</h3><canvas id="mgmtProfitChart"></canvas></div>
+    <div class="card full"><h3><span class="icon">💹</span>粗利推移（全店舗）</h3><canvas id="mgmtProfitChart"></canvas></div>
   </div>
   <div class="grid-2">
-    <div class="card"><h3><span class="icon">ð</span>åä¾¡çæ¨ç§»</h3><canvas id="mgmtCostRateChart"></canvas></div>
+    <div class="card"><h3><span class="icon">📊</span>原価率推移</h3><canvas id="mgmtCostRateChart"></canvas></div>
     <div class="card">
-      <h3><span class="icon">ð</span>çµè²»å¥åã¹ãã¼ã¿ã¹</h3>
+      <h3><span class="icon">📝</span>経費入力ステータス</h3>
       <div id="mgmtStatus" style="padding: 12px 0;"></div>
     </div>
   </div>
@@ -203,67 +203,67 @@
 
 <!-- ===== PAGE 6: STATUS ===== -->
 <div class="page" id="page-status">
-  <div class="section-title">ãã¼ã¿å¥åç¶æ³</div>
-  <div class="section-sub">Notionãã¼ã¿ãã¼ã¹ã®å¥åé²æ</div>
+  <div class="section-title">データ入力状況</div>
+  <div class="section-sub">Notionデータベースの入力進捗</div>
   <div class="card full">
     <div class="table-wrap" id="statusTable"></div>
   </div>
 </div>
 
 <div class="note">
-  <span class="updated">æçµæ´æ°: 2026å¹´3æ13æ¥ | v1.2</span>
-  â» å£²ä¸ãã¼ã¿ã¯ã¹ãã¬ã¸APIããèªååå¾ãäººä»¶è²»ã»çµè²»ã¯ä¼è¨PDFæå¥å¾ã«åæ ãã«ãã´ãªãã¼ã¿ï¼ããªã³ã¯ã»è»½é£ã»ç©è²©ï¼ã¯2026å¹´1æä»¥éã®ã¿ã<br>
-  â» 877ï¼ä¸­è¹åºï¼ã¯2026å¹´2æ6æ¥éåºã2026å¹´1æã¯ãã¬ãªã¼ãã³ã®ãã¹ãåå¼ï¼Â¥600ï¼ã®ããåæå¯¾è±¡å¤ã<br>
-  â» åå¹´ï¼2024å¹´ï¼ãã¼ã¿ã¯Notionãå±±äºæ¥­ ææ¬¡æçãã¼ã¿ãããåå¾ãStandå£²ä¸ãã¼ã¹ã§æ¯è¼ï¼BASEå£²ä¸é¤ãï¼ã
+  <span class="updated">最終更新: 2026年3月13日 | v1.2</span>
+  ※ 売上データはスマレジAPIより自動取得。人件費・経費は会計PDF投入後に反映。カテゴリデータ（ドリンク・軽食・物販）は2026年1月以降のみ。<br>
+  ※ 877（中腹店）は2026年2月6日開店。2026年1月はプレオープンのテスト取引（¥600）のため分析対象外。<br>
+  ※ 前年（2024年）データはNotion「山事業 月次損益データ」より取得。Stand売上ベースで比較（BASE売上除く）。
 </div>
 
 <script>
 // ===== DATA =====
 const standData = [
-  { month: '2025/02', label: '25å¹´2æ', net: 2956510, gross: 2963110, cost: 838859, margin: 2117651, tax: 267521, discount: 6400, txn: 2035, cust: 2025, txnPrice: 1453, custPrice: 1460, items: 4204, returns: 13, costRate: 0.2837 },
-  { month: '2025/03', label: '25å¹´3æ', net: 3037280, gross: 3037380, cost: 863074, margin: 2174207, tax: 274712, discount: 0, txn: 1965, cust: 1955, txnPrice: 1546, custPrice: 1554, items: 4083, returns: 22, costRate: 0.2842 },
-  { month: '2025/04', label: '25å¹´4æ', net: 3670130, gross: 3675380, cost: 1005023, margin: 2665108, tax: 331714, discount: 5250, txn: 2510, cust: 2494, txnPrice: 1462, custPrice: 1472, items: 4683, returns: 36, costRate: 0.2738 },
-  { month: '2025/05', label: '25å¹´5æ', net: 3906880, gross: 3911180, cost: 1095332, margin: 2811548, tax: 353392, discount: 4300, txn: 2526, cust: 2515, txnPrice: 1547, custPrice: 1553, items: 4800, returns: 27, costRate: 0.2804 },
-  { month: '2025/06', label: '25å¹´6æ', net: 3583250, gross: 3585250, cost: 1040061, margin: 2543189, tax: 324403, discount: 2000, txn: 2341, cust: 2301, txnPrice: 1531, custPrice: 1557, items: 4099, returns: 80, costRate: 0.2903 },
-  { month: '2025/07', label: '25å¹´7æ', net: 3073080, gross: 3079530, cost: 816264, margin: 2256816, tax: 278379, discount: 6450, txn: 1821, cust: 1814, txnPrice: 1688, custPrice: 1694, items: 3206, returns: 14, costRate: 0.2656 },
-  { month: '2025/08', label: '25å¹´8æ', net: 3371230, gross: 3378280, cost: 869076, margin: 2502154, tax: 305299, discount: 7050, txn: 2101, cust: 2093, txnPrice: 1605, custPrice: 1611, items: 3962, returns: 15, costRate: 0.2578 },
-  { month: '2025/09', label: '25å¹´9æ', net: 4058780, gross: 4062180, cost: 1106808, margin: 2951972, tax: 367823, discount: 3400, txn: 2510, cust: 2497, txnPrice: 1617, custPrice: 1625, items: 4416, returns: 21, costRate: 0.2727 },
-  { month: '2025/10', label: '25å¹´10æ', net: 4330320, gross: 4333870, cost: 1240067, margin: 3090253, tax: 392469, discount: 3450, txn: 2711, cust: 2697, txnPrice: 1597, custPrice: 1606, items: 5213, returns: 30, costRate: 0.2864 },
-  { month: '2025/11', label: '25å¹´11æ', net: 8793540, gross: 8798290, cost: 2554472, margin: 6239069, tax: 796847, discount: 4450, txn: 5923, cust: 5898, txnPrice: 1485, custPrice: 1491, items: 11345, returns: 60, costRate: 0.2905 },
-  { month: '2025/12', label: '25å¹´12æ', net: 3110930, gross: 3118480, cost: 890159, margin: 2220771, tax: 281902, discount: 7350, txn: 2056, cust: 2045, txnPrice: 1513, custPrice: 1521, items: 3855, returns: 21, costRate: 0.2861 },
-  { month: '2026/01', label: '26å¹´1æ', net: 4420820, gross: 4428120, cost: 1246430, margin: 3174390, tax: 400611, discount: 6700, txn: 2909, cust: 2903, txnPrice: 1520, custPrice: 1523, items: 5674, returns: 10, costRate: 0.2819, drinkPct: 0.5753, drinkQty: 3264, foodPct: 0.1773, foodQty: 1006, retailPct: 0.2474, retailQty: 1404 },
-  { month: '2026/02', label: '26å¹´2æ', net: 2770355, gross: 2776980, cost: 794042, margin: 1976313, tax: 251056, discount: 6625, txn: 1809, cust: 1809, txnPrice: 1531, custPrice: 1531, items: 3412, returns: 0, costRate: 0.2866, drinkPct: 0.577, drinkQty: 1989, foodPct: 0.1726, foodQty: 595, retailPct: 0.2504, retailQty: 863 }
+  { month: '2025/02', label: '25年2月', net: 2956510, gross: 2963110, cost: 838859, margin: 2117651, tax: 267521, discount: 6400, txn: 2035, cust: 2025, txnPrice: 1453, custPrice: 1460, items: 4204, returns: 13, costRate: 0.2837 },
+  { month: '2025/03', label: '25年3月', net: 3037280, gross: 3037380, cost: 863074, margin: 2174207, tax: 274712, discount: 0, txn: 1965, cust: 1955, txnPrice: 1546, custPrice: 1554, items: 4083, returns: 22, costRate: 0.2842 },
+  { month: '2025/04', label: '25年4月', net: 3670130, gross: 3675380, cost: 1005023, margin: 2665108, tax: 331714, discount: 5250, txn: 2510, cust: 2494, txnPrice: 1462, custPrice: 1472, items: 4683, returns: 36, costRate: 0.2738 },
+  { month: '2025/05', label: '25年5月', net: 3906880, gross: 3911180, cost: 1095332, margin: 2811548, tax: 353392, discount: 4300, txn: 2526, cust: 2515, txnPrice: 1547, custPrice: 1553, items: 4800, returns: 27, costRate: 0.2804 },
+  { month: '2025/06', label: '25年6月', net: 3583250, gross: 3585250, cost: 1040061, margin: 2543189, tax: 324403, discount: 2000, txn: 2341, cust: 2301, txnPrice: 1531, custPrice: 1557, items: 4099, returns: 80, costRate: 0.2903 },
+  { month: '2025/07', label: '25年7月', net: 3073080, gross: 3079530, cost: 816264, margin: 2256816, tax: 278379, discount: 6450, txn: 1821, cust: 1814, txnPrice: 1688, custPrice: 1694, items: 3206, returns: 14, costRate: 0.2656 },
+  { month: '2025/08', label: '25年8月', net: 3371230, gross: 3378280, cost: 869076, margin: 2502154, tax: 305299, discount: 7050, txn: 2101, cust: 2093, txnPrice: 1605, custPrice: 1611, items: 3962, returns: 15, costRate: 0.2578 },
+  { month: '2025/09', label: '25年9月', net: 4058780, gross: 4062180, cost: 1106808, margin: 2951972, tax: 367823, discount: 3400, txn: 2510, cust: 2497, txnPrice: 1617, custPrice: 1625, items: 4416, returns: 21, costRate: 0.2727 },
+  { month: '2025/10', label: '25年10月', net: 4330320, gross: 4333870, cost: 1240067, margin: 3090253, tax: 392469, discount: 3450, txn: 2711, cust: 2697, txnPrice: 1597, custPrice: 1606, items: 5213, returns: 30, costRate: 0.2864 },
+  { month: '2025/11', label: '25年11月', net: 8793540, gross: 8798290, cost: 2554472, margin: 6239069, tax: 796847, discount: 4450, txn: 5923, cust: 5898, txnPrice: 1485, custPrice: 1491, items: 11345, returns: 60, costRate: 0.2905 },
+  { month: '2025/12', label: '25年12月', net: 3110930, gross: 3118480, cost: 890159, margin: 2220771, tax: 281902, discount: 7350, txn: 2056, cust: 2045, txnPrice: 1513, custPrice: 1521, items: 3855, returns: 21, costRate: 0.2861 },
+  { month: '2026/01', label: '26年1月', net: 4420820, gross: 4428120, cost: 1246430, margin: 3174390, tax: 400611, discount: 6700, txn: 2909, cust: 2903, txnPrice: 1520, custPrice: 1523, items: 5674, returns: 10, costRate: 0.2819, drinkPct: 0.5753, drinkQty: 3264, foodPct: 0.1773, foodQty: 1006, retailPct: 0.2474, retailQty: 1404 },
+  { month: '2026/02', label: '26年2月', net: 2770355, gross: 2776980, cost: 794042, margin: 1976313, tax: 251056, discount: 6625, txn: 1809, cust: 1809, txnPrice: 1531, custPrice: 1531, items: 3412, returns: 0, costRate: 0.2866, drinkPct: 0.577, drinkQty: 1989, foodPct: 0.1726, foodQty: 595, retailPct: 0.2504, retailQty: 863 }
 ];
 
 const s877Data = [
-  { month: '2026/01', label: '26å¹´1æ', net: 600, gross: 600, cost: 185, margin: 415, tax: 54, discount: 0, txn: 1, cust: 1, txnPrice: 600, custPrice: 600, items: 1, returns: 0, costRate: 0.3083, memo: 'ãã¬ãªã¼ãã³ï¼ãã¹ãåå¼ï¼' },
-  { month: '2026/02', label: '26å¹´2æ', net: 1147320, gross: 1149120, cost: 194927, margin: 952393, tax: 104052, discount: 1800, txn: 559, cust: 559, txnPrice: 2053, custPrice: 2053, items: 1303, returns: 0, costRate: 0.1699, drinkPct: 0.2389, drinkQty: 316, foodPct: 0.4044, foodQty: 535, retailPct: 0.3568, retailQty: 472 }
+  { month: '2026/01', label: '26年1月', net: 600, gross: 600, cost: 185, margin: 415, tax: 54, discount: 0, txn: 1, cust: 1, txnPrice: 600, custPrice: 600, items: 1, returns: 0, costRate: 0.3083, memo: 'プレオープン（テスト取引）' },
+  { month: '2026/02', label: '26年2月', net: 1147320, gross: 1149120, cost: 194927, margin: 952393, tax: 104052, discount: 1800, txn: 559, cust: 559, txnPrice: 2053, custPrice: 2053, items: 1303, returns: 0, costRate: 0.1699, drinkPct: 0.2389, drinkQty: 316, foodPct: 0.4044, foodQty: 535, retailPct: 0.3568, retailQty: 472 }
 ];
 
-// 2024å¹´ãã¼ã¿ï¼Notionãå±±äºæ¥­ ææ¬¡æçãã¼ã¿ãããï¼
-// standSales = Notion "Standå£²ä¸" ãã£ã¼ã«ãï¼ã¹ãã¬ã¸POSåã®ã¿ãBASEå£²ä¸é¤ãï¼
+// 2024年データ（Notion「山事業 月次損益データ」より）
+// standSales = Notion "Stand売上" フィールド（スマレジPOS分のみ、BASE売上除く）
 const prev2024Data = [
-  { month: '2024/01', label: '24å¹´1æ', standSales: 1545030, totalSales: 1628166, cust: 1322, custPrice: 1232, costRate: 0.062, drinkPct: 0.801, retailPct: 0.199 },
-  { month: '2024/02', label: '24å¹´2æ', standSales: 1141270, totalSales: 1209596, cust: 956, custPrice: 1265, costRate: 0.099, drinkPct: 0.738, retailPct: 0.262 },
-  { month: '2024/03', label: '24å¹´3æ', standSales: 1701750, totalSales: 1834818, cust: 1381, custPrice: 1329, costRate: 0.084, drinkPct: 0.749, retailPct: 0.251 },
-  { month: '2024/04', label: '24å¹´4æ', standSales: 1819080, totalSales: 2350862, cust: 1616, custPrice: 1455, costRate: 0.084, drinkPct: 0.608, retailPct: 0.392 },
-  { month: '2024/05', label: '24å¹´5æ', standSales: 2099460, totalSales: 3018182, cust: 1795, custPrice: 1681, costRate: 0, drinkPct: 0.538, retailPct: 0.462 },
-  { month: '2024/06', label: '24å¹´6æ', standSales: 1532390, totalSales: 2624190, cust: 1300, custPrice: 2019, costRate: 0.048, drinkPct: 0.417, retailPct: 0.583 },
-  { month: '2024/07', label: '24å¹´7æ', standSales: 724610, totalSales: 1869260, cust: 1037, custPrice: 1803, costRate: 0.05, drinkPct: 0.342, retailPct: 0.658 },
-  { month: '2024/08', label: '24å¹´8æ', standSales: 903950, totalSales: 2837258, cust: 1639, custPrice: 1731, costRate: 0.041, drinkPct: 0.319, retailPct: 0.681 },
-  { month: '2024/09', label: '24å¹´9æ', standSales: 1411431, totalSales: 3662160, cust: 2231, custPrice: 1641, costRate: 0.043, drinkPct: 0.385, retailPct: 0.615 },
-  { month: '2024/10', label: '24å¹´10æ', standSales: 1918321, totalSales: 4111450, cust: 2652, custPrice: 1550, costRate: 0.097, drinkPct: 0.467, retailPct: 0.533 },
-  { month: '2024/11', label: '24å¹´11æ', standSales: 3370000, totalSales: 6020560, cust: 4395, custPrice: 1370, costRate: 0.061, drinkPct: 0.56, retailPct: 0.44 },
-  { month: '2024/12', label: '24å¹´12æ', standSales: 1853831, totalSales: 4082370, cust: 2693, custPrice: 1516, costRate: 0.063, drinkPct: 0.54, retailPct: 0.46 }
+  { month: '2024/01', label: '24年1月', standSales: 1545030, totalSales: 1628166, cust: 1322, custPrice: 1232, costRate: 0.062, drinkPct: 0.801, retailPct: 0.199 },
+  { month: '2024/02', label: '24年2月', standSales: 1141270, totalSales: 1209596, cust: 956, custPrice: 1265, costRate: 0.099, drinkPct: 0.738, retailPct: 0.262 },
+  { month: '2024/03', label: '24年3月', standSales: 1701750, totalSales: 1834818, cust: 1381, custPrice: 1329, costRate: 0.084, drinkPct: 0.749, retailPct: 0.251 },
+  { month: '2024/04', label: '24年4月', standSales: 1819080, totalSales: 2350862, cust: 1616, custPrice: 1455, costRate: 0.084, drinkPct: 0.608, retailPct: 0.392 },
+  { month: '2024/05', label: '24年5月', standSales: 2099460, totalSales: 3018182, cust: 1795, custPrice: 1681, costRate: 0, drinkPct: 0.538, retailPct: 0.462 },
+  { month: '2024/06', label: '24年6月', standSales: 1532390, totalSales: 2624190, cust: 1300, custPrice: 2019, costRate: 0.048, drinkPct: 0.417, retailPct: 0.583 },
+  { month: '2024/07', label: '24年7月', standSales: 724610, totalSales: 1869260, cust: 1037, custPrice: 1803, costRate: 0.05, drinkPct: 0.342, retailPct: 0.658 },
+  { month: '2024/08', label: '24年8月', standSales: 903950, totalSales: 2837258, cust: 1639, custPrice: 1731, costRate: 0.041, drinkPct: 0.319, retailPct: 0.681 },
+  { month: '2024/09', label: '24年9月', standSales: 1411431, totalSales: 3662160, cust: 2231, custPrice: 1641, costRate: 0.043, drinkPct: 0.385, retailPct: 0.615 },
+  { month: '2024/10', label: '24年10月', standSales: 1918321, totalSales: 4111450, cust: 2652, custPrice: 1550, costRate: 0.097, drinkPct: 0.467, retailPct: 0.533 },
+  { month: '2024/11', label: '24年11月', standSales: 3370000, totalSales: 6020560, cust: 4395, custPrice: 1370, costRate: 0.061, drinkPct: 0.56, retailPct: 0.44 },
+  { month: '2024/12', label: '24年12月', standSales: 1853831, totalSales: 4082370, cust: 2693, custPrice: 1516, costRate: 0.063, drinkPct: 0.54, retailPct: 0.46 }
 ];
 
 // Helpers
-const fmt = n => 'Â¥' + Math.round(n).toLocaleString();
-const fmtK = n => 'Â¥' + (n/10000).toFixed(0) + 'ä¸';
+const fmt = n => '¥' + Math.round(n).toLocaleString();
+const fmtK = n => '¥' + (n/10000).toFixed(0) + '万';
 const fmtPct = n => (n * 100).toFixed(1) + '%';
 const sum = arr => arr.reduce((a,b) => a+b, 0);
 
-// åå¹´ãã¼ã¿åå¾
+// 前年データ取得
 function getPrevYear(month) {
   const [y, m] = month.split('/').map(Number);
   const prevMonth = (y-1) + '/' + String(m).padStart(2,'0');
@@ -336,12 +336,12 @@ function renderOverview() {
   const yoyCustChange = prevYearData ? yoyPct(latest.cust, prevYearData.cust) : null;
 
   const kpiHtml = `
-    <div class="kpi-card"><div class="label">å¨åºè ç´å£²ä¸ï¼${latest.label}ï¼</div><div class="value">${fmtK(totalNet)}</div><div class="sub">Stand ${fmtK(latest.net)} + 877 ${fmtK(s877Latest.net)}</div></div>
-    <div class="kpi-card"><div class="label">Stand ç´å£²ä¸</div><div class="value">${fmtK(latest.net)}</div>${yoyChange !== null ? `<div class="change ${parseFloat(yoyChange)>=0?'up':'down'}">${parseFloat(yoyChange)>=0?'+':''}${yoyChange}% åå¹´åææ¯</div><div class="sub">åå¹´: ${prevYearData ? fmtK(prevYearData.net) : '-'}</div>` : ''}</div>
-    <div class="kpi-card"><div class="label">877 ç´å£²ä¸</div><div class="value">${fmtK(s877Latest.net)}</div><div class="sub">éåºåæï¼2/6ãï¼</div></div>
-    <div class="kpi-card"><div class="label">å¨åºè å®¢æ°</div><div class="value">${totalCust.toLocaleString()}äºº</div><div class="sub">Stand ${latest.cust.toLocaleString()} + 877 ${s877Latest.cust.toLocaleString()}</div>${yoyCustChange !== null ? `<div class="change ${parseFloat(yoyCustChange)>=0?'up':'down'}">Standåå¹´æ¯ ${parseFloat(yoyCustChange)>=0?'+':''}${yoyCustChange}%</div>` : ''}</div>
-    <div class="kpi-card"><div class="label">Stand å®¢åä¾¡</div><div class="value">${fmt(latest.custPrice)}</div><div class="change ${latest.custPrice >= prev.custPrice ? 'up' : 'down'}">åææ¯ ${latest.custPrice >= prev.custPrice ? '+' : ''}${fmt(latest.custPrice - prev.custPrice)}</div></div>
-    <div class="kpi-card"><div class="label">877 å®¢åä¾¡</div><div class="value">${fmt(s877Latest.custPrice)}</div><div class="sub">Standæ¯ +${fmt(s877Latest.custPrice - latest.custPrice)}</div></div>
+    <div class="kpi-card"><div class="label">全店舗 純売上（${latest.label}）</div><div class="value">${fmtK(totalNet)}</div><div class="sub">Stand ${fmtK(latest.net)} + 877 ${fmtK(s877Latest.net)}</div></div>
+    <div class="kpi-card"><div class="label">Stand 純売上</div><div class="value">${fmtK(latest.net)}</div>${yoyChange !== null ? `<div class="change ${parseFloat(yoyChange)>=0?'up':'down'}">${parseFloat(yoyChange)>=0?'+':''}${yoyChange}% 前年同月比</div><div class="sub">前年: ${prevYearData ? fmtK(prevYearData.net) : '-'}</div>` : ''}</div>
+    <div class="kpi-card"><div class="label">877 純売上</div><div class="value">${fmtK(s877Latest.net)}</div><div class="sub">開店初月（2/6〜）</div></div>
+    <div class="kpi-card"><div class="label">全店舗 客数</div><div class="value">${totalCust.toLocaleString()}人</div><div class="sub">Stand ${latest.cust.toLocaleString()} + 877 ${s877Latest.cust.toLocaleString()}</div>${yoyCustChange !== null ? `<div class="change ${parseFloat(yoyCustChange)>=0?'up':'down'}">Stand前年比 ${parseFloat(yoyCustChange)>=0?'+':''}${yoyCustChange}%</div>` : ''}</div>
+    <div class="kpi-card"><div class="label">Stand 客単価</div><div class="value">${fmt(latest.custPrice)}</div><div class="change ${latest.custPrice >= prev.custPrice ? 'up' : 'down'}">前月比 ${latest.custPrice >= prev.custPrice ? '+' : ''}${fmt(latest.custPrice - prev.custPrice)}</div></div>
+    <div class="kpi-card"><div class="label">877 客単価</div><div class="value">${fmt(s877Latest.custPrice)}</div><div class="sub">Stand比 +${fmt(s877Latest.custPrice - latest.custPrice)}</div></div>
   `;
   document.getElementById('overviewKpi').innerHTML = kpiHtml;
 
@@ -364,7 +364,7 @@ function renderOverview() {
       datasets: [
         { label: 'Stand', data: standVals, backgroundColor: C.blue, borderRadius: 4, barPercentage: 0.7, order: 2 },
         { label: '877', data: s877Vals, backgroundColor: C.orange, borderRadius: 4, barPercentage: 0.7, order: 2 },
-        { label: 'åå¹´ï¼Standå£²ä¸ï¼', data: prevYearVals, type: 'line', borderColor: C.prevYear, backgroundColor: 'transparent', borderDash: [6, 3], pointRadius: 3, pointBackgroundColor: C.prevYear, tension: 0.3, order: 1, spanGaps: false }
+        { label: '前年（Stand売上）', data: prevYearVals, type: 'line', borderColor: C.prevYear, backgroundColor: 'transparent', borderDash: [6, 3], pointRadius: 3, pointBackgroundColor: C.prevYear, tension: 0.3, order: 1, spanGaps: false }
       ]
     },
     options: { ...chartDefaults, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, stacked: true }, y: { ...chartDefaults.scales.y, stacked: true, ticks: { ...chartDefaults.scales.y.ticks, callback: v => fmtK(v) } } }, plugins: { ...chartDefaults.plugins, tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + fmtK(ctx.raw) } } } }
@@ -383,10 +383,10 @@ function renderOverview() {
       datasets: [
         { label: 'Stand', data: standData.map(d => d.cust), borderColor: C.blue, backgroundColor: C.blueBg, fill: true, tension: 0.3, pointRadius: 3 },
         { label: '877', data: standData.map(d => { const m = s877Data.find(s => s.month === d.month && !s.memo); return m ? m.cust : null; }), borderColor: C.orange, backgroundColor: C.orangeBg, fill: true, tension: 0.3, pointRadius: 3, spanGaps: false },
-        { label: 'åå¹´', data: prevYearCust, borderColor: C.prevYear, backgroundColor: 'transparent', borderDash: [6, 3], tension: 0.3, pointRadius: 3, pointBackgroundColor: C.prevYear, spanGaps: false }
+        { label: '前年', data: prevYearCust, borderColor: C.prevYear, backgroundColor: 'transparent', borderDash: [6, 3], tension: 0.3, pointRadius: 3, pointBackgroundColor: C.prevYear, spanGaps: false }
       ]
     },
-    options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: v => v.toLocaleString() + 'äºº' } } } }
+    options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: v => v.toLocaleString() + '人' } } } }
   });
 
   // Unit price chart
@@ -423,9 +423,9 @@ function renderTrend() {
     data: {
       labels,
       datasets: [
-        { label: 'Stand ç´å£²ä¸', data: standData.map(d => d.net), backgroundColor: C.blue, borderRadius: 4, order: 3 },
-        { label: '877 ç´å£²ä¸', data: s877Vals, backgroundColor: C.orange, borderRadius: 4, order: 3 },
-        { label: 'åå¹´ï¼Standå£²ä¸ï¼', data: prevYearVals, type: 'line', borderColor: C.prevYear, backgroundColor: 'transparent', borderDash: [6, 3], pointRadius: 3, pointBackgroundColor: C.prevYear, tension: 0.3, order: 1, spanGaps: false }
+        { label: 'Stand 純売上', data: standData.map(d => d.net), backgroundColor: C.blue, borderRadius: 4, order: 3 },
+        { label: '877 純売上', data: s877Vals, backgroundColor: C.orange, borderRadius: 4, order: 3 },
+        { label: '前年（Stand売上）', data: prevYearVals, type: 'line', borderColor: C.prevYear, backgroundColor: 'transparent', borderDash: [6, 3], pointRadius: 3, pointBackgroundColor: C.prevYear, tension: 0.3, order: 1, spanGaps: false }
       ]
     },
     options: {
@@ -478,24 +478,24 @@ function renderTrend() {
     data: {
       labels,
       datasets: [
-        { label: 'Stand å®¢æ°', data: standData.map(d => d.cust), backgroundColor: C.blue, borderRadius: 4, order: 3 },
-        { label: '877 å®¢æ°', data: standData.map(d => { const m = s877Data.find(s => s.month === d.month && !s.memo); return m ? m.cust : 0; }), backgroundColor: C.orange, borderRadius: 4, order: 3 },
-        { label: 'åå¹´å®¢æ°', data: prevYearCust, type: 'line', borderColor: C.prevYear, backgroundColor: 'transparent', borderDash: [6, 3], pointRadius: 3, pointBackgroundColor: C.prevYear, tension: 0.3, order: 1, spanGaps: false },
-        { label: 'Stand å®¢åä¾¡', data: standData.map(d => d.custPrice), type: 'line', borderColor: C.green, backgroundColor: 'transparent', yAxisID: 'y1', tension: 0.3, pointRadius: 3, order: 2 }
+        { label: 'Stand 客数', data: standData.map(d => d.cust), backgroundColor: C.blue, borderRadius: 4, order: 3 },
+        { label: '877 客数', data: standData.map(d => { const m = s877Data.find(s => s.month === d.month && !s.memo); return m ? m.cust : 0; }), backgroundColor: C.orange, borderRadius: 4, order: 3 },
+        { label: '前年客数', data: prevYearCust, type: 'line', borderColor: C.prevYear, backgroundColor: 'transparent', borderDash: [6, 3], pointRadius: 3, pointBackgroundColor: C.prevYear, tension: 0.3, order: 1, spanGaps: false },
+        { label: 'Stand 客単価', data: standData.map(d => d.custPrice), type: 'line', borderColor: C.green, backgroundColor: 'transparent', yAxisID: 'y1', tension: 0.3, pointRadius: 3, order: 2 }
       ]
     },
     options: {
       ...chartDefaults,
       scales: {
         x: { ...chartDefaults.scales.x, stacked: true },
-        y: { ...chartDefaults.scales.y, stacked: true, ticks: { ...chartDefaults.scales.y.ticks, callback: v => v.toLocaleString() + 'äºº' } },
+        y: { ...chartDefaults.scales.y, stacked: true, ticks: { ...chartDefaults.scales.y.ticks, callback: v => v.toLocaleString() + '人' } },
         y1: { position: 'right', grid: { display: false }, ticks: { font: { size: 10 }, callback: v => fmt(v) } }
       }
     }
   });
 
   // Table with YoY
-  let html = '<table><thead><tr><th>æ</th><th>åºè</th><th>ç´å£²ä¸</th><th>åå¹´åææ¯</th><th>ç²å©</th><th>åä¾¡ç</th><th>å®¢æ°</th><th>å®¢åä¾¡</th><th>åå¼æ°</th><th>è²©å£²ç¹æ°</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>月</th><th>店舗</th><th>純売上</th><th>前年同月比</th><th>粗利</th><th>原価率</th><th>客数</th><th>客単価</th><th>取引数</th><th>販売点数</th></tr></thead><tbody>';
   standData.forEach(d => {
     const py = getPrevYear(d.month);
     const yoy = py ? yoyPct(d.net, py.net) : null;
@@ -503,7 +503,7 @@ function renderTrend() {
     // Add 877 row if data exists (excluding test)
     const e = s877Data.find(s => s.month === d.month && !s.memo);
     if (e) {
-      html += `<tr><td></td><td><span class="store-label s877">877</span></td><td>${fmtK(e.net)}</td><td>â</td><td>${fmtK(e.margin)}</td><td>${(e.costRate*100).toFixed(1)}%</td><td>${e.cust.toLocaleString()}</td><td>${fmt(e.custPrice)}</td><td>${e.txn.toLocaleString()}</td><td>${e.items.toLocaleString()}</td></tr>`;
+      html += `<tr><td></td><td><span class="store-label s877">877</span></td><td>${fmtK(e.net)}</td><td>—</td><td>${fmtK(e.margin)}</td><td>${(e.costRate*100).toFixed(1)}%</td><td>${e.cust.toLocaleString()}</td><td>${fmt(e.custPrice)}</td><td>${e.txn.toLocaleString()}</td><td>${e.items.toLocaleString()}</td></tr>`;
     }
   });
   html += '</tbody></table>';
@@ -521,10 +521,10 @@ function renderCategory() {
     makeChart('catStandPie', {
       type: 'doughnut',
       data: {
-        labels: ['ããªã³ã¯', 'è»½é£', 'ç©è²©'],
+        labels: ['ドリンク', '軽食', '物販'],
         datasets: [{ data: [sLatest.drinkPct, sLatest.foodPct, sLatest.retailPct], backgroundColor: [C.blue, C.orange, C.green], borderWidth: 0 }]
       },
-      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 12 } } }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + (ctx.raw * 100).toFixed(1) + '% (' + [sLatest.drinkQty, sLatest.foodQty, sLatest.retailQty][ctx.dataIndex] + 'ç¹)' } }, title: { display: true, text: sLatest.label, font: { size: 13 } } } }
+      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 12 } } }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + (ctx.raw * 100).toFixed(1) + '% (' + [sLatest.drinkQty, sLatest.foodQty, sLatest.retailQty][ctx.dataIndex] + '点)' } }, title: { display: true, text: sLatest.label, font: { size: 13 } } } }
     });
   }
 
@@ -534,10 +534,10 @@ function renderCategory() {
     makeChart('cat877Pie', {
       type: 'doughnut',
       data: {
-        labels: ['ããªã³ã¯', 'è»½é£', 'ç©è²©'],
+        labels: ['ドリンク', '軽食', '物販'],
         datasets: [{ data: [eLatest.drinkPct, eLatest.foodPct, eLatest.retailPct], backgroundColor: [C.blue, C.orange, C.green], borderWidth: 0 }]
       },
-      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 12 } } }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + (ctx.raw * 100).toFixed(1) + '% (' + [eLatest.drinkQty, eLatest.foodQty, eLatest.retailQty][ctx.dataIndex] + 'ç¹)' } }, title: { display: true, text: eLatest.label, font: { size: 13 } } } }
+      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 12 } } }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + (ctx.raw * 100).toFixed(1) + '% (' + [eLatest.drinkQty, eLatest.foodQty, eLatest.retailQty][ctx.dataIndex] + '点)' } }, title: { display: true, text: eLatest.label, font: { size: 13 } } } }
     });
   }
 
@@ -553,23 +553,23 @@ function renderCategory() {
     data: {
       labels: catLabels,
       datasets: [
-        { label: 'Stand ããªã³ã¯', data: allCatMonths.map(m => { const d = standCat.find(s => s.month === m); return d ? d.drinkQty : 0; }), backgroundColor: C.blue, borderRadius: 3, stack: 'stand' },
-        { label: 'Stand è»½é£', data: allCatMonths.map(m => { const d = standCat.find(s => s.month === m); return d ? d.foodQty : 0; }), backgroundColor: 'rgba(59,130,246,0.5)', borderRadius: 3, stack: 'stand' },
-        { label: 'Stand ç©è²©', data: allCatMonths.map(m => { const d = standCat.find(s => s.month === m); return d ? d.retailQty : 0; }), backgroundColor: 'rgba(59,130,246,0.25)', borderRadius: 3, stack: 'stand' },
-        { label: '877 ããªã³ã¯', data: allCatMonths.map(m => { const d = s877Cat.find(s => s.month === m && !s.memo); return d ? d.drinkQty : 0; }), backgroundColor: C.orange, borderRadius: 3, stack: 's877' },
-        { label: '877 è»½é£', data: allCatMonths.map(m => { const d = s877Cat.find(s => s.month === m && !s.memo); return d ? d.foodQty : 0; }), backgroundColor: 'rgba(249,115,22,0.5)', borderRadius: 3, stack: 's877' },
-        { label: '877 ç©è²©', data: allCatMonths.map(m => { const d = s877Cat.find(s => s.month === m && !s.memo); return d ? d.retailQty : 0; }), backgroundColor: 'rgba(249,115,22,0.25)', borderRadius: 3, stack: 's877' }
+        { label: 'Stand ドリンク', data: allCatMonths.map(m => { const d = standCat.find(s => s.month === m); return d ? d.drinkQty : 0; }), backgroundColor: C.blue, borderRadius: 3, stack: 'stand' },
+        { label: 'Stand 軽食', data: allCatMonths.map(m => { const d = standCat.find(s => s.month === m); return d ? d.foodQty : 0; }), backgroundColor: 'rgba(59,130,246,0.5)', borderRadius: 3, stack: 'stand' },
+        { label: 'Stand 物販', data: allCatMonths.map(m => { const d = standCat.find(s => s.month === m); return d ? d.retailQty : 0; }), backgroundColor: 'rgba(59,130,246,0.25)', borderRadius: 3, stack: 'stand' },
+        { label: '877 ドリンク', data: allCatMonths.map(m => { const d = s877Cat.find(s => s.month === m && !s.memo); return d ? d.drinkQty : 0; }), backgroundColor: C.orange, borderRadius: 3, stack: 's877' },
+        { label: '877 軽食', data: allCatMonths.map(m => { const d = s877Cat.find(s => s.month === m && !s.memo); return d ? d.foodQty : 0; }), backgroundColor: 'rgba(249,115,22,0.5)', borderRadius: 3, stack: 's877' },
+        { label: '877 物販', data: allCatMonths.map(m => { const d = s877Cat.find(s => s.month === m && !s.memo); return d ? d.retailQty : 0; }), backgroundColor: 'rgba(249,115,22,0.25)', borderRadius: 3, stack: 's877' }
       ]
     },
-    options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, stacked: true, ticks: { ...chartDefaults.scales.y.ticks, callback: v => v.toLocaleString() + 'ç¹' } } } }
+    options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, stacked: true, ticks: { ...chartDefaults.scales.y.ticks, callback: v => v.toLocaleString() + '点' } } } }
   });
 
   // Table
   const allCat = [...standCat.map(d => ({...d, store: 'Stand'})), ...s877Cat.filter(d => !d.memo).map(d => ({...d, store: '877'}))];
   allCat.sort((a,b) => a.month.localeCompare(b.month) || a.store.localeCompare(b.store));
-  let html = '<table><thead><tr><th>æ</th><th>åºè</th><th>ããªã³ã¯</th><th>è»½é£</th><th>ç©è²©</th><th>ããªã³ã¯æ¯ç</th><th>è»½é£æ¯ç</th><th>ç©è²©æ¯ç</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>月</th><th>店舗</th><th>ドリンク</th><th>軽食</th><th>物販</th><th>ドリンク比率</th><th>軽食比率</th><th>物販比率</th></tr></thead><tbody>';
   allCat.forEach(d => {
-    html += `<tr><td>${d.label}</td><td><span class="store-label ${d.store==='Stand'?'stand':'s877'}">${d.store}</span></td><td>${d.drinkQty.toLocaleString()}ç¹</td><td>${d.foodQty.toLocaleString()}ç¹</td><td>${d.retailQty.toLocaleString()}ç¹</td><td>${(d.drinkPct*100).toFixed(1)}%</td><td>${(d.foodPct*100).toFixed(1)}%</td><td>${(d.retailPct*100).toFixed(1)}%</td></tr>`;
+    html += `<tr><td>${d.label}</td><td><span class="store-label ${d.store==='Stand'?'stand':'s877'}">${d.store}</span></td><td>${d.drinkQty.toLocaleString()}点</td><td>${d.foodQty.toLocaleString()}点</td><td>${d.retailQty.toLocaleString()}点</td><td>${(d.drinkPct*100).toFixed(1)}%</td><td>${(d.foodPct*100).toFixed(1)}%</td><td>${(d.retailPct*100).toFixed(1)}%</td></tr>`;
   });
   html += '</tbody></table>';
   document.getElementById('catTable').innerHTML = html;
@@ -583,18 +583,18 @@ function renderCompare() {
 
   const total = s.net + e.net;
   const kpiHtml = `
-    <div class="kpi-card"><div class="label">åè¨ç´å£²ä¸</div><div class="value">${fmtK(total)}</div><div class="sub">Stand ${(s.net/total*100).toFixed(0)}% / 877 ${(e.net/total*100).toFixed(0)}%</div></div>
-    <div class="kpi-card"><div class="label">Stand ç´å£²ä¸</div><div class="value" style="color:${C.blue}">${fmtK(s.net)}</div></div>
-    <div class="kpi-card"><div class="label">877 ç´å£²ä¸</div><div class="value" style="color:${C.orange}">${fmtK(e.net)}</div></div>
-    <div class="kpi-card"><div class="label">Stand å®¢åä¾¡</div><div class="value">${fmt(s.custPrice)}</div></div>
-    <div class="kpi-card"><div class="label">877 å®¢åä¾¡</div><div class="value">${fmt(e.custPrice)}</div><div class="change up">+${fmt(e.custPrice - s.custPrice)} vs Stand</div></div>
+    <div class="kpi-card"><div class="label">合計純売上</div><div class="value">${fmtK(total)}</div><div class="sub">Stand ${(s.net/total*100).toFixed(0)}% / 877 ${(e.net/total*100).toFixed(0)}%</div></div>
+    <div class="kpi-card"><div class="label">Stand 純売上</div><div class="value" style="color:${C.blue}">${fmtK(s.net)}</div></div>
+    <div class="kpi-card"><div class="label">877 純売上</div><div class="value" style="color:${C.orange}">${fmtK(e.net)}</div></div>
+    <div class="kpi-card"><div class="label">Stand 客単価</div><div class="value">${fmt(s.custPrice)}</div></div>
+    <div class="kpi-card"><div class="label">877 客単価</div><div class="value">${fmt(e.custPrice)}</div><div class="change up">+${fmt(e.custPrice - s.custPrice)} vs Stand</div></div>
   `;
   document.getElementById('compareKpi').innerHTML = kpiHtml;
 
   makeChart('compareSalesChart', {
     type: 'bar',
     data: {
-      labels: ['ç´å£²ä¸', 'ç²å©', 'åä¾¡', 'æ¶è²»ç¨'],
+      labels: ['純売上', '粗利', '原価', '消費税'],
       datasets: [
         { label: 'Stand', data: [s.net, s.margin, s.cost, s.tax], backgroundColor: C.blue, borderRadius: 4 },
         { label: '877', data: [e.net, e.margin, e.cost, e.tax], backgroundColor: C.orange, borderRadius: 4 }
@@ -607,7 +607,7 @@ function renderCompare() {
     makeChart('compareCatChart', {
       type: 'bar',
       data: {
-        labels: ['ããªã³ã¯', 'è»½é£', 'ç©ç¶'],
+        labels: ['ドリンク', '軽食', '物販'],
         datasets: [
           { label: 'Stand', data: [s.drinkPct*100, s.foodPct*100, s.retailPct*100], backgroundColor: C.blue, borderRadius: 4 },
           { label: '877', data: [e.drinkPct*100, e.foodPct*100, e.retailPct*100], backgroundColor: C.orange, borderRadius: 4 }
@@ -618,22 +618,22 @@ function renderCompare() {
   }
 
   const rows = [
-    ['ç´å£²ä¸', fmt(s.net), fmt(e.net)],
-    ['ç·å£²ä¸', fmt(s.gross), fmt(e.gross)],
-    ['åä¾¡', fmt(s.cost), fmt(e.cost)],
-    ['ç²å©', fmt(s.margin), fmt(e.margin)],
-    ['åä¾¡ç', fmtPct(s.costRate), fmtPct(e.costRate)],
-    ['æ¶è²»ç¨', fmt(s.tax), fmt(e.tax)],
-    ['å¤å¼ã', fmt(s.discount), fmt(e.discount)],
-    ['åå¼æ°', s.txn.toLocaleString(), e.txn.toLocaleString()],
-    ['å®¢æ°', s.cust.toLocaleString(), e.cust.toLocaleString()],
-    ['å®¢åä¾¡', fmt(s.custPrice), fmt(e.custPrice)],
-    ['è²©å£²ç¹æ°', s.items.toLocaleString(), e.items.toLocaleString()],
-    ['ããªã³ã¯æ¯ç', s.drinkPct ? fmtPct(s.drinkPct) : '-', e.drinkPct ? fmtPct(e.drinkPct) : '-'],
-    ['è»½é£æ¯ç', s.foodPct ? fmtPct(s.foodPct) : '-', e.foodPct ? fmtPct(e.foodPct) : '-'],
-    ['ç©è²©æ¯ç', s.retailPct ? fmtPct(s.retailPct) : '-', e.retailPct ? fmtPct(e.retailPct) : '-'],
+    ['純売上', fmt(s.net), fmt(e.net)],
+    ['総売上', fmt(s.gross), fmt(e.gross)],
+    ['原価', fmt(s.cost), fmt(e.cost)],
+    ['粗利', fmt(s.margin), fmt(e.margin)],
+    ['原価率', fmtPct(s.costRate), fmtPct(e.costRate)],
+    ['消費税', fmt(s.tax), fmt(e.tax)],
+    ['値引き', fmt(s.discount), fmt(e.discount)],
+    ['取引数', s.txn.toLocaleString(), e.txn.toLocaleString()],
+    ['客数', s.cust.toLocaleString(), e.cust.toLocaleString()],
+    ['客単価', fmt(s.custPrice), fmt(e.custPrice)],
+    ['販売点数', s.items.toLocaleString(), e.items.toLocaleString()],
+    ['ドリンク比率', s.drinkPct ? fmtPct(s.drinkPct) : '-', e.drinkPct ? fmtPct(e.drinkPct) : '-'],
+    ['軽食比率', s.foodPct ? fmtPct(s.foodPct) : '-', e.foodPct ? fmtPct(e.foodPct) : '-'],
+    ['物販比率', s.retailPct ? fmtPct(s.retailPct) : '-', e.retailPct ? fmtPct(e.retailPct) : '-'],
   ];
-  let html = '<table><thead><tr><th>ææ¨</th><th><span class="store-label stand">Stand</span></th><th><span class="store-label s877">877</span></th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>指標</th><th><span class="store-label stand">Stand</span></th><th><span class="store-label s877">877</span></th></tr></thead><tbody>';
   rows.forEach(r => { html += `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`; });
   html += '</tbody></table>';
   document.getElementById('compareTable').innerHTML = html;
@@ -646,12 +646,12 @@ function renderManagement() {
   const totalMargin = latestS.margin + (latestE ? latestE.margin : 0);
 
   const kpiHtml = `
-    <div class="kpi-card"><div class="label">å¨åºè ç²å©ï¼${latestS.label}ï¼</div><div class="value">${fmtK(totalMargin)}</div></div>
-    <div class="kpi-card"><div class="label">Stand åä¾¡ç</div><div class="value">${(latestS.costRate*100).toFixed(1)}%</div></div>
-    <div class="kpi-card"><div class="label">877 åä¾¡ç</div><div class="value">${latestE ? (latestE.costRate*100).toFixed(1)+'%' : '-'}</div></div>
-    <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">äººä»¶è²»</div><div class="value" style="color:#92400e">æªå¥å</div><div class="sub">ä¼è¨PDFæå¥å¾ã«åæ </div></div>
-    <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">FLæ¯ç</div><div class="value" style="color:#92400e">æªå¥å</div><div class="sub">äººä»¶è²»å¥åå¾ã«ç®åº</div></div>
-    <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">å¶æ¥­å©ç</div><div class="value" style="color:#92400e">æªå¥å</div><div class="sub">å¨çµè²»å¥åå¾ã«ç®åº</div></div>
+    <div class="kpi-card"><div class="label">全店舗 粗利（${latestS.label}）</div><div class="value">${fmtK(totalMargin)}</div></div>
+    <div class="kpi-card"><div class="label">Stand 原価率</div><div class="value">${(latestS.costRate*100).toFixed(1)}%</div></div>
+    <div class="kpi-card"><div class="label">877 原価率</div><div class="value">${latestE ? (latestE.costRate*100).toFixed(1)+'%' : '-'}</div></div>
+    <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">人件費</div><div class="value" style="color:#92400e">未入力</div><div class="sub">会計PDF投入後に反映</div></div>
+    <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">FL比率</div><div class="value" style="color:#92400e">未入力</div><div class="sub">人件費入力後に算出</div></div>
+    <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">営業利益</div><div class="value" style="color:#92400e">未入力</div><div class="sub">全経費入力後に算出</div></div>
   `;
   document.getElementById('mgmtKpi').innerHTML = kpiHtml;
 
@@ -661,8 +661,8 @@ function renderManagement() {
     data: {
       labels,
       datasets: [
-        { label: 'Stand ç²å©', data: standData.map(d => d.margin), backgroundColor: C.blue, borderRadius: 4 },
-        { label: '877 ç²å©', data: standData.map(d => { const m = s877Data.find(s => s.month === d.month && !s.memo); return m ? m.margin : 0; }), backgroundColor: C.orange, borderRadius: 4 }
+        { label: 'Stand 粗利', data: standData.map(d => d.margin), backgroundColor: C.blue, borderRadius: 4 },
+        { label: '877 粗利', data: standData.map(d => { const m = s877Data.find(s => s.month === d.month && !s.memo); return m ? m.margin : 0; }), backgroundColor: C.orange, borderRadius: 4 }
       ]
     },
     options: { ...chartDefaults, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, stacked: true }, y: { ...chartDefaults.scales.y, stacked: true, ticks: { ...chartDefaults.scales.y.ticks, callback: v => fmtK(v) } } } }
@@ -690,7 +690,7 @@ function renderManagement() {
     statusHtml += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;">
       <span class="status-dot ${hasSales ? 'dot-yellow' : 'dot-gray'}"></span>
       <span style="font-weight:600;width:70px">${m}</span>
-      <span style="color:${C.gray}">å£²ä¸${hasSales ? 'â' : 'â'} / çµè²»${hasExpense ? 'â' : 'â'}</span>
+      <span style="color:${C.gray}">売上${hasSales ? '✓' : '✗'} / 経費${hasExpense ? '✓' : '✗'}</span>
     </div>`;
   });
   document.getElementById('mgmtStatus').innerHTML = statusHtml;
@@ -699,16 +699,16 @@ function renderManagement() {
 // ===== PAGE 6: STATUS =====
 function renderStatus() {
   const allMonths = [...new Set([...standData.map(d => d.month), ...s877Data.map(d => d.month)])].sort();
-  let html = '<table><thead><tr><th>å¹´æ</th><th>Stand å£²ä¸</th><th>Stand ã«ãã´ãª</th><th>877 å£²ä¸</th><th>877 ã«ãã´ãª</th><th>åå¹´ãã¼ã¿</th><th>äººä»¶è²»</th><th>ã¹ãã¼ã¿ã¹</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>年月</th><th>Stand 売上</th><th>Stand カテゴリ</th><th>877 売上</th><th>877 カテゴリ</th><th>前年データ</th><th>人件費</th><th>ステータス</th></tr></thead><tbody>';
   allMonths.forEach(m => {
     const sRow = standData.find(d => d.month === m);
     const eRow = s877Data.find(d => d.month === m);
     const sCat = sRow && sRow.drinkPct;
     const eCat = eRow && eRow.drinkPct;
     const hasPrev = getPrevYear(m) !== null;
-    const dot = (ok) => ok ? '<span class="status-dot dot-green"></span>â' : '<span class="status-dot dot-gray"></span>â';
-    const status = (sRow || eRow) ? '<span class="status-dot dot-yellow"></span>å£²ä¸å¥åæ¸' : '<span class="status-dot dot-red"></span>æªå¥å';
-    html += `<tr><td style="font-weight:700">${m}</td><td>${dot(sRow)}</td><td>${dot(sCat)}</td><td>${dot(eRow)}</td><td>${dot(eCat)}</td><td>${dot(hasPrev)}</td><td><span class="status-dot dot-red"></span>æªå¥å</td><td>${status}</td></tr>`;
+    const dot = (ok) => ok ? '<span class="status-dot dot-green"></span>✓' : '<span class="status-dot dot-gray"></span>—';
+    const status = (sRow || eRow) ? '<span class="status-dot dot-yellow"></span>売上入力済' : '<span class="status-dot dot-red"></span>未入力';
+    html += `<tr><td style="font-weight:700">${m}</td><td>${dot(sRow)}</td><td>${dot(sCat)}</td><td>${dot(eRow)}</td><td>${dot(eCat)}</td><td>${dot(hasPrev)}</td><td><span class="status-dot dot-red"></span>未入力</td><td>${status}</td></tr>`;
   });
   html += '</tbody></table>';
   document.getElementById('statusTable').innerHTML = html;
