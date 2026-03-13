@@ -227,7 +227,7 @@ const standData = [
   { month: '2026/02', label: '26年2月', net: 2770355, gross: 2776980, cost: 794042, margin: 1976313, tax: 251056, discount: 6625, txn: 1809, cust: 1809, txnPrice: 1531, custPrice: 1531, items: 3412, returns: 0, costRate: 0.2866, drinkPct: 0.577, drinkQty: 1989, foodPct: 0.1726, foodQty: 595, retailPct: 0.2504, retailQty: 863 }
 ];
 
-// 877 (中腹�= [
+const s877Data = [
   { month: '2026/01', label: '26年1月', net: 600, gross: 600, cost: 185, margin: 415, tax: 54, discount: 0, txn: 1, cust: 1, txnPrice: 600, custPrice: 600, items: 1, returns: 0, costRate: 0.3083, memo: 'プレオープン（テスト取引）' },
   { month: '2026/02', label: '26年2月', net: 1147320, gross: 1149120, cost: 194927, margin: 952393, tax: 104052, discount: 1800, txn: 559, cust: 559, txnPrice: 2053, custPrice: 2053, items: 1303, returns: 0, costRate: 0.1699, drinkPct: 0.2389, drinkQty: 316, foodPct: 0.4044, foodQty: 535, retailPct: 0.3568, retailQty: 472 }
 ];
@@ -491,7 +491,7 @@ function renderCompare() {
     ['純売上', fmt(s.net), fmt(e.net)],
     ['総売上', fmt(s.gross), fmt(e.gross)],
     ['原価', fmt(s.cost), fmt(e.cost)],
-    ['粗利', fmt(s.margin), fmt(e.margi�)],
+    ['粗利', fmt(s.margin), fmt(e.margin)],
     ['原価率', fmtPct(s.costRate), fmtPct(e.costRate)],
     ['消費税', fmt(s.tax), fmt(e.tax)],
     ['値引き', fmt(s.discount), fmt(e.discount)],
