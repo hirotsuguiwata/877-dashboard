@@ -52,8 +52,8 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 <body>
 <div class="header">
 <h1>877事業 商品分析ダッシュボード</h1>
-<p>データ期間: 2024年7月〜2026年3月13日 ｜ 877Stand + 877（中腹店）合算</p>
-<span class="version">v0.2</span>
+<p>データ期間: 2024年7月〜2026年3月13日 ｜ 877Stand + 877（中腽店）合算</p>
+<span class="version">v0.2.1</span>
 </div>
 
 <div class="tabs">
@@ -78,13 +78,13 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 <div class="cumulative">累計: ¥24,185,590（8,025枚）</div>
 </div>
 <div class="card">
-<div class="label">全売上に占める比率（12ヶ月）</div>
+<div class="label">全売上に占めるTシャツの比率（12ヶ月）</div>
 <div class="value">27.9%</div>
 <div class="sub">12ヶ月売上: ¥47,718,405</div>
 <div class="cumulative">累計: 30.8%</div>
 </div>
 <div class="card">
-<div class="label">物販に占める比率（12ヶ月）</div>
+<div class="label">物쨩に占めるTシャツの比率（12ヶ月）</div>
 <div class="value">57.2%</div>
 <div class="sub">物販12ヶ月: ¥23,278,540</div>
 <div class="cumulative">累計: 62.1%</div>
@@ -108,7 +108,7 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 <table class="rank-table">
 <tr><th>#</th><th>デザイン</th><th>売上</th><th>数量</th></tr>
 <tr><td><span class="rank-num rank-1">1</span></td><td>等高線Tシャツ</td><td>¥3,444,800</td><td>1077枚</td></tr>
-<tr><td><span class="rank-num rank-2">2</span></td><td>犬山脈Tシャツ</td><td>¥1,269,400</td><td>529枚</td></tr>
+<tr><td><span class="rank-num rank-2">2</span></td><td>独山脈Tシャツ</td><td>¥1,269,400</td><td>529枚</td></tr>
 <tr><td><span class="rank-num rank-3">3</span></td><td>【長袖】等高線ドライロンT</td><td>¥1,796,700</td><td>500枚</td></tr>
 <tr><td><span class="rank-num">4</span></td><td>Stand Tシャツ</td><td>¥857,800</td><td>330枚</td></tr>
 <tr><td><span class="rank-num">5</span></td><td>ハイキングマ</td><td>¥837,200</td><td>349枚</td></tr>
@@ -119,28 +119,12 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 <table class="rank-table">
 <tr><th>#</th><th>商品名</th><th>売上</th><th>数量</th></tr>
 <tr><td><span class="rank-num rank-1">1</span></td><td>番号札キーホルダー</td><td>¥1,404,800</td><td>3512点</td></tr>
-<tr><td><span class="rank-num rank-2">2</span></td><td>三方よし手ぬぐい</td><td>¥1,295,700</td><td>864点</td></tr>
-<tr><td><span class="rank-num rank-3">3</span></td><td>奇岩バンダナ</td><td>¥1,257,750</td><td>839点</td></tr>
+<tr><td><span class="rank-num rank-2">2</span></td><td>三方よし手�k8�</td><td>¥1,295,700</td><td>864枚</td></tr>
+<tr><td><span class="rank-num rank-3">3</span></td><td>奇岩バンダナ</td><td>¥1,257,750</td><td>835点</td></tr>
 <tr><td><span class="rank-num">4</span></td><td>動物手ぬぐい</td><td>¥855,150</td><td>571点</td></tr>
 <tr><td><span class="rank-num">5</span></td><td>八七七 温泉タオル</td><td>¥396,000</td><td>495点</td></tr>
 </table>
 </div>
-</div>
-</div>
-
-<!-- Tab 1: Tシャツ売上推移 -->
-<div class="tab-panel" id="panel1">
-<div class="chart-container">
-<h3>Tシャツ月別売上推移（877Stand + 877 合算）</h3>
-<canvas id="chart_tshirt_monthly" height="100"></canvas>
-</div>
-<div class="chart-container">
-<h3>店舗別 Tシャツ売上推移</h3>
-<canvas id="chart_tshirt_store" height="100"></canvas>
-</div>
-<div class="chart-container">
-<h3>Tシャツ月別販売数推移</h3>
-<canvas id="chart_tshirt_qty" height="80"></canvas>
 </div>
 </div>
 
@@ -186,7 +170,7 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 <canvas id="chart_design_trend" height="120"></canvas>
 </div>
 
-<div class="section-title">🎨 カラーバリエーション比率</div>
+<div class="section-title">🎨 カラーバリエーション比玅</div>
 <div class="chart-row-4">
 <div class="chart-container">
 <h3 style="font-size:13px;">等高線Tシャツ</h3>
@@ -217,25 +201,94 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 
 <!-- Tab 4: サイズ分析 -->
 <div class="tab-panel" id="panel4">
-<div class="section-title">📊 全デザイン合計</div>
-<div class="chart-row">
+<div class="section-title">📊 サイズ別販売比率（全デザイン合計）</div>
+<div style="max-width:400px;margin:0 auto;">
 <div class="chart-container">
-<h3>サイズ別売上金額</h3>
-<canvas id="chart_size_sales"></canvas>
-</div>
-<div class="chart-container">
-<h3>サイズ別販売数</h3>
-<canvas id="chart_size_qty"></canvas>
+<h3>サイズ別販売比率</h3>
+<canvas id="chart_size_ratio"></canvas>
 </div>
 </div>
 
-<div class="section-title">👕 デザイン別サイズ構成</div>
+<div class="section-title">👕 デザイン別サイズ比率</div>
+<div class="chart-row-4">
 <div class="chart-container">
-<h3>主要デザインのサイズ別販売数比較</h3>
-<canvas id="chart_size_by_design" height="120"></canvas>
+<h3 style="font-size:13px;">等高線Tシャツ</h3>
+<canvas id="chart_dsize_0" height="160"></canvas>
 </div>
 <div class="chart-container">
-<h3>デザイン別サイズ比率</h3>
+<h3 style="font-size:13px;">犬山脈Tシャツ</h3>
+<canvas id="chart_dsize_1" height="160"></canvas>
+</div>
+<div class="chart-container">
+<h3 style="font-size:13px;">【長袖】等高線ドライロンT</h3>
+<canvas id="chart_dsize_2" height="160"></canvas>
+</div>
+<div class="chart-container">
+<h3 style="font-size:13px;">Stand Tシ�<h3 style="font-size:13px;">【長袖】等高線ドライロンT</h3>
+<canvas id="chart_color_2" height="160"></canvas>
+</div>
+<div class="chart-container">
+<h3 style="font-size:13px;">Stand Tシャツ</h3>
+<canvas id="chart_color_3" height="160"></canvas>
+</div>
+<div class="chart-container">
+<h3 style="font-size:13px;">ハイキングマ</h3>
+<canvas id="chart_color_4" height="160"></canvas>
+</div>
+<div class="chart-container">
+<h3 style="font-size:13px;">【長袖】三方よし綿 ロンT</h3>
+<canvas id="chart_color_5" height="160"></canvas>
+</div>
+</div>
+</div>
+
+<!-- Tab 4: サイズ分析 -->
+<div class="tab-panel" id="panel4">
+<div class="section-title">📊 サイズ別販売比率（全デザイン合計）</div>
+<div style="max-width:400px;margin:0 auto;">
+<div class="chart-container">
+<h3>サイズ別販売比率</h3>
+<canvas id="chart_size_ratio"></canvas>
+</div>
+</div>
+
+<div class="section-title">👕 デザイン別サイズ比率</div>
+<div class="chart-row-4">
+<div class="chart-container">
+<h3 style="font-size:13px;">等高線Tシャツ</h3>
+<canvas id="chart_dsize_0" height="160"></canvas>
+</div>
+<div class="chart-container">
+<h3 style="font-size:13px;">犬山脈Tシャツ</h3>
+<canvas id="chart_dsize_1" height="160"></canvas>
+</div>
+<div class="chart-container">
+<h3 style="font-size:13px;">【長袖】等高線ドライロンT</h3>
+<canvas id="chart_dsize_2" height="160"></canvas>
+</div>
+<div class="chart-container">
+<h3 style="font-size:13px;">Stand Tシャツ</h3>
+<canvas id="chart_dsize_3" height="160"></canvas>
+</div>
+<div class="chart-container">
+<h3 style="font-size:13px;">ハイキングマ</h3>
+<canvas id="chart_dsize_4" height="160"></canvas>
+</div>
+<div class="chart-container">
+<h3 style="font-size:13px;">【長袖】三方よし綿 ロンT</h3>
+<canvas id="chart_dsize_5" height="160"></canvas>
+</div>
+<div class="chart-container">
+<h3 style="font-size:13px;">うりぼーTシャツ</h3>
+<canvas id="chart_dsize_6" height="160"></canvas>
+</div>
+<div class="chart-container">
+<h3 style="font-size:13px;">ガーディアンズTシャツ</h3>
+<canvas id="chart_dsize_7" height="160"></canvas>
+</div>
+</div>
+<div class="chart-container">
+<h3>デザイン別サイズ施玅</h3>
 <table class="rank-table">
 <tr><th>デザイン</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>合計</th></tr>
 <tr><td>等高線Tシャツ</td><td>578枚 (26%)</td><td>686枚 (31%)</td><td>590枚 (27%)</td><td>352枚 (16%)</td><td>2206枚</td></tr>
@@ -267,26 +320,26 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 <tr><td><span class="rank-num">4</span></td><td>動物手ぬぐい</td><td>¥855,150</td><td>571点</td></tr>
 <tr><td><span class="rank-num">5</span></td><td>八七七 温泉タオル</td><td>¥728,800</td><td>911点</td></tr>
 <tr><td><span class="rank-num">6</span></td><td>ピンバッジ</td><td>¥714,850</td><td>841点</td></tr>
-<tr><td><span class="rank-num">7</span></td><td>等高線手ぬぐい</td><td>¥672,000</td><td>448点</td></tr>
+<tr><td><span class="rank-num">7</span></td><td>等高線手�k8�</td><td>¥672,000</td><td>448点</td></tr>
 <tr><td><span class="rank-num">8</span></td><td>877キャップ / ポリエステル</td><td>¥616,000</td><td>176点</td></tr>
-<tr><td><span class="rank-num">9</span></td><td>コットンマイバッグ</td><td>¥398,300</td><td>569点</td></tr>
+<tr><td><span class="rank-num">9</span></td><td>コットンマイバッグ</td><td>¥398,300</td><td>565点</td></tr>
 <tr><td><span class="rank-num">10</span></td><td>noppo #6</td><td>¥379,500</td><td>253点</td></tr>
 </table>
 </div>
 
 <div class="section-title">📈 売上推移（直近12ヶ月）</div>
 <div class="chart-container">
-<h3>TOP5 グッズ月別売上推移</h3>
+<h3>TOP5 グッズ月別売上推秹</h3>
 <canvas id="chart_other_trend" height="120"></canvas>
 </div>
-<div class="section-title">🎨 バリエーション比率</div>
+<div class="section-title">🎨 バリエーション比玅</div>
 <div class="chart-row-3">
 <div class="chart-container">
 <h3 style="font-size:13px;">番号札キーホルダー</h3>
 <canvas id="chart_ovar_0" height="160"></canvas>
 </div>
 <div class="chart-container">
-<h3 style="font-size:13px;">三方よし手ぬぐい</h3>
+<h3 style="font-size:13px;">三方よし手�k8�</h3>
 <canvas id="chart_ovar_1" height="160"></canvas>
 </div>
 <div class="chart-container">
@@ -299,6 +352,10 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 </div>
 <div class="chart-container">
 <h3 style="font-size:13px;">コットンマイバッグ</h3>
+<canvas>
+</div>
+<div class="chart-container">
+<h3 style="font-size:13px;">コットンマイバッグ</h3>
 <canvas id="chart_ovar_4" height="160"></canvas>
 </div>
 </div>
@@ -306,7 +363,7 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 
 </div>
 
-<div class="footer">877事業 商品分析ダッシュボード v0.2 ｜ データソース: スマレジAPI ｜ 最終更新: 2026-03-13</div>
+<div class="footer">877事業 商品分析ダッシュボード v0.2.1 ｜ データソース: スマレジAPI ｜ 最終更新: 2026-03-13</div>
 
 <script>
 const months = ["2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03"];
@@ -338,7 +395,7 @@ const designColors = [
   {name:"等高線Tシャツ",colors:["ネイビー","ブラック","グレー","ピーコックブルー","ホワイト"],sales:[1697600,1612800,1492700,1432000,819000]},
   {name:"犬山脈Tシャツ",colors:["グリーン","ラベンダー","ミントグリーン","ライトイエロー"],sales:[2178500,88600,57600,12000]},
   {name:"【長袖】等高線ドライロンT",colors:["グレー","黒"],sales:[1119100,1087200]},
-  {name:"Stand Tシャツ",colors:["パープル","アーミーグリンコ"],sales:[1055400,1021600]},
+  {name:"Stand Tシャツ",colors:["パープル","アーミーグリーン"],sales:[1055400,1021600]},
   {name:"ハイキングマ",colors:["ブラウン","イエロー"],sales:[1693500,43200]},
   {name:"【長袖】三方よし綿 ロンT",colors:["ヘイジーイエロー","ライトオリーブ"],sales:[532400,471600]},
 ];
@@ -354,7 +411,7 @@ const sizeByDesign = [
   {name:"うりぼーTシャツ",S:111,M:128,L:87,XL:33},
   {name:"ガーディアンズTシャツ",S:57,M:80,L:84,XL:47},
 ];
-const otherTop10Labels = ["番号札キーホルダー","三方よし手ぬぐい","奇岩バンダナ","動物手ぬぐい","八七七 温泉タオル","ピンバッジ","等高線手ぬぐい","877キャッㅗ / ポリエステル","コットンマイバッグ","noppo #6"];
+const otherTop10Labels = ["番号札キーホルダー","三方よし手ぬぐい","奇岩バンダナ","動物手ぬぐい","八七七 温泉タオル","ピンバッジ","等高線手ぬぐい","877キャップ / ポリエステル","コットンマイバッグ","noppo #6"];
 const otherTop10Sales = [2464200,2293200,1257750,855150,728800,714850,672000,616000,398300,379500];
 const otherTrend = [
   {name:"番号札キーホルダー",data:[127600,146400,127200,86000,110000,96400,104400,246800,96000,106000,120400,37600]},
@@ -364,10 +421,10 @@ const otherTrend = [
   {name:"八七七 温泉タオル",data:[45600,39200,28800,23200,28000,40000,45600,57600,26400,36000,20000,5600]},
 ];
 const otherVariations = [
-  {name:"番号札キーホルダー",colors:["がまおじ","かえちゃん","筑波山ロゴ","ヤマドリ先輩","クキオ"],sales:[920200,690400,442800,391200,19600]},
+  {name:"番号札キーホルダー",colors:["がまえじ","かえちゃん","筆波山ロゴ","ヤマドリ先輩","クキオ"],sales:[920200,690400,442800,391200,19600]},
   {name:"三方よし手ぬぐい",colors:["青","赤"],sales:[1213200,1080000]},
   {name:"ピンバッジ",colors:["(なし)","銀"],sales:[698700,16150]},
-  {name:"877キャッㅗ / ポリエステル",colors:["グレー","ミント"],sales:[346500,269500]},
+  {name:"877キャップ / ポリエステル",colors:["グレー","ミント"],sales:[346500,269500]},
   {name:"コットンマイバッグ",colors:["オリーブ","グレー"],sales:[219800,178500]},
 ];
 
@@ -432,7 +489,7 @@ if(n===2) {
   new Chart(document.getElementById('chart_ratio'), {
     type:'line', data:{ labels:monthLabels, datasets:[
       {label:'全売上に対する比率(%)',data:ratioTotal,borderColor:green1,backgroundColor:'rgba(44,95,45,0.1)',fill:true,tension:0.3},
-      {label:'物쨩売上に対する比率(%)',data:ratioBussan,borderColor:orange1,backgroundColor:'rgba(230,126,34,0.1)',fill:true,tension:0.3}
+      {label:'物販売上に対する比率(%)',data:ratioBussan,borderColor:orange1,backgroundColor:'rgba(230,126,34,0.1)',fill:true,tension:0.3}
     ]},
     options:{ responsive:true, scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}}},
       plugins:{tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'%'}}} }
@@ -477,24 +534,25 @@ if(n===3) {
   });
 }
 if(n===4) {
-  new Chart(document.getElementById('chart_size_sales'), {
-    type:'doughnut', data:{ labels:["S","M","L","XL"], datasets:[{data:sizeSales, backgroundColor:[green1,green2,'#e67e22','#3498db']}] },
-    options:{ responsive:true, plugins:{tooltip:{callbacks:{label:c=>c.label+': ¥'+c.raw.toLocaleString()}}} }
+  const sizeColorArr = [green1,green2,'#e67e22','#3498db'];
+  const sizeTotal = sizeQty.reduce((a,b)=>a+b,0);
+  new Chart(document.getElementById('chart_size_ratio'), {
+    type:'doughnut', data:{ labels:["S","M","L","XL"], datasets:[{data:sizeQty, backgroundColor:sizeColorArr}] },
+    options:{ responsive:true, plugins:{tooltip:{callbacks:{label:c=>{const pct=(c.raw/sizeTotal*100).toFixed(1);return c.label+': '+c.raw+'枚 ('+pct+'%)'}}},
+      legend:{position:'bottom'}} }
   });
 
-  new Chart(document.getElementById('chart_size_qty'), {
-    type:'doughnut', data:{ labels:["S","M","L","XL"], datasets:[{data:sizeQty, backgroundColor:[green1,green2,'#e67e22','#3498db']}] },
-    options:{ responsive:true, plugins:{tooltip:{callbacks:{label:c=>c.label+': '+c.raw+'枚'}}} }
-  });
-
-  // デザイン別サイズ
-  const sizeColors = {S:green1,M:green2,L:'#e67e22',XL:'#3498db'};
-  new Chart(document.getElementById('chart_size_by_design'), {
-    type:'bar', data:{ labels:sizeByDesign.map(d=>d.name), datasets:["S","M","L","XL"].map(s=>({
-      label:s, data:sizeByDesign.map(d=>d[s]), backgroundColor:sizeColors[s]
-    }))},
-    options:{ responsive:true, scales:{x:{stacked:true},y:{stacked:true}},
-      plugins:{tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'枚'}}} }
+  // デザイン別サイズ比率ドーナツ
+  sizeByDesign.forEach((d,i) => {
+    const el = document.getElementById('chart_dsize_'+i);
+    if(!el) return;
+    const vals = [d.S,d.M,d.L,d.XL];
+    const tot = vals.reduce((a,b)=>a+b,0);
+    new Chart(el, {
+      type:'doughnut', data:{ labels:["S","M","L","XL"], datasets:[{data:vals, backgroundColor:sizeColorArr}] },
+      options:{ responsive:true, plugins:{tooltip:{callbacks:{label:c=>{const pct=(c.raw/tot*100).toFixed(1);return c.label+': '+c.raw+'枚 ('+pct+'%)'}}},
+        legend:{position:'bottom',labels:{font:{size:10}}}} }
+    });
   });
 }
 if(n===5) {
