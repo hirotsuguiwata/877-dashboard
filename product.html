@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>877äºæ¥­ åååæããã·ã¥ãã¼ã</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif; background:#f0f2f5; color:#333; }
+.header { background:linear-gradient(135deg,#2c5f2d,#97bc62); color:#fff; padding:20px 30px; }
+.header h1 { font-size:22px; margin-bottom:4px; }
+.header p { font-size:13px; opacity:0.85; }
+.tabs { display:flex; background:#fff; border-bottom:2px solid #e0e0e0; overflow-x:auto; }
+.tab { padding:12px 20px; cursor:pointer; font-size:14px; font-weight:500; color:#666; border-bottom:3px solid transparent; white-space:nowrap; transition:all .2s; }
+.tab:hover { color:#2c5f2d; background:#f8fdf5; }
+.tab.active { color:#2c5f2d; border-bottom-color:#2c5f2d; font-weight:700; }
+.content { padding:20px; max-width:1200px; margin:0 auto; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+.summary-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin-bottom:24px; }
+.card { background:#fff; border-radius:12px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+.card .label { font-size:12px; color:#888; margin-bottom:4px; }
+.card .value { font-size:28px; font-weight:700; color:#2c5f2d; }
+.card .sub { font-size:12px; color:#999; margin-top:4px; }
+.chart-container { background:#fff; border-radius:12px; padding:20px; margin-bottom:20px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+.chart-container h3 { font-size:16px; margin-bottom:16px; color:#444; }
+.chart-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+@media (max-width:768px) { .chart-row { grid-template-columns:1fr; } }
+.rank-table { width:100%; border-collapse:collapse; }
+.rank-table th { background:#f5f5f5; padding:10px 12px; text-align:left; font-size:13px; color:#666; }
+.rank-table td { padding:10px 12px; border-bottom:1px solid #eee; font-size:14px; }
+.rank-table tr:hover { background:#f8fdf5; }
+.rank-num { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:#e8e8e8; font-size:12px; font-weight:700; }
+.rank-1 { background:#ffd700; color:#fff; }
+.rank-2 { background:#c0c0c0; color:#fff; }
+.rank-3 { background:#cd7f32; color:#fff; }
+.bar-bg { background:#eee; border-radius:4px; height:8px; width:100%; }
+.bar-fill { background:linear-gradient(90deg,#2c5f2d,#97bc62); border-radius:4px; height:8px; }
+.footer { text-align:center; padding:20px; color:#999; font-size:12px; }
+</style>
+</head>
+<body>
+<div class="header">
+<h1>877äºæ¥­ åååæããã·ã¥ãã¼ã</h1>
+<p>ãã¼ã¿æé: 2024å¹´7æã2026å¹´3æ13æ¥ ï½ 877Stand + 877ï¼ä¸­è¹åºï¼åç®</p>
+</div>
+
+<div class="tabs">
+<div class="tab active" onclick="showTab(0)">ð ãµããª</div>
+<div class="tab" onclick="showTab(1)">ð Tã·ã£ãå£²ä¸æ¨ç§»</div>
+<div class="tab" onclick="showTab(2)">ð å£²ä¸æ¯ç</div>
+<div class="tab" onclick="showTab(3)">ð ãã¶ã¤ã³å¥ã©ã³ã­ã³ã°</div>
+<div class="tab" onclick="showTab(4)">ð ãµã¤ãºåæ</div>
+<div class="tab" onclick="showTab(5)">ð ãã®ä»ã°ããº</div>
+</div>
+
+<div class="content">
+
+<!-- Tab 0: ãµããª -->
+<div class="tab-panel active" id="panel0">
+<div class="summary-cards">
+<div class="card">
+<div class="label">Tã·ã£ã ç´¯è¨å£²ä¸</div>
+<div class="value">Â¥24,185,590</div>
+<div class="sub">ç´¯è¨ 8,025æ</div>
+</div>
+<div class="card">
+<div class="label">å¨å£²ä¸ã«å ããæ¯ç</div>
+<div class="value">30.8%</div>
+<div class="sub">å¨å£²ä¸: Â¥78,619,073</div>
+</div>
+<div class="card">
+<div class="label">ç©è²©ã«å ããæ¯ç</div>
+<div class="value">63.2%</div>
+<div class="sub">ç©è²©åè¨: Â¥38,285,980</div>
+</div>
+<div class="card">
+<div class="label">ãã®ä»ã°ããºå£²ä¸</div>
+<div class="value">Â¥14,100,390</div>
+<div class="sub">ç©è²©å£²ä¸ã®Tã·ã£ãä»¥å¤</div>
+</div>
+</div>
+
+<div class="chart-row">
+<div class="chart-container">
+<h3>Tã·ã£ã ãã¶ã¤ã³å¥å£²ä¸ TOP5</h3>
+<table class="rank-table">
+<tr><th>#</th><th>ãã¶ã¤ã³</th><th>å£²ä¸</th><th>æ°é</th></tr>
+<tr><td><span class="rank-num rank-1">1</span></td><td>ç­é«ç·Tã·ã£ã</td><td>Â¥7,054,100</td><td>2206æ</td></tr>
+<tr><td><span class="rank-num rank-2">2</span></td><td>ç­é«ç·ãã©ã¤ã­ã³T</td><td>Â¥2,364,700</td><td>658æ</td></tr>
+<tr><td><span class="rank-num rank-3">3</span></td><td>ç¬å±±èTã·ã£ã</td><td>Â¥2,336,700</td><td>975æ</td></tr>
+<tr><td><span class="rank-num">4</span></td><td>Stand Tã·ã£ã</td><td>Â¥2,077,000</td><td>799æ</td></tr>
+<tr><td><span class="rank-num">5</span></td><td>ä¸æ¹ããç¶¿ ã­ã³T</td><td>Â¥1,871,040</td><td>520æ</td></tr>
+</table>
+</div>
+<div class="chart-container">
+<h3>ãã®ä»ã°ããºå£²ä¸ TOP5</h3>
+<table class="rank-table">
+<tr><th>#</th><th>ååå</th><th>å£²ä¸</th><th>æ°é</th></tr>
+<tr><td><span class="rank-num rank-1">1</span></td><td>çªå·æ­ã­ã¼ãã«ãã¼</td><td>Â¥2,464,200</td><td>6161ç¹</td></tr>
+<tr><td><span class="rank-num rank-2">2</span></td><td>ä¸æ¹ããæã¬ãã</td><td>Â¥2,293,200</td><td>1529ç¹</td></tr>
+<tr><td><span class="rank-num rank-3">3</span></td><td>å¥å²©ãã³ãã</td><td>Â¥1,257,750</td><td>839ç¹</td></tr>
+<tr><td><span class="rank-num">4</span></td><td>åç©æã¬ãã</td><td>Â¥855,150</td><td>571ç¹</td></tr>
+<tr><td><span class="rank-num">5</span></td><td>å«ä¸ä¸ æ¸©æ³ã¿ãªã«</td><td>Â¥728,800</td><td>911ç¹</td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- Tab 1: Tã·ã£ãå£²ä¸æ¨ç§» -->
+<div class="tab-panel" id="panel1">
+<div class="chart-container">
+<h3>Tã·ã£ãæå¥å£²ä¸æ¨ç§»ï¼877Stand + 877 åç®ï¼</h3>
+<canvas id="chart_tshirt_monthly" height="100"></canvas>
+</div>
+<div class="chart-container">
+<h3>åºèå¥ Tã·ã£ãå£²ä¸æ¨ç§»</h3>
+<canvas id="chart_tshirt_store" height="100"></canvas>
+</div>
+<div class="chart-container">
+<h3>Tã·ã£ãæå¥è²©å£²æ°æ¨ç§»</h3>
+<canvas id="chart_tshirt_qty" height="80"></canvas>
+</div>
+</div>
+
+<!-- Tab 2: å£²ä¸æ¯ç -->
+<div class="tab-panel" id="panel2">
+<div class="chart-container">
+<h3>Tã·ã£ãå£²ä¸æ¯çã®æ¨ç§»</h3>
+<canvas id="chart_ratio" height="100"></canvas>
+</div>
+<div class="chart-container">
+<h3>æå¥å£²ä¸æ§æï¼å¨ä½ vs ç©è²© vs Tã·ã£ãï¼</h3>
+<canvas id="chart_composition" height="100"></canvas>
+</div>
+</div>
+
+<!-- Tab 3: ãã¶ã¤ã³å¥ã©ã³ã­ã³ã° -->
+<div class="tab-panel" id="panel3">
+<div class="chart-container">
+<h3>Tã·ã£ã ãã¶ã¤ã³å¥å£²ä¸ TOP10</h3>
+<canvas id="chart_design" height="140"></canvas>
+</div>
+<div class="chart-container">
+<h3>å¨ãã¶ã¤ã³å£²ä¸ä¸è¦§</h3>
+<table class="rank-table" id="designTable">
+<tr><th>#</th><th>ãã¶ã¤ã³å</th><th>å£²ä¸éé¡</th><th>è²©å£²æ°</th><th>ã·ã§ã¢</th></tr>
+<tr><td><span class="rank-num rank-1">1</span></td><td>ç­é«ç·Tã·ã£ã</td><td>Â¥7,054,100</td><td>2206æ</td><td>29.2%</td></tr>
+<tr><td><span class="rank-num rank-2">2</span></td><td>ç­é«ç·ãã©ã¤ã­ã³T</td><td>Â¥2,364,700</td><td>658æ</td><td>9.8%</td></tr>
+<tr><td><span class="rank-num rank-3">3</span></td><td>ç¬å±±èTã·ã£ã</td><td>Â¥2,336,700</td><td>975æ</td><td>9.7%</td></tr>
+<tr><td><span class="rank-num">4</span></td><td>Stand Tã·ã£ã</td><td>Â¥2,077,000</td><td>799æ</td><td>8.6%</td></tr>
+<tr><td><span class="rank-num">5</span></td><td>ä¸æ¹ããç¶¿ ã­ã³T</td><td>Â¥1,871,040</td><td>520æ</td><td>7.7%</td></tr>
+<tr><td><span class="rank-num">6</span></td><td>ãã¤ã­ã³ã°ã</td><td>Â¥1,736,700</td><td>724æ</td><td>7.2%</td></tr>
+<tr><td><span class="rank-num">7</span></td><td>877ç¶¿ ã­ã³T</td><td>Â¥1,072,800</td><td>298æ</td><td>4.4%</td></tr>
+<tr><td><span class="rank-num">8</span></td><td>ããã¼ã¼Tã·ã£ã</td><td>Â¥861,600</td><td>359æ</td><td>3.6%</td></tr>
+<tr><td><span class="rank-num">9</span></td><td>877ãã©ã¤ã­ã³T</td><td>Â¥845,800</td><td>235æ</td><td>3.5%</td></tr>
+<tr><td><span class="rank-num">10</span></td><td>ã¬ã¼ãã£ã¢ã³ãºTã·ã£ã</td><td>Â¥804,000</td><td>268æ</td><td>3.3%</td></tr>
+</table>
+</div>
+</div>
+
+<!-- Tab 4: ãµã¤ãºåæ -->
+<div class="tab-panel" id="panel4">
+<div class="chart-row">
+<div class="chart-container">
+<h3>ãµã¤ãºå¥å£²ä¸éé¡</h3>
+<canvas id="chart_size_sales"></canvas>
+</div>
+<div class="chart-container">
+<h3>ãµã¤ãºå¥è²©å£²æ°</h3>
+<canvas id="chart_size_qty"></canvas>
+</div>
+</div>
+</div>
+
+<!-- Tab 5: ãã®ä»ã°ããº -->
+<div class="tab-panel" id="panel5">
+<div class="chart-container">
+<h3>ãã®ä»ã°ããºå£²ä¸ TOP10ï¼Tã·ã£ãä»¥å¤ï¼</h3>
+<canvas id="chart_other" height="140"></canvas>
+</div>
+<div class="chart-container">
+<h3>ã°ããºå£²ä¸ä¸è¦§</h3>
+<table class="rank-table">
+<tr><th>#</th><th>ååå</th><th>å£²ä¸éé¡</th><th>è²©å£²æ°</th></tr>
+<tr><td><span class="rank-num rank-1">1</span></td><td>çªå·æ­ã­ã¼ãã«ãã¼</td><td>Â¥2,464,200</td><td>6161ç¹</td></tr>
+<tr><td><span class="rank-num rank-2">2</span></td><td>ä¸æ·ããæã¬ãã</td><td>Â¥2,293,200</td><td>1529ç¹</td></tr>
+<tr><td><span class="rank-num rank-3">3</span></td><td>å¥å²©ãã³ãã</td><td>Â¥1,257,750</td><td>839ç¹</td></tr>
+<tr><td><span class="rank-num">4</span></td><td>åç©æã¬ãã</td><td>Â¥855,150</td><td>571ç¹</td></tr>
+<tr><td><span class="rank-num">5</span></td><td>å«ä¸ä¸ æ¸©æ³ã¿ãªã«</td><td>Â¥728,800</td><td>911ç¹</td></tr>
+<tr><td><span class="rank-num">6</span></td><td>ãã³ããã¸</td><td>Â¥698,700</td><td>822ç¹</td></tr>
+<tr><td><span class="rank-num">7</span></td><td>ç­é«ç·æã¬ãã</td><td>Â¥672,000</td><td>448ç¹</td></tr>
+<tr><td><span class="rank-num">8</span></td><td>877ã­ã£ãã / ããªã¨ã¹ãã«</td><td>Â¥616,000</td><td>176ç¹</td></tr>
+<tr><td><span class="rank-num">9</span></td><td>ã³ããã³ãã¤ããã°</td><td>Â¥398,300</td><td>569ç¹</td></tr>
+<tr><td><span class="rank-num">10</span></td><td>noppo #6</td><td>Â¥379,500</td><td>253ç¹</td></tr>
+</table>
+</div>
+</div>
+
+</div>
+
+<div class="footer">877äºæ¥­ åååæããã·ã¥ãã¼ã ï½ ãã¼ã¿ã½ã¼ã¹: ã¹ãã¬ã¸API ï½ æçµæ´æ°: 2026-03-13</div>
+
+<script>
+const months = ["2024-06", "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03"];
+const monthLabels = months.map(m => { const [y,mo] = m.split('-'); return (mo==='01'?y+'/':'')+parseInt(mo)+'æ'; });
+
+const chartInited = {};
+function showTab(n) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===n));
+  document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===n));
+  setTimeout(() => { if(!chartInited[n]) { chartInited[n]=true; initCharts(n); } }, 50);
+}
+
+Chart.defaults.font.family = "'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif";
+Chart.defaults.font.size = 12;
+const green1 = '#2c5f2d';
+const green2 = '#97bc62';
+const green3 = '#c8e6c9';
+const orange1 = '#e67e22';
+const blue1 = '#3498db';
+const colors10 = ['#2c5f2d','#e67e22','#3498db','#9b59b6','#e74c3c','#1abc9c','#f39c12','#34495e','#27ae60','#e91e63'];
+
+function initCharts(n) {
+  if(n===1) {
+// Tã·ã£ãæå¥å£²ä¸
+new Chart(document.getElementById('chart_tshirt_monthly'), {
+  type:'bar',
+  data:{ labels:monthLabels, datasets:[{
+    label:'Tã·ã£ãå£²ä¸(å)', data:[0, 522200, 1562900, 1631500, 1677200, 1845000, 1286840, 1025600, 529500, 786600, 982200, 1096800, 1226800, 1188000, 920800, 1415200, 1285500, 1850800, 787300, 990600, 1193250, 381000],
+    backgroundColor:'rgba(44,95,45,0.7)', borderColor:green1, borderWidth:1
+  }]},
+  options:{ responsive:true, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>'Â¥'+c.raw.toLocaleString()}} },
+    scales:{ y:{ ticks:{ callback:v=>'Â¥'+(v/10000).toFixed(0)+'ä¸' } } }
+  }
+});
+
+// åºèå¥
+new Chart(document.getElementById('chart_tshirt_store'), {
+  type:'bar',
+  data:{ labels:monthLabels, datasets:[
+    { label:'877Stand', data:[0, 522200, 1562900, 1631500, 1677200, 1845000, 1286840, 1025600, 529500, 786600, 982200, 1096800, 1226800, 1188000, 920800, 1415200, 1285500, 1850800, 787300, 990600, 723350, 231700], backgroundColor:'rgba(44,95,45,0.7)' },
+    { label:'877', data:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 469900, 149300], backgroundColor:'rgba(230,126,34,0.7)' }
+  ]},
+  options:{ responsive:true, plugins:{ tooltip:{callbacks:{label:c=>c.dataset.label+': Â¥'+c.raw.toLocaleString()}} },
+    scales:{ x:{stacked:true}, y:{stacked:true, ticks:{callback:v=>'Â¥'+(v/10000).toFixed(0)+'ä¸'}} }
+  }
+});
+
+// Tã·ã£ãæ°é
+new Chart(document.getElementById('chart_tshirt_qty'), {
+  type:'line',
+  data:{ labels:monthLabels, datasets:[{
+    label:'è²©å£²æ°(æ)', data:[0, 194, 568, 585, 585, 600, 397, 326, 173, 260, 331, 371, 420, 417, 324, 490, 421, 574, 233, 291, 353, 112],
+    borderColor:green1, backgroundColor:'rgba(44,95,45,0.1)', fill:true, tension:0.3
+  }]},
+  options:{ responsive:true, plugins:{ tooltip:{callbacks:{label:c=>c.raw+'æ'}} } }
+});
+
+  } // end tab 1
+  if(n===2) {
+// å£²ä¸æ¯ç
+new Chart(document.getElementById('chart_ratio'), {
+  type:'line',
+  data:{ labels:monthLabels, datasets:[
+    { label:'å¨å£²ä¸ã«å¯¾ããæ¯ç(%)', data:[0, 0, 55.1, 44.6, 40.8, 28.6, 31.5, 27.2, 17.9, 25.9, 26.8, 28.1, 34.2, 38.7, 27.3, 34.9, 29.7, 21.0, 25.3, 22.4, 30.5, 25.7], borderColor:green1, backgroundColor:'rgba(44,95,45,0.1)', fill:true, tension:0.3 },
+    { label:'ç©è²©å£²ä¸ã«å¯¾ããæ¯ç(%)', data:[0, 0, 78.3, 71.7, 74.8, 64.4, 67.9, 65.7, 53.2, 66.7, 61.2, 59.3, 62.1, 65.1, 52.7, 60.1, 58.2, 50.0, 53.1, 52.7, 60.2, 56.7], borderColor:orange1, backgroundColor:'rgba(230,126,34,0.1)', fill:true, tension:0.3 }
+  ]},
+  options:{ responsive:true, scales:{ y:{ min:0, max:100, ticks:{callback:v=>v+'%'} } },
+    plugins:{ tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'%'}} }
+  }
+});
+
+// å£²ä¸æ§æ
+new Chart(document.getElementById('chart_composition'), {
+  type:'bar',
+  data:{ labels:monthLabels, datasets:[
+    { label:'ããªã³ã¯ã»è»½é£ç­', data:[0, 0, 841168, 1385770, 1870390, 3582900, 2188150, 2204550, 1962100, 1858200, 2064700, 2058550, 1608600, 1248640, 1623650, 1703900, 2122400, 5092200, 1629050, 2542850, 1935825, 809500], backgroundColor:'rgba(52,152,219,0.6)' },
+    { label:'ãã®ä»ã°ããº', data:[0, 0, 433190, 644870, 563860, 1019030, 607380, 536580, 464910, 392480, 623230, 751530, 747850, 636440, 826780, 939680, 922420, 1850540, 694580, 887970, 788600, 290670], backgroundColor:'rgba(230,126,34,0.6)' },
+    { label:'Tã·ã£ã', data:[0, 522200, 1562900, 1631500, 1677200, 1845000, 1286840, 1025600, 529500, 786600, 982200, 1096800, 1226800, 1188000, 920800, 1415200, 1285500, 1850800, 787300, 990600, 1193250, 381000], backgroundColor:'rgba(44,95,45,0.7)' }
+  ]},
+  options:{ responsive:true, scales:{ x:{stacked:true}, y:{stacked:true, ticks:{callback:v=>'Â¥'+(v/10000).toFixed(0)+'ä¸'}} },
+    plugins:{ tooltip:{callbacks:{label:c=>c.dataset.label+': Â¥'+c.raw.toLocaleString()}} }
+  }
+});
+
+  } // end tab 2
+  if(n===3) {
+// ãã¶ã¤ã³å¥
+new Chart(document.getElementById('chart_design'), {
+  type:'bar',
+  data:{ labels:["ç­é«ç·Tã·ã£ã", "ç­é«ç·ãã©ã¤ã­ã³T", "ç¬å±±èTã·ã£ã", "Stand Tã·ã£ã", "ä¸æ¹ããç¶¿ ã­ã³T", "ãã¤ã­ã³ã°ã", "877ç¶¿ ã­ã³T", "ããã¼ã¼Tã·ã£ã", "877ãã©ã¤ã­ã³T", "ã¬ã¼ãã£ã¢ã³ãºTã·ã£ã"], datasets:[{
+    label:'å£²ä¸(å)', data:[7054100, 2364700, 2336700, 2077000, 1871040, 1736700, 1072800, 861600, 845800, 804000],
+    backgroundColor:colors10
+  }]},
+  options:{ indexAxis:'y', responsive:true, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>'Â¥'+c.raw.toLocaleString()}} },
+    scales:{ x:{ ticks:{callback:v=>'Â¥'+(v/10000).toFixed(0)+'ä¸'} } }
+  }
+});
+
+  } // end tab 3
+  if(n===4) {
+// ãµã¤ãºå¥å£²ä¸
+new Chart(document.getElementById('chart_size_sales'), {
+  type:'doughnut',
+  data:{ labels:["S", "M", "L", "XL"], datasets:[{ data:[5698340, 7557400, 6559050, 3688800], backgroundColor:[green1,green2,'#e67e22','#3498db'] }] },
+  options:{ responsive:true, plugins:{ tooltip:{callbacks:{label:c=>c.label+': Â¥'+c.raw.toLocaleString()}} } }
+});
+
+// ãµã¤ãºå¥æ°é
+new Chart(document.getElementById('chart_size_qty'), {
+  type:'doughnut',
+  data:{ labels:["S", "M", "L", "XL"], datasets:[{ data:[1891, 2474, 2139, 1235], backgroundColor:[green1,green2,'#e67e22','#3498db'] }] },
+  options:{ responsive:true, plugins:{ tooltip:{callbacks:{label:c=>c.label+': '+c.raw+'æ'}} } }
+});
+
+  } // end tab 4
+  if(n===5) {
+// ãã®ä»ã°ããº
+new Chart(document.getElementById('chart_other'), {
+  type:'bar',
+  data:{ labels:["çªå·æ­ã­ã¼ãã«ãã¼", "ä¸æ¹ããæã¬ãã", "å¥å²©ãã³ãã", "åç©æã¬ãã", "å«ä¸ä¸ æ¸©æ³ã¿ãªã«", "ãã³ããã¸", "ç­é«ç·æã¬ãã", "877ã­ã£ãã / ããªã¨ã¹ãã«", "ã³ããã³ãã¤ããã°", "noppo #6"], datasets:[{
+    label:'å£²ä¸(å)', data:[2464200, 2293200, 1257750, 855150, 728800, 698700, 672000, 616000, 398300, 379500],
+    backgroundColor:colors10
+  }]},
+  options:{ indexAxis:'y', responsive:true, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>'Â¥'+c.raw.toLocaleString()}} },
+    scales:{ x:{ ticks:{callback:v=>'Â¥'+(v/10000).toFixed(0)+'ä¸'} } }
+  }
+});
+  } // end tab 5
+} // end initCharts
+</script>
+</body>
+</html>
