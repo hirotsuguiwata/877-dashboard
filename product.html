@@ -413,6 +413,24 @@ const otherVariations = [
   {name:"コットンマイバッグ",colors:["オリーブ","グレー"],sales:[219800,178500]},
 ];
 
+// カラー名→チャート色マッピング（実際の色に連動）
+const colorMap = {
+  // Tシャツカラー
+  'ネイビー':'#2c3e6b','ブラック':'#2d2d2d','黒':'#2d2d2d',
+  'グレー':'#9e9e9e','ピーコックブルー':'#00838f','ホワイト':'#d6d6d6',
+  'グリーン':'#4caf50','ラベンダー':'#b39ddb','ミントグリーン':'#80cbc4','ライトイエロー':'#f0e68c',
+  'パープル':'#7b1fa2','アーミーグリーン':'#5d6b3b',
+  'ブラウン':'#795548','イエロー':'#fdd835',
+  'ヘイジーイエロー':'#e6d690','ライトオリーブ':'#a0a456',
+  // その他グッズカラー
+  '青':'#1976d2','赤':'#e53935',
+  '(なし)':'#757575','銀':'#bdbdbd',
+  'ミント':'#80cbc4','オリーブ':'#6b7b3a',
+  // キャラクター名（固有色）
+  'がまえじ':'#4caf50','かえちゃん':'#ff8a65','筆波山ロゴ':'#5c6bc0','ヤマドリ先輩':'#8d6e63','クキオ':'#fdd835',
+};
+function mapColors(names) { return names.map(function(n){ return colorMap[n] || '#888'; }); }
+
 const green1 = '#2c5f2d';
 const green2 = '#97bc62';
 const green3 = '#c8e6c9';
@@ -535,7 +553,7 @@ if(n===3) {
     const el = document.getElementById('chart_color_'+i);
     if(!el) return;
     new Chart(el, {
-      type:'doughnut', data:{ labels:dc.colors, datasets:[{data:dc.sales, backgroundColor:colors10.slice(0,dc.colors.length)}] },
+      type:'doughnut', data:{ labels:dc.colors, datasets:[{data:dc.sales, backgroundColor:mapColors(dc.colors)}] },
       options:{ responsive:true, plugins:{tooltip:{callbacks:{label:c=>c.label+': ¥'+c.raw.toLocaleString()}}} }
     });
   });
@@ -585,7 +603,7 @@ if(n===5) {
     const el = document.getElementById('chart_ovar_'+i);
     if(!el) return;
     new Chart(el, {
-      type:'doughnut', data:{ labels:ov.colors, datasets:[{data:ov.sales, backgroundColor:colors10.slice(0,ov.colors.length)}] },
+      type:'doughnut', data:{ labels:ov.colors, datasets:[{data:ov.sales, backgroundColor:mapColors(ov.colors)}] },
       options:{ responsive:true, plugins:{tooltip:{callbacks:{label:c=>c.label+': ¥'+c.raw.toLocaleString()}}} }
     });
   });
