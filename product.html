@@ -220,7 +220,7 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 <div style="max-width:400px;margin:0 auto;">
 <div class="chart-container">
 <h3>サイズ別販売比率</h3>
-<canvas id="chart_size_ratio"></canvas>
+<canvas id="chart_size_ratio" height="200"></canvas>
 </div>
 </div>
 
@@ -324,10 +324,6 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 </div>
 <div class="chart-container">
 <h3 style="font-size:13px;">コットンマイバッグ</h3>
-<canvas>
-</div>
-<div class="chart-container">
-<h3 style="font-size:13px;">コットンマイバッグ</h3>
 <canvas id="chart_ovar_4" height="160"></canvas>
 </div>
 </div>
@@ -410,14 +406,36 @@ Chart.defaults.font.family = "'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN'
 Chart.defaults.font.size = 12;
 
 const chartInited = {};
+function resizeChartsInPanel(n) {
+  var pnl = document.getElementById('panel'+n);
+  if(!pnl) return;
+  pnl.querySelectorAll('canvas').forEach(function(canvas) {
+    var chart = Chart.getChart(canvas);
+    if(chart) chart.resize();
+  });
+}
 function showTab(n) {
-  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===n));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active')); var pnl=document.getElementById('panel'+n); if(pnl) pnl.classList.add('active');
-  requestAnimationFrame(() => { var pnl=document.getElementById('panel'+n); if(pnl) pnl.offsetHeight; setTimeout(() => { if(!chartInited[n]) { chartInited[n]=true; initCharts(n); } setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 50); setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 400); }, 150); });
+  document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active', i===n); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  var pnl = document.getElementById('panel'+n);
+  if(pnl) {
+    pnl.classList.add('active');
+    pnl.offsetHeight;
+  }
+  if(!chartInited[n]) {
+    setTimeout(function(){
+      chartInited[n] = true;
+      initCharts(n);
+      setTimeout(function(){ resizeChartsInPanel(n); }, 100);
+      setTimeout(function(){ resizeChartsInPanel(n); }, 500);
+    }, 200);
+  } else {
+    setTimeout(function(){ resizeChartsInPanel(n); }, 50);
+  }
 }
 
 // Tab 0 はすぐ初期化
-setTimeout(() => { chartInited[0]=true; initCharts(0); }, 100);
+setTimeout(function(){ chartInited[0]=true; initCharts(0); }, 100);
 
 function initCharts(n) {
 if(n===0) {
