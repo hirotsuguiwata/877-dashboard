@@ -441,7 +441,7 @@ const chartInited = {};
 function showTab(n) {
   document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===n));
   document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===n));
-  setTimeout(() => { if(!chartInited[n]) { chartInited[n]=true; initCharts(n); } }, 50);
+  requestAnimationFrame(() => { setTimeout(() => { if(!chartInited[n]) { chartInited[n]=true; initCharts(n); } window.dispatchEvent(new Event('resize')); }, 100); });
 }
 
 // Tab 0 はすぐ初期化
