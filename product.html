@@ -34,10 +34,28 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 .chart-row-4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; }
 @media (max-width:900px) { .chart-row-3,.chart-row-4 { grid-template-columns:1fr 1fr; } }
 @media (max-width:768px) { .chart-row,.chart-row-3,.chart-row-4 { grid-template-columns:1fr; } }
+.table-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
 .rank-table { width:100%; border-collapse:collapse; }
-.rank-table th { background:#f5f5f5; padding:10px 12px; text-align:left; font-size:13px; color:#666; }
-.rank-table td { padding:10px 12px; border-bottom:1px solid #eee; font-size:14px; }
+.rank-table th { background:#f5f5f5; padding:10px 12px; text-align:left; font-size:13px; color:#666; white-space:nowrap; }
+.rank-table td { padding:10px 12px; border-bottom:1px solid #eee; font-size:14px; white-space:nowrap; }
 .rank-table tr:hover { background:#f8fdf5; }
+@media (max-width:480px) {
+  .header { padding:16px; }
+  .header h1 { font-size:18px; }
+  .header p { font-size:11px; }
+  .version { top:8px; right:12px; font-size:10px; }
+  .tabs { gap:0; }
+  .tab { padding:10px 12px; font-size:12px; }
+  .content { padding:12px; }
+  .summary-cards { grid-template-columns:1fr; gap:12px; }
+  .card .value { font-size:22px; }
+  .chart-container { padding:14px; margin-bottom:14px; }
+  .chart-container h3 { font-size:14px; margin-bottom:12px; }
+  .section-title { font-size:13px; }
+  .rank-table th { padding:8px 6px; font-size:11px; }
+  .rank-table td { padding:8px 6px; font-size:12px; }
+  .chart-row-4 { grid-template-columns:1fr 1fr; gap:10px; }
+}
 .rank-num { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:#e8e8e8; font-size:12px; font-weight:700; }
 .rank-1 { background:#ffd700; color:#fff; }
 .rank-2 { background:#c0c0c0; color:#fff; }
@@ -105,25 +123,25 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 <div class="chart-row">
 <div class="chart-container">
 <h3>Tシャツ デザイン別売上 TOP5（12ヶ月）</h3>
-<table class="rank-table">
+<div class="table-scroll"><table class="rank-table">
 <tr><th>#</th><th>デザイン</th><th>売上</th><th>数量</th></tr>
 <tr><td><span class="rank-num rank-1">1</span></td><td>等高線Tシャツ</td><td>¥3,444,800</td><td>1077枚</td></tr>
 <tr><td><span class="rank-num rank-2">2</span></td><td>独山脈Tシャツ</td><td>¥1,269,400</td><td>529枚</td></tr>
 <tr><td><span class="rank-num rank-3">3</span></td><td>【長袖】等高線ドライロンT</td><td>¥1,796,700</td><td>500枚</td></tr>
 <tr><td><span class="rank-num">4</span></td><td>Stand Tシャツ</td><td>¥857,800</td><td>330枚</td></tr>
 <tr><td><span class="rank-num">5</span></td><td>ハイキングマ</td><td>¥837,200</td><td>349枚</td></tr>
-</table>
+</table></div>
 </div>
 <div class="chart-container">
 <h3>その他グッズ売上 TOP5（12ヶ月）</h3>
-<table class="rank-table">
+<div class="table-scroll"><table class="rank-table">
 <tr><th>#</th><th>商品名</th><th>売上</th><th>数量</th></tr>
 <tr><td><span class="rank-num rank-1">1</span></td><td>番号札キーホルダー</td><td>¥1,404,800</td><td>3512点</td></tr>
 <tr><td><span class="rank-num rank-2">2</span></td><td>三方よし手ぬぐい</td><td>¥1,295,700</td><td>864枚</td></tr>
 <tr><td><span class="rank-num rank-3">3</span></td><td>奇岩バンダナ</td><td>¥1,257,750</td><td>835点</td></tr>
 <tr><td><span class="rank-num">4</span></td><td>動物手ぬぐい</td><td>¥855,150</td><td>571点</td></tr>
 <tr><td><span class="rank-num">5</span></td><td>八七七 温泉タオル</td><td>¥396,000</td><td>495点</td></tr>
-</table>
+</table></div>
 </div>
 </div>
 </div>
@@ -165,7 +183,7 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 </div>
 <div class="chart-container">
 <h3>全デザイン売上一覧</h3>
-<table class="rank-table" id="designTable">
+<div class="table-scroll"><table class="rank-table" id="designTable">
 <tr><th>#</th><th>デザイン名</th><th>売上金額</th><th>販売数</th><th>シェア</th></tr>
 <tr><td><span class="rank-num rank-1">1</span></td><td>等高線Tシャツ</td><td>¥7,054,100</td><td>2206枚</td><td>29.2%</td></tr>
 <tr><td><span class="rank-num rank-2">2</span></td><td>犬山脈Tシャツ</td><td>¥2,336,700</td><td>975枚</td><td>9.7%</td></tr>
@@ -177,7 +195,7 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 <tr><td><span class="rank-num">8</span></td><td>ガーディアンズTシャツ</td><td>¥804,000</td><td>268枚</td><td>3.3%</td></tr>
 <tr><td><span class="rank-num">9</span></td><td>スーベニアTシャツ</td><td>¥719,800</td><td>240枚</td><td>3.0%</td></tr>
 <tr><td><span class="rank-num">10</span></td><td>ハイキングマTシャツ</td><td>¥693,200</td><td>289枚</td><td>2.9%</td></tr>
-</table>
+</table></div>
 </div>
 
 <div class="section-title">📈 季節変動（直近12ヶ月推移）</div>
@@ -261,7 +279,7 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 </div>
 <div class="chart-container">
 <h3>デザイン別サイズ比較</h3>
-<table class="rank-table">
+<div class="table-scroll"><table class="rank-table">
 <tr><th>デザイン</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>合計</th></tr>
 <tr><td>等高線Tシャツ</td><td>578枚 (26%)</td><td>686枚 (31%)</td><td>590枚 (27%)</td><td>352枚 (16%)</td><td>2206枚</td></tr>
 <tr><td>犬山脈Tシャツ</td><td>173枚 (21%)</td><td>269枚 (32%)</td><td>251枚 (30%)</td><td>142枚 (17%)</td><td>835枚</td></tr>
@@ -271,7 +289,7 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 <tr><td>【長袖】三方よし綿 ロンT</td><td>82枚 (29%)</td><td>110枚 (39%)</td><td>39枚 (14%)</td><td>48枚 (17%)</td><td>279枚</td></tr>
 <tr><td>うりぼーTシャツ</td><td>111枚 (31%)</td><td>128枚 (36%)</td><td>87枚 (24%)</td><td>33枚 (9%)</td><td>359枚</td></tr>
 <tr><td>ガーディアンズTシャツ</td><td>57枚 (21%)</td><td>80枚 (30%)</td><td>84枚 (31%)</td><td>47枚 (18%)</td><td>268枚</td></tr>
-</table>
+</table></div>
 </div>
 </div>
 
@@ -284,7 +302,7 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 </div>
 <div class="chart-container">
 <h3>グッズ売上一覧</h3>
-<table class="rank-table">
+<div class="table-scroll"><table class="rank-table">
 <tr><th>#</th><th>商品名</th><th>売上金額</th><th>販売数</th></tr>
 <tr><td><span class="rank-num rank-1">1</span></td><td>番号札キーホルダー</td><td>¥2,464,200</td><td>6161点</td></tr>
 <tr><td><span class="rank-num rank-2">2</span></td><td>三方よし手ぬぐい</td><td>¥2,293,200</td><td>1529点</td></tr>
@@ -296,7 +314,7 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 <tr><td><span class="rank-num">8</span></td><td>877キャップ / ポリエステル</td><td>¥616,000</td><td>176点</td></tr>
 <tr><td><span class="rank-num">9</span></td><td>コットンマイバッグ</td><td>¥398,300</td><td>565点</td></tr>
 <tr><td><span class="rank-num">10</span></td><td>noppo #6</td><td>¥379,500</td><td>253点</td></tr>
-</table>
+</table></div>
 </div>
 
 <div class="section-title">📈 売上推移（直近12ヶ月）</div>
