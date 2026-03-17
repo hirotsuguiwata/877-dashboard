@@ -214,7 +214,7 @@
   <span class="updated">最終更新: 2026年3月13日 | v1.2</span>
   ※ 売上データはスマレジAPIより自動取得。人件費はタイムカードAPI速報値（25日締め）。その他経費は会計PDF投入後に反映。カテゴリデータ（ドリンク・軽食・物販）は2026年1月以降のみ。<br>
   ※ 877（中腹店）は2026年2月6日開店。2026年1月はプレオープンのテスト取引（¥600）のため分析対象外。<br>
-  ※ 前年（2024年）データはNotion「山事業 月次損益データ」より取得。Stand売上ベースで比較（BASE売上除く）。
+  ※ 前年（2024年）データはNotion「山事業 月次損益データ」より取得。売上合計で比較。
 </div>
 
 <script>
@@ -277,7 +277,7 @@ function getPrevYear(month) {
   const [y, m] = month.split('/').map(Number);
   const prevMonth = (y-1) + '/' + String(m).padStart(2,'0');
   const p24 = prev2024Data.find(d => d.month === prevMonth);
-  if (p24) return { net: p24.standSales, cust: p24.cust, custPrice: p24.custPrice };
+  if (p24) return { net: p24.totalSales, cust: p24.cust, custPrice: p24.custPrice };
   const ps = standData.find(d => d.month === prevMonth);
   if (ps) return { net: ps.net, cust: ps.cust, custPrice: ps.custPrice };
   return null;
@@ -373,7 +373,7 @@ function renderOverview() {
       datasets: [
         { label: 'Stand', data: standVals, backgroundColor: C.blue, borderRadius: 4, barPercentage: 0.7, order: 2 },
         { label: '877', data: s877Vals, backgroundColor: C.orange, borderRadius: 4, barPercentage: 0.7, order: 2 },
-        { label: '前年（Stand売上）', data: prevYearVals, type: 'line', borderColor: C.prevYear, backgroundColor: 'transparent', borderDash: [6, 3], pointRadius: 3, pointBackgroundColor: C.prevYear, tension: 0.3, order: 1, spanGaps: false }
+        { label: '前年（売上合計）', data: prevYearVals, type: 'line', borderColor: C.prevYear, backgroundColor: 'transparent', borderDash: [6, 3], pointRadius: 3, pointBackgroundColor: C.prevYear, tension: 0.3, order: 1, spanGaps: false }
       ]
     },
     options: { ...chartDefaults, scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, stacked: true }, y: { ...chartDefaults.scales.y, stacked: true, ticks: { ...chartDefaults.scales.y.ticks, callback: v => fmtK(v) } } }, plugins: { ...chartDefaults.plugins, tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + fmtK(ctx.raw) } } } }
@@ -434,7 +434,7 @@ function renderTrend() {
       datasets: [
         { label: 'Stand 純売上', data: standData.map(d => d.net), backgroundColor: C.blue, borderRadius: 4, order: 3 },
         { label: '877 純売上', data: s877Vals, backgroundColor: C.orange, borderRadius: 4, order: 3 },
-        { label: '前年（Stand売上）', data: prevYearVals, type: 'line', borderColor: C.prevYear, backgroundColor: 'transparent', borderDash: [6, 3], pointRadius: 3, pointBackgroundColor: C.prevYear, tension: 0.3, order: 1, spanGaps: false }
+        { label: '前年（売上合計）', data: prevYearVals, type: 'line', borderColor: C.prevYear, backgroundColor: 'transparent', borderDash: [6, 3], pointRadius: 3, pointBackgroundColor: C.prevYear, tension: 0.3, order: 1, spanGaps: false }
       ]
     },
     options: {
