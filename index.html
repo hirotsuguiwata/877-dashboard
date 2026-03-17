@@ -259,10 +259,10 @@ const prev2024Data = [
   { month: '2024/12', label: '24年12月', standSales: 1853831, totalSales: 4082370, cust: 2693, custPrice: 1516, costRate: 0.063, drinkPct: 0.54, retailPct: 0.46 }
 ];
 
-// 人件費データ（タイムカードAPI速報値・25日締め・事業全体）
+// 人件費データ（タイムカードAPI・25日締め・事業全体）
+// 25日締め確定月のみ掲載（月途中データは含めない）
 const laborData = {
-  '2026/02': { labor: 980708, source: '速報' },
-  '2026/03': { labor: 602450, source: '速報（月途中）' },
+  '2026/02': { labor: 980708, source: '確定' },
 };
 
 // Helpers
@@ -649,27 +649,38 @@ function renderCompare() {
 
 // ===== PAGE 5: MANAGEMENT =====
 function renderManagement() {
+  // 人件費確定月を基準に表示（25日締めで確定している最新月）
+  const laborMonths = Object.keys(laborData).sort();
+  const laborLatestMonth = laborMonths.length > 0 ? laborMonths[laborMonths.length - 1] : null;
+
   const latestS = standData[standData.length - 1];
   const latestE = s877Data.find(d => d.month === latestS.month);
   const totalMargin = latestS.margin + (latestE ? latestE.margin : 0);
 
-  const totalNet = latestS.net + (latestE ? latestE.net : 0);
-  const totalCost = latestS.cost + (latestE ? latestE.cost : 0);
-  const lb = laborData[latestS.month];
+  // 人件費確定月のデータで経営指標を算出
+  const lbMonth = laborLatestMonth;
+  const lbS = lbMonth ? standData.find(d => d.month === lbMonth) : null;
+  const lbE = lbMonth ? s877Data.find(d => d.month === lbMonth) : null;
+  const lb = lbMonth ? laborData[lbMonth] : null;
+  const lbNet = lbS ? lbS.net + (lbE ? lbE.net : 0) : 0;
+  const lbCost = lbS ? lbS.cost + (lbE ? lbE.cost : 0) : 0;
+  const lbMargin = lbS ? lbS.margin + (lbE ? lbE.margin : 0) : 0;
   const laborVal = lb ? lb.labor : null;
-  const laborRate = laborVal ? (laborVal / totalNet * 100).toFixed(1) : null;
-  const flRate = laborVal ? ((totalCost + laborVal) / totalNet * 100).toFixed(1) : null;
+  const laborRate = laborVal && lbNet ? (laborVal / lbNet * 100).toFixed(1) : null;
+  const flRate = laborVal && lbNet ? ((lbCost + laborVal) / lbNet * 100).toFixed(1) : null;
+  const lbLabel = lbS ? lbS.label : '';
 
   const kpiHtml = `
     <div class="kpi-card"><div class="label">全店舗 粗利（${latestS.label}）</div><div class="value">${fmtK(totalMargin)}</div></div>
     <div class="kpi-card"><div class="label">Stand 原価率</div><div class="value">${(latestS.costRate*100).toFixed(1)}%</div></div>
     <div class="kpi-card"><div class="label">877 原価率</div><div class="value">${latestE ? (latestE.costRate*100).toFixed(1)+'%' : '-'}</div></div>
     ${laborVal
-      ? `<div class="kpi-card"><div class="label">人件費（${lb.source}）</div><div class="value">${fmtK(laborVal)}</div><div class="sub">人件費比率 ${laborRate}%</div></div>
-         <div class="kpi-card"><div class="label">FL比率（${lb.source}）</div><div class="value">${flRate}%</div><div class="sub">${parseFloat(flRate) < 55 ? '良好' : parseFloat(flRate) < 65 ? '要注意' : '危険'}</div></div>`
+      ? `<div class="kpi-card"><div class="label">人件費（${lbLabel}）</div><div class="value">${fmt(laborVal)}</div><div class="sub">人件費比率 ${laborRate}% ｜ 純売上${fmtK(lbNet)}に対して</div></div>
+         <div class="kpi-card"><div class="label">FL比率（${lbLabel}）</div><div class="value" style="color:${parseFloat(flRate) < 55 ? '#22c55e' : parseFloat(flRate) < 65 ? '#f59e0b' : '#ef4444'}">${flRate}%</div><div class="sub">原価${fmtK(lbCost)} + 人件費${fmtK(laborVal)}</div></div>
+         <div class="kpi-card"><div class="label">粗利 − 人件費（${lbLabel}）</div><div class="value">${fmtK(lbMargin - laborVal)}</div><div class="sub">粗利${fmtK(lbMargin)} − 人件費${fmtK(laborVal)}</div></div>`
       : `<div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">人件費</div><div class="value" style="color:#92400e">未入力</div></div>
-         <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">FL比率</div><div class="value" style="color:#92400e">未入力</div></div>`}
-    <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">営業利益</div><div class="value" style="color:#92400e">未入力</div><div class="sub">その他経費入力後に算出</div></div>
+         <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">FL比率</div><div class="value" style="color:#92400e">未入力</div></div>
+         <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">営業利益</div><div class="value" style="color:#92400e">未入力</div></div>`}
   `;
   document.getElementById('mgmtKpi').innerHTML = kpiHtml;
 
