@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>877事業 経営ダッシュボード v1.2</title>
+<title>877事業 経営ダッシュボード v1.3</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -187,7 +187,7 @@
 <!-- ===== PAGE 5: MANAGEMENT ===== -->
 <div class="page" id="page-management">
   <div class="section-title">経営分析</div>
-  <div class="section-sub">人件費・経費データは会計PDFから後日投入されます</div>
+  <div class="section-sub">人件費はタイムカードAPI速報値（25日締め）。確定値は給与明細PDFで上書き予定</div>
   <div class="kpi-row" id="mgmtKpi"></div>
   <div class="grid-2">
     <div class="card full"><h3><span class="icon">💹</span>粗利推移（全店舗）</h3><canvas id="mgmtProfitChart"></canvas></div>
@@ -212,7 +212,7 @@
 
 <div class="note">
   <span class="updated">最終更新: 2026年3月13日 | v1.2</span>
-  ※ 売上データはスマレジAPIより自動取得。人件費・経費は会計PDF投入後に反映。カテゴリデータ（ドリンク・軽食・物販）は2026年1月以降のみ。<br>
+  ※ 売上データはスマレジAPIより自動取得。人件費はタイムカードAPI速報値（25日締め）。その他経費は会計PDF投入後に反映。カテゴリデータ（ドリンク・軽食・物販）は2026年1月以降のみ。<br>
   ※ 877（中腹店）は2026年2月6日開店。2026年1月はプレオープンのテスト取引（¥600）のため分析対象外。<br>
   ※ 前年（2024年）データはNotion「山事業 月次損益データ」より取得。Stand売上ベースで比較（BASE売上除く）。
 </div>
@@ -232,12 +232,14 @@ const standData = [
   { month: '2025/11', label: '25年11月', net: 8793540, gross: 8798290, cost: 2554472, margin: 6239069, tax: 796847, discount: 4450, txn: 5923, cust: 5898, txnPrice: 1485, custPrice: 1491, items: 11345, returns: 60, costRate: 0.2905 },
   { month: '2025/12', label: '25年12月', net: 3110930, gross: 3118480, cost: 890159, margin: 2220771, tax: 281902, discount: 7350, txn: 2056, cust: 2045, txnPrice: 1513, custPrice: 1521, items: 3855, returns: 21, costRate: 0.2861 },
   { month: '2026/01', label: '26年1月', net: 4420820, gross: 4428120, cost: 1246430, margin: 3174390, tax: 400611, discount: 6700, txn: 2909, cust: 2903, txnPrice: 1520, custPrice: 1523, items: 5674, returns: 10, costRate: 0.2819, drinkPct: 0.5753, drinkQty: 3264, foodPct: 0.1773, foodQty: 1006, retailPct: 0.2474, retailQty: 1404 },
-  { month: '2026/02', label: '26年2月', net: 2770355, gross: 2776980, cost: 794042, margin: 1976313, tax: 251056, discount: 6625, txn: 1809, cust: 1809, txnPrice: 1531, custPrice: 1531, items: 3412, returns: 0, costRate: 0.2866, drinkPct: 0.577, drinkQty: 1989, foodPct: 0.1726, foodQty: 595, retailPct: 0.2504, retailQty: 863 }
+  { month: '2026/02', label: '26年2月', net: 2770355, gross: 2776980, cost: 794042, margin: 1976313, tax: 251056, discount: 6625, txn: 1809, cust: 1809, txnPrice: 1531, custPrice: 1531, items: 3412, returns: 0, costRate: 0.2866, drinkPct: 0.577, drinkQty: 1989, foodPct: 0.1726, foodQty: 595, retailPct: 0.2504, retailQty: 863 },
+  { month: '2026/03', label: '26年3月', net: 1790570, gross: 1792820, cost: 509983, margin: 1280587, tax: 162255, discount: 2250, txn: 1239, cust: 1239, txnPrice: 1445, custPrice: 1445, items: 2345, returns: 15, costRate: 0.2848, drinkPct: 0.561, drinkQty: 1324, foodPct: 0.189, foodQty: 446, retailPct: 0.25, retailQty: 590 }
 ];
 
 const s877Data = [
   { month: '2026/01', label: '26年1月', net: 600, gross: 600, cost: 185, margin: 415, tax: 54, discount: 0, txn: 1, cust: 1, txnPrice: 600, custPrice: 600, items: 1, returns: 0, costRate: 0.3083, memo: 'プレオープン（テスト取引）' },
-  { month: '2026/02', label: '26年2月', net: 1147320, gross: 1149120, cost: 194927, margin: 952393, tax: 104052, discount: 1800, txn: 559, cust: 559, txnPrice: 2053, custPrice: 2053, items: 1303, returns: 0, costRate: 0.1699, drinkPct: 0.2389, drinkQty: 316, foodPct: 0.4044, foodQty: 535, retailPct: 0.3568, retailQty: 472 }
+  { month: '2026/02', label: '26年2月', net: 1147320, gross: 1149120, cost: 194927, margin: 952393, tax: 104052, discount: 1800, txn: 559, cust: 559, txnPrice: 2053, custPrice: 2053, items: 1303, returns: 0, costRate: 0.1699, drinkPct: 0.2389, drinkQty: 316, foodPct: 0.4044, foodQty: 535, retailPct: 0.3568, retailQty: 472 },
+  { month: '2026/03', label: '26年3月', net: 641190, gross: 641190, cost: 98885, margin: 542305, tax: 58125, discount: 0, txn: 350, cust: 350, txnPrice: 1832, custPrice: 1832, items: 778, returns: 0, costRate: 0.1542, drinkPct: 0.2481, drinkQty: 193, foodPct: 0.4512, foodQty: 351, retailPct: 0.3008, retailQty: 234 }
 ];
 
 // 2024年データ（Notion「山事業 月次損益データ」より）
@@ -256,6 +258,12 @@ const prev2024Data = [
   { month: '2024/11', label: '24年11月', standSales: 3370000, totalSales: 6020560, cust: 4395, custPrice: 1370, costRate: 0.061, drinkPct: 0.56, retailPct: 0.44 },
   { month: '2024/12', label: '24年12月', standSales: 1853831, totalSales: 4082370, cust: 2693, custPrice: 1516, costRate: 0.063, drinkPct: 0.54, retailPct: 0.46 }
 ];
+
+// 人件費データ（タイムカードAPI速報値・25日締め・事業全体）
+const laborData = {
+  '2026/02': { labor: 980708, source: '速報' },
+  '2026/03': { labor: 602450, source: '速報（月途中）' },
+};
 
 // Helpers
 const fmt = n => '¥' + Math.round(n).toLocaleString();
@@ -642,16 +650,26 @@ function renderCompare() {
 // ===== PAGE 5: MANAGEMENT =====
 function renderManagement() {
   const latestS = standData[standData.length - 1];
-  const latestE = s877Data.find(d => d.month === '2026/02');
+  const latestE = s877Data.find(d => d.month === latestS.month);
   const totalMargin = latestS.margin + (latestE ? latestE.margin : 0);
+
+  const totalNet = latestS.net + (latestE ? latestE.net : 0);
+  const totalCost = latestS.cost + (latestE ? latestE.cost : 0);
+  const lb = laborData[latestS.month];
+  const laborVal = lb ? lb.labor : null;
+  const laborRate = laborVal ? (laborVal / totalNet * 100).toFixed(1) : null;
+  const flRate = laborVal ? ((totalCost + laborVal) / totalNet * 100).toFixed(1) : null;
 
   const kpiHtml = `
     <div class="kpi-card"><div class="label">全店舗 粗利（${latestS.label}）</div><div class="value">${fmtK(totalMargin)}</div></div>
     <div class="kpi-card"><div class="label">Stand 原価率</div><div class="value">${(latestS.costRate*100).toFixed(1)}%</div></div>
     <div class="kpi-card"><div class="label">877 原価率</div><div class="value">${latestE ? (latestE.costRate*100).toFixed(1)+'%' : '-'}</div></div>
-    <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">人件費</div><div class="value" style="color:#92400e">未入力</div><div class="sub">会計PDF投入後に反映</div></div>
-    <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">FL比率</div><div class="value" style="color:#92400e">未入力</div><div class="sub">人件費入力後に算出</div></div>
-    <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">営業利益</div><div class="value" style="color:#92400e">未入力</div><div class="sub">全経費入力後に算出</div></div>
+    ${laborVal
+      ? `<div class="kpi-card"><div class="label">人件費（${lb.source}）</div><div class="value">${fmtK(laborVal)}</div><div class="sub">人件費比率 ${laborRate}%</div></div>
+         <div class="kpi-card"><div class="label">FL比率（${lb.source}）</div><div class="value">${flRate}%</div><div class="sub">${parseFloat(flRate) < 55 ? '良好' : parseFloat(flRate) < 65 ? '要注意' : '危険'}</div></div>`
+      : `<div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">人件費</div><div class="value" style="color:#92400e">未入力</div></div>
+         <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">FL比率</div><div class="value" style="color:#92400e">未入力</div></div>`}
+    <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">営業利益</div><div class="value" style="color:#92400e">未入力</div><div class="sub">その他経費入力後に算出</div></div>
   `;
   document.getElementById('mgmtKpi').innerHTML = kpiHtml;
 
@@ -707,8 +725,9 @@ function renderStatus() {
     const eCat = eRow && eRow.drinkPct;
     const hasPrev = getPrevYear(m) !== null;
     const dot = (ok) => ok ? '<span class="status-dot dot-green"></span>✓' : '<span class="status-dot dot-gray"></span>—';
-    const status = (sRow || eRow) ? '<span class="status-dot dot-yellow"></span>売上入力済' : '<span class="status-dot dot-red"></span>未入力';
-    html += `<tr><td style="font-weight:700">${m}</td><td>${dot(sRow)}</td><td>${dot(sCat)}</td><td>${dot(eRow)}</td><td>${dot(eCat)}</td><td>${dot(hasPrev)}</td><td><span class="status-dot dot-red"></span>未入力</td><td>${status}</td></tr>`;
+    const hasLabor = !!laborData[m];
+    const status = (sRow || eRow) ? (hasLabor ? '<span class="status-dot dot-green"></span>売上+人件費' : '<span class="status-dot dot-yellow"></span>売上入力済') : '<span class="status-dot dot-red"></span>未入力';
+    html += `<tr><td style="font-weight:700">${m}</td><td>${dot(sRow)}</td><td>${dot(sCat)}</td><td>${dot(eRow)}</td><td>${dot(eCat)}</td><td>${dot(hasPrev)}</td><td>${hasLabor ? '<span class="status-dot dot-green"></span>' + fmtK(laborData[m].labor) : '<span class="status-dot dot-red"></span>未入力'}</td><td>${status}</td></tr>`;
   });
   html += '</tbody></table>';
   document.getElementById('statusTable').innerHTML = html;
