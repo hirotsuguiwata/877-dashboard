@@ -259,10 +259,10 @@ const prev2024Data = [
   { month: '2024/12', label: '24年12月', standSales: 1853831, totalSales: 4082370, cust: 2693, custPrice: 1516, costRate: 0.063, drinkPct: 0.54, retailPct: 0.46 }
 ];
 
-// 人件費データ（タイムカードAPI・25日締め・事業全体）
+// 人件費データ（タイムカードAPI・25日締め・店舗別）
 // 25日締め確定月のみ掲載（月途中データは含めない）
 const laborData = {
-  '2026/02': { labor: 980708, source: '確定' },
+  '2026/02': { stand: 682675, s877: 298033, total: 980708 },
 };
 
 // Helpers
@@ -649,38 +649,45 @@ function renderCompare() {
 
 // ===== PAGE 5: MANAGEMENT =====
 function renderManagement() {
-  // 人件費確定月を基準に表示（25日締めで確定している最新月）
+  // 経営分析は25日締め確定月ベースで全指標を統一表示
   const laborMonths = Object.keys(laborData).sort();
-  const laborLatestMonth = laborMonths.length > 0 ? laborMonths[laborMonths.length - 1] : null;
+  const lbMonth = laborMonths.length > 0 ? laborMonths[laborMonths.length - 1] : null;
 
-  const latestS = standData[standData.length - 1];
-  const latestE = s877Data.find(d => d.month === latestS.month);
-  const totalMargin = latestS.margin + (latestE ? latestE.margin : 0);
-
-  // 人件費確定月のデータで経営指標を算出
-  const lbMonth = laborLatestMonth;
   const lbS = lbMonth ? standData.find(d => d.month === lbMonth) : null;
   const lbE = lbMonth ? s877Data.find(d => d.month === lbMonth) : null;
   const lb = lbMonth ? laborData[lbMonth] : null;
-  const lbNet = lbS ? lbS.net + (lbE ? lbE.net : 0) : 0;
-  const lbCost = lbS ? lbS.cost + (lbE ? lbE.cost : 0) : 0;
-  const lbMargin = lbS ? lbS.margin + (lbE ? lbE.margin : 0) : 0;
-  const laborVal = lb ? lb.labor : null;
-  const laborRate = laborVal && lbNet ? (laborVal / lbNet * 100).toFixed(1) : null;
-  const flRate = laborVal && lbNet ? ((lbCost + laborVal) / lbNet * 100).toFixed(1) : null;
-  const lbLabel = lbS ? lbS.label : '';
+
+  if (!lbS || !lb) {
+    document.getElementById('mgmtKpi').innerHTML = '<div class="kpi-card"><div class="label">経営分析</div><div class="value">データなし</div></div>';
+    return;
+  }
+
+  const lbLabel = lbS.label;
+  // 全店舗
+  const totalNet = lbS.net + (lbE ? lbE.net : 0);
+  const totalCost = lbS.cost + (lbE ? lbE.cost : 0);
+  const totalMargin = lbS.margin + (lbE ? lbE.margin : 0);
+  const totalLabor = lb.total;
+  const totalFL = ((totalCost + totalLabor) / totalNet * 100).toFixed(1);
+  // Stand
+  const sFL = ((lbS.cost + lb.stand) / lbS.net * 100).toFixed(1);
+  const sLaborRate = (lb.stand / lbS.net * 100).toFixed(1);
+  // 877
+  const eNet = lbE ? lbE.net : 0;
+  const eCost = lbE ? lbE.cost : 0;
+  const eMargin = lbE ? lbE.margin : 0;
+  const eFL = eNet ? (((eCost + lb.s877) / eNet) * 100).toFixed(1) : '-';
+  const eLaborRate = eNet ? ((lb.s877 / eNet) * 100).toFixed(1) : '-';
+
+  const flColor = v => parseFloat(v) < 55 ? '#22c55e' : parseFloat(v) < 65 ? '#f59e0b' : '#ef4444';
 
   const kpiHtml = `
-    <div class="kpi-card"><div class="label">全店舗 粗利（${latestS.label}）</div><div class="value">${fmtK(totalMargin)}</div></div>
-    <div class="kpi-card"><div class="label">Stand 原価率</div><div class="value">${(latestS.costRate*100).toFixed(1)}%</div></div>
-    <div class="kpi-card"><div class="label">877 原価率</div><div class="value">${latestE ? (latestE.costRate*100).toFixed(1)+'%' : '-'}</div></div>
-    ${laborVal
-      ? `<div class="kpi-card"><div class="label">人件費（${lbLabel}）</div><div class="value">${fmt(laborVal)}</div><div class="sub">人件費比率 ${laborRate}% ｜ 純売上${fmtK(lbNet)}に対して</div></div>
-         <div class="kpi-card"><div class="label">FL比率（${lbLabel}）</div><div class="value" style="color:${parseFloat(flRate) < 55 ? '#22c55e' : parseFloat(flRate) < 65 ? '#f59e0b' : '#ef4444'}">${flRate}%</div><div class="sub">原価${fmtK(lbCost)} + 人件費${fmtK(laborVal)}</div></div>
-         <div class="kpi-card"><div class="label">粗利 − 人件費（${lbLabel}）</div><div class="value">${fmtK(lbMargin - laborVal)}</div><div class="sub">粗利${fmtK(lbMargin)} − 人件費${fmtK(laborVal)}</div></div>`
-      : `<div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">人件費</div><div class="value" style="color:#92400e">未入力</div></div>
-         <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">FL比率</div><div class="value" style="color:#92400e">未入力</div></div>
-         <div class="kpi-card" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="label">営業利益</div><div class="value" style="color:#92400e">未入力</div></div>`}
+    <div class="kpi-card"><div class="label">全店舗 粗利（${lbLabel}）</div><div class="value">${fmtK(totalMargin)}</div><div class="sub">純売上 ${fmtK(totalNet)}</div></div>
+    <div class="kpi-card"><div class="label">全店舗 人件費（${lbLabel}）</div><div class="value">${fmt(totalLabor)}</div><div class="sub">人件費比率 ${(totalLabor/totalNet*100).toFixed(1)}%</div></div>
+    <div class="kpi-card"><div class="label">全店舗 FL比率（${lbLabel}）</div><div class="value" style="color:${flColor(totalFL)}">${totalFL}%</div><div class="sub">原価${fmtK(totalCost)} + 人件費${fmtK(totalLabor)}</div></div>
+    <div class="kpi-card"><div class="label"><span class="store-label stand">Stand</span> 人件費</div><div class="value">${fmt(lb.stand)}</div><div class="sub">人件費比率 ${sLaborRate}% ｜ FL ${sFL}%</div></div>
+    <div class="kpi-card"><div class="label"><span class="store-label s877">877</span> 人件費</div><div class="value">${fmt(lb.s877)}</div><div class="sub">${eNet ? '人件費比率 ' + eLaborRate + '% ｜ FL ' + eFL + '%' : '-'}</div></div>
+    <div class="kpi-card"><div class="label">粗利 − 人件費（${lbLabel}）</div><div class="value">${fmtK(totalMargin - totalLabor)}</div><div class="sub">その他経費控除前</div></div>
   `;
   document.getElementById('mgmtKpi').innerHTML = kpiHtml;
 
@@ -738,7 +745,7 @@ function renderStatus() {
     const dot = (ok) => ok ? '<span class="status-dot dot-green"></span>✓' : '<span class="status-dot dot-gray"></span>—';
     const hasLabor = !!laborData[m];
     const status = (sRow || eRow) ? (hasLabor ? '<span class="status-dot dot-green"></span>売上+人件費' : '<span class="status-dot dot-yellow"></span>売上入力済') : '<span class="status-dot dot-red"></span>未入力';
-    html += `<tr><td style="font-weight:700">${m}</td><td>${dot(sRow)}</td><td>${dot(sCat)}</td><td>${dot(eRow)}</td><td>${dot(eCat)}</td><td>${dot(hasPrev)}</td><td>${hasLabor ? '<span class="status-dot dot-green"></span>' + fmtK(laborData[m].labor) : '<span class="status-dot dot-red"></span>未入力'}</td><td>${status}</td></tr>`;
+    html += `<tr><td style="font-weight:700">${m}</td><td>${dot(sRow)}</td><td>${dot(sCat)}</td><td>${dot(eRow)}</td><td>${dot(eCat)}</td><td>${dot(hasPrev)}</td><td>${hasLabor ? '<span class="status-dot dot-green"></span>' + fmtK(laborData[m].total) : '<span class="status-dot dot-red"></span>未入力'}</td><td>${status}</td></tr>`;
   });
   html += '</tbody></table>';
   document.getElementById('statusTable').innerHTML = html;
