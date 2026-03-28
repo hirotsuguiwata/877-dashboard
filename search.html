@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>877 商品検索</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP',sans-serif; background:#f5f5f7; color:#1d1d1f; }
+.header { background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%); color:#fff; padding:24px 30px 20px; }
+.header h1 { font-size:22px; font-weight:700; margin-bottom:4px; }
+.header p { font-size:12px; opacity:0.6; }
+.nav-back { display:inline-block; color:rgba(255,255,255,0.7); text-decoration:none; font-size:12px; margin-bottom:8px; }
+.nav-back:hover { color:#fff; }
+.search-area { padding:20px 30px; max-width:900px; margin:0 auto; }
+.search-box { display:flex; gap:10px; margin-bottom:16px; }
+.search-box input { flex:1; padding:12px 16px; border:2px solid #e5e5e5; border-radius:10px; font-size:16px; outline:none; transition:border-color .2s; }
+.search-box input:focus { border-color:#0f3460; }
+.search-box button { padding:12px 24px; background:#0f3460; color:#fff; border:none; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; }
+.search-box button:hover { background:#1a4a8a; }
+.filters { display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
+.filters select { padding:8px 12px; border:1px solid #ddd; border-radius:8px; font-size:13px; background:#fff; }
+.results { margin-bottom:20px; }
+.result-summary { font-size:13px; color:#86868b; margin-bottom:12px; }
+.kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:20px; }
+.kpi { background:#fff; border-radius:12px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.kpi .label { font-size:11px; color:#86868b; margin-bottom:4px; }
+.kpi .value { font-size:24px; font-weight:700; color:#0f3460; }
+.kpi .sub { font-size:11px; color:#86868b; margin-top:4px; }
+.chart-card { background:#fff; border-radius:12px; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,0.06); margin-bottom:20px; }
+.chart-card h3 { font-size:15px; font-weight:600; margin-bottom:14px; }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th { background:#f5f5f5; padding:10px 12px; text-align:left; font-weight:600; color:#666; white-space:nowrap; }
+td { padding:10px 12px; border-bottom:1px solid #eee; white-space:nowrap; }
+tr:hover { background:#f8f9ff; }
+.product-list { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+.product-tag { padding:6px 14px; background:#fff; border:1px solid #ddd; border-radius:20px; font-size:13px; cursor:pointer; transition:all .2s; }
+.product-tag:hover,.product-tag.active { background:#0f3460; color:#fff; border-color:#0f3460; }
+.empty { text-align:center; padding:60px 20px; color:#86868b; }
+.empty .icon { font-size:48px; margin-bottom:12px; }
+.empty p { font-size:14px; }
+@media(max-width:480px){
+  .header { padding:16px; }
+  .header h1 { font-size:18px; }
+  .search-area { padding:16px; }
+  .search-box input { font-size:14px; padding:10px 12px; }
+  .kpi .value { font-size:20px; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+<a class="nav-back" href="index.html">&larr; 経営ダッシュボードに戻る</a>
+<h1>877 商品検索</h1>
+<p id="data-period">データ読み込み中...</p>
+</div>
+
+<div class="search-area">
+<div class="search-box">
+<input type="text" id="q" placeholder="商品名で検索（例：ワッフル、Tシャツ、ラテ）" autofocus>
+<button onclick="doSearch()">検索</button>
+</div>
+<div class="filters">
+<select id="store-filter">
+<option value="">全店舗</option>
+<option value="山頂店">山頂店</option>
+<option value="中腹店">中腹店</option>
+</select>
+<select id="period-filter">
+<option value="">全期間</option>
+<option value="2025-01">1月</option>
+<option value="2025-02">2月</option>
+<option value="2025-03">3月</option>
+</select>
+</div>
+
+<div id="results">
+<div class="empty">
+<div class="icon">🔍</div>
+<p>商品名を入力して検索してください</p>
+</div>
+</div>
+</div>
+
+<script>
+let DATA = [];
+let chart = null;
+
+fetch('sales_data.json')
+  .then(r => r.json())
+  .then(d => {
+    DATA = d;
+    const dates = [...new Set(d.map(r=>r.date))].sort();
+    document.getElementById('data-period').textContent =
+      `データ期間: ${dates[0]} 〜 ${dates[dates.length-1]} ｜ ${d.length.toLocaleString()}レコード`;
+  });
+
+document.getElementById('q').addEventListener('keydown', e => {
+  if(e.key === 'Enter') doSearch();
+});
+
+function doSearch() {
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  const store = document.getElementById('store-filter').value;
+  const period = document.getElementById('period-filter').value;
+  if(!q) return;
+
+  let filtered = DATA.filter(r => r.product.toLowerCase().includes(q));
+  if(store) filtered = filtered.filter(r => r.store === store);
+  if(period) filtered = filtered.filter(r => r.date.startsWith(period));
+
+  if(filtered.length === 0) {
+    document.getElementById('results').innerHTML =
+      '<div class="empty"><div class="icon">😕</div><p>該当する商品が見つかりません</p></div>';
+    return;
+  }
+
+  // 商品名一覧
+  const products = [...new Set(filtered.map(r => r.product))].sort();
+  const totalQty = filtered.reduce((s,r) => s + r.quantity, 0);
+  const totalAmt = filtered.reduce((s,r) => s + r.amount, 0);
+  const dates = [...new Set(filtered.map(r => r.date))].sort();
+  const avgPerDay = dates.length ? Math.round(totalQty / dates.length * 10) / 10 : 0;
+
+  let html = '';
+
+  // KPI
+  html += '<div class="kpi-row">';
+  html += `<div class="kpi"><div class="label">合計販売数</div><div class="value">${totalQty.toLocaleString()}<span style="font-size:14px">個</span></div><div class="sub">${dates.length}日間</div></div>`;
+  html += `<div class="kpi"><div class="label">合計売上</div><div class="value">¥${totalAmt.toLocaleString()}</div></div>`;
+  html += `<div class="kpi"><div class="label">1日平均</div><div class="value">${avgPerDay}<span style="font-size:14px">個/日</span></div></div>`;
+  html += `<div class="kpi"><div class="label">該当商品数</div><div class="value">${products.length}<span style="font-size:14px">種</span></div></div>`;
+  html += '</div>';
+
+  // 商品タグ
+  html += '<div class="product-list">';
+  products.forEach(p => {
+    const pQty = filtered.filter(r=>r.product===p).reduce((s,r)=>s+r.quantity,0);
+    html += `<span class="product-tag" onclick="filterProduct(this,'${p.replace(/'/g,"\\'")}')">${p} (${pQty})</span>`;
+  });
+  html += '</div>';
+
+  // 日別推移チャート
+  html += '<div class="chart-card"><h3>日別販売数推移</h3><canvas id="daily-chart" height="200"></canvas></div>';
+
+  // 商品別テーブル
+  const productSummary = products.map(p => {
+    const rows = filtered.filter(r => r.product === p);
+    const qty = rows.reduce((s,r) => s + r.quantity, 0);
+    const amt = rows.reduce((s,r) => s + r.amount, 0);
+    return { product: p, quantity: qty, amount: amt, avgPrice: qty ? Math.round(amt/qty) : 0 };
+  }).sort((a,b) => b.amount - a.amount);
+
+  html += '<div class="chart-card"><h3>商品別集計</h3><div class="table-wrap"><table>';
+  html += '<tr><th>商品名</th><th>販売数</th><th>売上</th><th>平均単価</th></tr>';
+  productSummary.forEach(p => {
+    html += `<tr><td>${p.product}</td><td>${p.quantity.toLocaleString()}個</td><td>¥${p.amount.toLocaleString()}</td><td>¥${p.avgPrice.toLocaleString()}</td></tr>`;
+  });
+  html += '</table></div></div>';
+
+  // 日別テーブル
+  const dailyData = {};
+  dates.forEach(d => { dailyData[d] = { quantity:0, amount:0 }; });
+  filtered.forEach(r => { dailyData[r.date].quantity += r.quantity; dailyData[r.date].amount += r.amount; });
+
+  html += '<div class="chart-card"><h3>日別データ</h3><div class="table-wrap"><table>';
+  html += '<tr><th>日付</th><th>販売数</th><th>売上</th></tr>';
+  dates.forEach(d => {
+    const dd = dailyData[d];
+    html += `<tr><td>${d}</td><td>${dd.quantity.toLocaleString()}個</td><td>¥${dd.amount.toLocaleString()}</td></tr>`;
+  });
+  html += '</table></div></div>';
+
+  document.getElementById('results').innerHTML = html;
+  document.getElementById('results').querySelector('.result-summary');
+
+  // チャート描画
+  drawChart(dates, dailyData);
+}
+
+function drawChart(dates, dailyData) {
+  if(chart) chart.destroy();
+  const ctx = document.getElementById('daily-chart');
+  if(!ctx) return;
+  chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: dates.map(d => d.slice(5)),
+      datasets: [{
+        label: '販売数',
+        data: dates.map(d => dailyData[d].quantity),
+        backgroundColor: 'rgba(15,52,96,0.7)',
+        borderRadius: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display:false } },
+      scales: {
+        x: { ticks: { font: { size:10 }, maxRotation:90, autoSkip:true, maxTicksLimit:30 } },
+        y: { beginAtZero:true, ticks: { font: { size:11 } } }
+      }
+    }
+  });
+}
+
+function filterProduct(el, product) {
+  document.querySelectorAll('.product-tag').forEach(t => t.classList.remove('active'));
+  el.classList.toggle('active');
+
+  const store = document.getElementById('store-filter').value;
+  const period = document.getElementById('period-filter').value;
+  let filtered = DATA.filter(r => r.product === product);
+  if(store) filtered = filtered.filter(r => r.store === store);
+  if(period) filtered = filtered.filter(r => r.date.startsWith(period));
+
+  const dates = [...new Set(filtered.map(r=>r.date))].sort();
+  const dailyData = {};
+  dates.forEach(d => { dailyData[d] = { quantity:0, amount:0 }; });
+  filtered.forEach(r => { dailyData[r.date].quantity += r.quantity; dailyData[r.date].amount += r.amount; });
+
+  drawChart(dates, dailyData);
+}
+</script>
+</body>
+</html>
