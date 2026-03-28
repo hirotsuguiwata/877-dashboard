@@ -70,9 +70,6 @@ tr:hover { background:#f8f9ff; }
 </select>
 <select id="period-filter">
 <option value="">全期間</option>
-<option value="2025-01">1月</option>
-<option value="2025-02">2月</option>
-<option value="2025-03">3月</option>
 </select>
 </div>
 
@@ -95,6 +92,15 @@ fetch('sales_data.json')
     const dates = [...new Set(d.map(r=>r.date))].sort();
     document.getElementById('data-period').textContent =
       `データ期間: ${dates[0]} 〜 ${dates[dates.length-1]} ｜ ${d.length.toLocaleString()}レコード`;
+    // 期間フィルタを動的生成
+    const months = [...new Set(dates.map(d=>d.slice(0,7)))].sort().reverse();
+    const sel = document.getElementById('period-filter');
+    months.forEach(m => {
+      const o = document.createElement('option');
+      o.value = m;
+      o.textContent = m.replace('-0','/').replace('-','/');
+      sel.appendChild(o);
+    });
   });
 
 document.getElementById('q').addEventListener('keydown', e => {
