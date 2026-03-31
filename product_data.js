@@ -1,0 +1,93 @@
+// product_data.js - スマレジAPIから自動生成
+// 生成日: 2026-03-31
+// 期間: 2024-08 ~ 2026-03
+
+const sizeByDesign = [
+  {name:"等高線Tシャツ",S:597,M:699,L:612,XL:356},
+  {name:"犬山脈Tシャツ",S:171,M:274,L:251,XL:143},
+  {name:"Stand Tシャツ",S:203,M:248,L:226,XL:114},
+  {name:"【長袖】等高線ドライロンT",S:179,M:195,L:180,XL:109},
+  {name:"うりぼーTシャツ",S:111,M:131,L:89,XL:33},
+  {name:"【長袖】三方よし綿 ロンT",S:92,M:119,L:41,XL:51},
+  {name:"スーベニアTシャツ",S:59,M:87,L:83,XL:60},
+  {name:"ガーディアンズTシャツ",S:56,M:79,L:83,XL:46},
+  {name:"ハイキングマTシャツ",S:49,M:71,L:84,XL:49},
+  {name:"三方よし綿 ロンT",S:60,M:66,L:31,XL:33},
+  {name:"【長袖】877綿 ロンT",S:43,M:57,L:47,XL:28},
+  {name:"【長袖】877ドライロンT",S:34,M:51,L:49,XL:27},
+  {name:"877綿 ロンT",S:31,M:45,L:35,XL:25},
+  {name:"877ドライロンT",S:24,M:21,L:22,XL:13},
+  {name:"等高線ドライロンT",S:12,M:15,L:11,XL:6},
+  {name:"【長袖】三方よしドライロンT",S:12,M:11,L:12,XL:8},
+  {name:"三方よしドライロンT",S:14,M:15,L:8,XL:2},
+  {name:"877本店 Tシャツ",S:8,M:8,L:11,XL:4},
+  {name:"877綿  ロンT",S:8,M:5,L:8,XL:8},
+  {name:"877 Tシャツ",S:5,M:0,L:3,XL:10},
+  {name:"877綿  半袖Tシャツ",S:1,M:1,L:0,XL:6}
+];
+
+const sizeByDesignColor = [
+  {name:"等高線Tシャツ",colors:[{color:"ネイビー",S:170,M:144,L:154,XL:71},{color:"ブラック",S:132,M:160,L:124,XL:105},{color:"グレー",S:113,M:135,L:130,XL:84},{color:"ピーコックブルー",S:120,M:169,L:111,XL:50},{color:"ホワイト",S:52,M:85,L:81,XL:45},{color:"Gピンク",S:8,M:2,L:6,XL:0},{color:"スミ",S:2,M:4,L:6,XL:1}]},
+  {name:"犬山脈Tシャツ",colors:[{color:"グリーン",S:161,M:262,L:240,XL:138},{color:"ラベンダー",S:10,M:12,L:11,XL:5}]},
+  {name:"Stand Tシャツ",colors:[{color:"パープル",S:117,M:135,L:107,XL:39},{color:"アーミーグリーン",S:86,M:113,L:119,XL:75}]},
+  {name:"【長袖】等高線ドライロンT",colors:[{color:"グレー",S:89,M:97,L:96,XL:53},{color:"黒",S:90,M:98,L:84,XL:56}]},
+  {name:"うりぼーTシャツ",colors:[{color:"ベージュ",S:111,M:131,L:89,XL:33}]},
+  {name:"【長袖】三方よし綿 ロンT",colors:[{color:"ヘイジーイエロー",S:64,M:80,L:0,XL:20},{color:"ライトオリーブ",S:28,M:39,L:41,XL:31}]},
+  {name:"スーベニアTシャツ",colors:[{color:"グレー",S:43,M:69,L:65,XL:53},{color:"スミ",S:9,M:13,L:14,XL:6},{color:"綿・セージグリーン",S:7,M:5,L:4,XL:1}]},
+  {name:"ガーディアンズTシャツ",colors:[{color:"ホワイト",S:56,M:79,L:83,XL:46}]},
+  {name:"ハイキングマTシャツ",colors:[{color:"新ベージュ",S:29,M:50,L:64,XL:34},{color:"グレー",S:20,M:21,L:20,XL:15}]},
+  {name:"三方よし綿 ロンT",colors:[{color:"ライトオリーブ",S:18,M:28,L:31,XL:19},{color:"ヘイジーイエロー",S:42,M:38,L:0,XL:14}]},
+  {name:"【長袖】877綿 ロンT",colors:[{color:"スミ",S:43,M:57,L:47,XL:28}]},
+  {name:"【長袖】877ドライロンT",colors:[{color:"ネイビー",S:22,M:37,L:34,XL:11},{color:"OD",S:12,M:14,L:15,XL:16}]},
+  {name:"877綿 ロンT",colors:[{color:"スミ",S:31,M:45,L:35,XL:25}]},
+  {name:"877ドライロンT",colors:[{color:"ネイビー",S:18,M:16,L:17,XL:9},{color:"OD",S:6,M:5,L:5,XL:4}]},
+  {name:"等高線ドライロンT",colors:[{color:"グレー",S:12,M:15,L:11,XL:6}]},
+  {name:"【長袖】三方よしドライロンT",colors:[{color:"コヨーテ",S:12,M:11,L:12,XL:8}]},
+  {name:"三方よしドライロンT",colors:[{color:"コヨーテ",S:14,M:15,L:8,XL:2}]},
+  {name:"877本店 Tシャツ",colors:[{color:"ミックスグレー",S:8,M:8,L:11,XL:4}]},
+  {name:"877綿  ロンT",colors:[{color:"(なし)",S:6,M:5,L:8,XL:7},{color:"ブラック",S:2,M:0,L:0,XL:1}]},
+  {name:"877 Tシャツ",colors:[{color:"グレー",S:5,M:0,L:3,XL:10}]},
+  {name:"877綿  半袖Tシャツ",colors:[{color:"(なし)",S:1,M:1,L:0,XL:6}]}
+];
+
+const sizeQty = [1769,2198,1886,1131];
+
+const otherVariationsQty = [
+  {name:"番号札キーホルダー",total:6396,colors:[{color:"がまおじ",qty:2378},{color:"かえちゃん",qty:1801},{color:"筑波山ロゴ",qty:1139},{color:"ヤマドリ先輩",qty:1004},{color:"クキオ",qty:74}]},
+  {name:"三方よし手ぬぐい",total:1592,colors:[{color:"青",qty:850},{color:"赤",qty:742}]},
+  {name:"ピンバッジ",total:857,colors:[{color:"(なし)",qty:838},{color:"銀",qty:19}]},
+  {name:"ハイキングマ",total:715,colors:[{color:"ブラウン",qty:696},{color:"イエロー",qty:19}]},
+  {name:"動物手ぬぐい",total:679,colors:[{color:"イエローパープル",qty:346},{color:"グリーンブラック",qty:333}]},
+  {name:"コットンマイバッグ",total:577,colors:[{color:"オリーブ",qty:318},{color:"グレー",qty:259}]},
+  {name:"等高線手ぬぐい",total:540,colors:[{color:"オレンジ",qty:281},{color:"ブラウン",qty:259}]},
+  {name:"877キャップ",total:247,colors:[{color:"グレー",qty:94},{color:"ミント",qty:75},{color:"ベージュ/緑",qty:58},{color:"ベージュ/黄",qty:11},{color:"ベージュ/白",qty:9}]},
+  {name:"犬山脈Tシャツ",total:144,colors:[{color:"グリーン",qty:114},{color:"ミントグリーン",qty:25},{color:"ライトイエロー",qty:5}]},
+  {name:"ポリエステルマイバッグ",total:134,colors:[{color:"グレー",qty:82},{color:"ブルー",qty:52}]},
+  {name:"ニットワッチ",total:112,colors:[{color:"ブラック",qty:38},{color:"オレンジ",qty:30},{color:"オリーブ",qty:23},{color:"ベージュ",qty:21}]},
+  {name:"ミニロゴスウェット",total:107,colors:[{color:"ストーングリーン",qty:67},{color:"サンドカーキ",qty:40}]},
+  {name:"犬山脈スウェット",total:107,colors:[{color:"ナチュラル",qty:55},{color:"黒",qty:52}]},
+  {name:"2024ニットワッチ",total:82,colors:[{color:"オリーブ",qty:44},{color:"紫",qty:38}]},
+  {name:"シリコンバンド",total:47,colors:[{color:"紫",qty:24},{color:"白",qty:23}]},
+  {name:"TSUKUBA ステッカーズ",total:1049,colors:[{color:"(なし)",qty:1049}]},
+  {name:"ロゴステッカー",total:965,colors:[{color:"四角",qty:965}]},
+  {name:"八七七 温泉タオル",total:957,colors:[{color:"(なし)",qty:957}]},
+  {name:"奇岩バンダナ",total:909,colors:[{color:"(なし)",qty:909}]},
+  {name:"かえるバトルみくじ",total:701,colors:[{color:"(なし)",qty:701}]},
+  {name:"山ステッカー",total:490,colors:[{color:"楕円",qty:490}]},
+  {name:"noppo #6",total:261,colors:[{color:"黒",qty:261}]},
+  {name:"noppo #1",total:240,colors:[{color:"緑",qty:240}]},
+  {name:"ポストカード",total:186,colors:[{color:"(なし)",qty:186}]},
+  {name:"noppo #5",total:174,colors:[{color:"黄土色",qty:174}]},
+  {name:"noppo#４",total:165,colors:[{color:"水色",qty:165}]},
+  {name:"noppo #2",total:157,colors:[{color:"黄",qty:157}]},
+  {name:"noppo #3",total:108,colors:[{color:"ピンク",qty:108}]},
+  {name:"マグカップ 877Stand",total:103,colors:[{color:"(なし)",qty:103}]},
+  {name:"877シェイク",total:43,colors:[{color:"バナナ",qty:43}]},
+  {name:"【長袖】三方よし綿 ロンTL",total:42,colors:[{color:"ヘイジーイエロー",qty:42}]},
+  {name:"筑波山一筆箋",total:35,colors:[{color:"(なし)",qty:35}]},
+  {name:"877マグカップ",total:17,colors:[{color:"(なし)",qty:17}]},
+  {name:"山野草ステッカー",total:16,colors:[{color:"(なし)",qty:16}]},
+  {name:"三方よし綿 ロンTL",total:15,colors:[{color:"ヘイジーイエロー",qty:15}]},
+  {name:"ハイキングマTシャツ",total:10,colors:[{color:"新ベージュ",qty:10}]},
+  {name:"筑波山ロゴハット",total:8,colors:[{color:"ベージュ",qty:8}]}
+];

@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>877事業 商品分析ダッシュボード</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="product_data.js"></script>
+<script src="product_raw.js"></script>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif; background:#f0f2f5; color:#333; }
@@ -64,13 +66,45 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 .mini-chart { height:60px; }
 .footer { text-align:center; padding:20px; color:#999; font-size:12px; }
 .color-dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:4px; }
+.filter-bar { background:#fff; padding:12px 20px; display:flex; align-items:center; gap:12px; border-bottom:1px solid #e0e0e0; flex-wrap:wrap; }
+.filter-bar label { font-size:13px; color:#666; }
+.filter-bar input[type="date"] { padding:6px 10px; border:1px solid #ccc; border-radius:6px; font-size:13px; }
+.filter-bar button { padding:6px 16px; border:none; border-radius:6px; font-size:13px; cursor:pointer; }
+.filter-bar .btn-apply { background:#2c5f2d; color:#fff; }
+.filter-bar .btn-reset { background:#e0e0e0; color:#333; }
+.accordion-card { background:#fff; border-radius:12px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); overflow:hidden; }
+.accordion-header { padding:16px 20px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; transition:background .2s; }
+.accordion-header:hover { background:#f8fdf5; }
+.accordion-header h4 { font-size:14px; color:#333; margin:0; display:flex; align-items:center; gap:8px; }
+.accordion-header .arrow { transition:transform .3s; font-size:12px; color:#888; }
+.accordion-header.open .arrow { transform:rotate(90deg); }
+.accordion-header .size-bar-mini { display:flex; height:8px; border-radius:4px; overflow:hidden; width:120px; }
+.accordion-header .size-bar-mini span { display:block; }
+.accordion-header .qty-badge { font-size:12px; color:#888; margin-left:8px; }
+.accordion-body { max-height:0; overflow:hidden; transition:max-height .4s ease; }
+.accordion-body.open { max-height:2000px; }
+.accordion-inner { padding:0 20px 20px; }
+.color-row { display:flex; align-items:center; gap:16px; padding:10px 0; border-bottom:1px solid #f0f0f0; flex-wrap:wrap; }
+.color-row:last-child { border-bottom:none; }
+.color-row .color-name { font-size:13px; font-weight:600; min-width:140px; display:flex; align-items:center; gap:6px; }
+.color-row .size-details { display:flex; gap:12px; font-size:12px; color:#666; flex-wrap:wrap; }
+.color-row .size-details span { background:#f5f5f5; padding:3px 8px; border-radius:4px; }
+.color-row canvas { max-width:80px; max-height:80px; }
+@media (max-width:480px) {
+  .filter-bar { padding:10px 12px; gap:8px; }
+  .filter-bar input[type="date"] { font-size:12px; padding:4px 6px; }
+  .accordion-header { padding:12px 14px; }
+  .accordion-header .size-bar-mini { width:80px; }
+  .color-row { gap:8px; }
+  .color-row .color-name { min-width:100px; font-size:12px; }
+}
 </style>
 </head>
 <body>
 <div class="header">
 <h1>877事業 商品分析ダッシュボード</h1>
 <p>データ期間: 2024年7月〜2026年3月13日 ｜ 877Stand + 877（中腽店）合算</p>
-<span class="version">v0.2.1</span>
+<span class="version">v0.3.0</span>
 </div>
 
 <div class="tabs">
@@ -79,9 +113,20 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 <div class="tab" onclick="showTab(2)">📈 売上比率</div>
 <div class="tab" onclick="showTab(3)">🏆 デザイン別ランキング</div>
 <div class="tab" onclick="showTab(4)">📏 サイズ分析</div>
-<div class="tab" onclick="showTab(5)">🎁 その他グッズ</div>
+<div class="tab" onclick="showTab(5)">🎨 柄・カラー別</div>
+<div class="tab" onclick="showTab(6)">🎁 その他グッズ</div>
 </div>
 
+<div class="filter-bar" id="filterBar" style="display:none;">
+<label>期間:</label>
+<input type="date" id="dateFrom">
+<span style="color:#999;">〜</span>
+<input type="date" id="dateTo">
+<button class="btn-apply" onclick="applyFilter()">適用</button>
+<button class="btn-reset" onclick="setLast30()">直近30日</button>
+<button class="btn-reset" onclick="setAllPeriod()">全期間</button>
+<span id="filterStatus" style="font-size:11px;color:#aaa;margin-left:8px;">データ読み込み中...</span>
+</div>
 <div class="content">
 
 <!-- Tab 0: サマリ -->
@@ -234,66 +279,34 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 <!-- Tab 4: サイズ分析 -->
 <div class="tab-panel" id="panel4">
 <div class="section-title">📊 サイズ別販売比率（全デザイン合計）</div>
-<div style="max-width:400px;margin:0 auto;">
 <div class="chart-container">
-<h3>サイズ別販売比率</h3>
-<canvas id="chart_size_ratio" height="200"></canvas>
+<div style="display:flex;align-items:center;gap:30px;flex-wrap:wrap;justify-content:center;">
+<div style="max-width:300px;"><canvas id="chart_size_ratio" height="200"></canvas></div>
+<div id="sizeLegend" style="font-size:14px;line-height:2;"></div>
 </div>
 </div>
 
-<div class="section-title">👕 デザイン別サイズ比率</div>
-<div class="chart-row-4">
+<div class="section-title">👕 デザイン別サイズ比率（クリックでカラバリ展開）</div>
+<div id="designAccordions"></div>
+
+<div class="section-title">📋 デザイン別サイズ比較テーブル</div>
 <div class="chart-container">
-<h3 style="font-size:13px;">等高線Tシャツ</h3>
-<canvas id="chart_dsize_0" height="160"></canvas>
-</div>
-<div class="chart-container">
-<h3 style="font-size:13px;">犬山脈Tシャツ</h3>
-<canvas id="chart_dsize_1" height="160"></canvas>
-</div>
-<div class="chart-container">
-<h3 style="font-size:13px;">【長袖】等高線ドライロンT</h3>
-<canvas id="chart_dsize_2" height="160"></canvas>
-</div>
-<div class="chart-container">
-<h3 style="font-size:13px;">Stand Tシャツ</h3>
-<canvas id="chart_dsize_3" height="160"></canvas>
-</div>
-<div class="chart-container">
-<h3 style="font-size:13px;">ハイキングマ</h3>
-<canvas id="chart_dsize_4" height="160"></canvas>
-</div>
-<div class="chart-container">
-<h3 style="font-size:13px;">【長袖】三方よし綿 ロンT</h3>
-<canvas id="chart_dsize_5" height="160"></canvas>
-</div>
-<div class="chart-container">
-<h3 style="font-size:13px;">うりぼーTシャツ</h3>
-<canvas id="chart_dsize_6" height="160"></canvas>
-</div>
-<div class="chart-container">
-<h3 style="font-size:13px;">ガーディアンズTシャツ</h3>
-<canvas id="chart_dsize_7" height="160"></canvas>
-</div>
-</div>
-<div class="chart-container">
-<h3>デザイン別サイズ比較</h3>
-<div class="table-scroll"><table class="rank-table">
+<div class="table-scroll"><table class="rank-table" id="sizeCompTable">
 <tr><th>デザイン</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>合計</th></tr>
-<tr><td>等高線Tシャツ</td><td>578枚 (26%)</td><td>686枚 (31%)</td><td>590枚 (27%)</td><td>352枚 (16%)</td><td>2206枚</td></tr>
-<tr><td>犬山脈Tシャツ</td><td>173枚 (21%)</td><td>269枚 (32%)</td><td>251枚 (30%)</td><td>142枚 (17%)</td><td>835枚</td></tr>
-<tr><td>【長袖】等高線ドライロンT</td><td>168枚 (27%)</td><td>178枚 (29%)</td><td>166枚 (27%)</td><td>102枚 (17%)</td><td>614枚</td></tr>
-<tr><td>Stand Tシャツ</td><td>201枚 (25%)</td><td>247枚 (31%)</td><td>233枚 (29%)</td><td>118枚 (15%)</td><td>799枚</td></tr>
-<tr><td>ハイキングマ</td><td>151枚 (25%)</td><td>212枚 (35%)</td><td>134枚 (22%)</td><td>112枚 (18%)</td><td>609枚</td></tr>
-<tr><td>【長袖】三方よし綿 ロンT</td><td>82枚 (29%)</td><td>110枚 (39%)</td><td>39枚 (14%)</td><td>48枚 (17%)</td><td>279枚</td></tr>
-<tr><td>うりぼーTシャツ</td><td>111枚 (31%)</td><td>128枚 (36%)</td><td>87枚 (24%)</td><td>33枚 (9%)</td><td>359枚</td></tr>
-<tr><td>ガーディアンズTシャツ</td><td>57枚 (21%)</td><td>80枚 (30%)</td><td>84枚 (31%)</td><td>47枚 (18%)</td><td>268枚</td></tr>
 </table></div>
 </div>
 </div>
 
-<!-- Tab 5: その他グッズ -->
+<!-- Tab 5: 柄・カラー別 -->
 <div class="tab-panel" id="panel5">
+<div class="section-title">👕 Tシャツ 柄・カラー別（クリックで展開）</div>
+<div id="tshirtColorAccordions"></div>
+<div class="section-title">🎁 グッズ 柄・カラー別（クリックで展開）</div>
+<div id="goodsAccordions"></div>
+</div>
+
+<!-- Tab 6: その他グッズ -->
+<div class="tab-panel" id="panel6">
 <div class="section-title">📊 累計ランキング</div>
 <div class="chart-container">
 <h3>その他グッズ売上 TOP10（Tシャツ以外）</h3>
@@ -321,34 +334,11 @@ body { font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif
 <h3>TOP5 グッズ月別売上推移</h3>
 <canvas id="chart_other_trend" height="120"></canvas>
 </div>
-<div class="section-title">🎨 バリエーション比較</div>
-<div class="chart-row-3">
-<div class="chart-container">
-<h3 style="font-size:13px;">番号札キーホルダー</h3>
-<canvas id="chart_ovar_0" height="160"></canvas>
-</div>
-<div class="chart-container">
-<h3 style="font-size:13px;">三方よし手ぬぐい</h3>
-<canvas id="chart_ovar_1" height="160"></canvas>
-</div>
-<div class="chart-container">
-<h3 style="font-size:13px;">ピンバッジ</h3>
-<canvas id="chart_ovar_2" height="160"></canvas>
-</div>
-<div class="chart-container">
-<h3 style="font-size:13px;">877キャップ / ポリエステル</h3>
-<canvas id="chart_ovar_3" height="160"></canvas>
-</div>
-<div class="chart-container">
-<h3 style="font-size:13px;">コットンマイバッグ</h3>
-<canvas id="chart_ovar_4" height="160"></canvas>
-</div>
-</div>
 </div>
 
 </div>
 
-<div class="footer">877事業 商品分析ダッシュボード v0.2.1 ｜ データソース: スマレジAPI ｜ 最終更新: 2026-03-13</div>
+<div class="footer">877事業 商品分析ダッシュボード v0.3.0 ｜ データソース: スマレジAPI ｜ 最終更新: 2026-03-31</div>
 
 <script>
 const months = ["2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03"];
@@ -384,18 +374,7 @@ const designColors = [
   {name:"ハイキングマ",colors:["ブラウン","イエロー"],sales:[1693500,43200]},
   {name:"【長袖】三方よし綿 ロンT",colors:["ヘイジーイエロー","ライトオリーブ"],sales:[532400,471600]},
 ];
-const sizeSales = [5698340,7557400,6364650,3688800];
-const sizeQty = [1891,2474,2085,1235];
-const sizeByDesign = [
-  {name:"等高線Tシャツ",S:578,M:686,L:590,XL:352},
-  {name:"犬山脈Tシャツ",S:173,M:269,L:251,XL:142},
-  {name:"【長袖】等高線ドライロンT",S:168,M:178,L:166,XL:102},
-  {name:"Stand Tシャツ",S:201,M:247,L:233,XL:118},
-  {name:"ハイキングマ",S:151,M:212,L:134,XL:112},
-  {name:"【長袖】三方よし綿 ロンT",S:82,M:110,L:39,XL:48},
-  {name:"うりぼーTシャツ",S:111,M:128,L:87,XL:33},
-  {name:"ガーディアンズTシャツ",S:57,M:80,L:84,XL:47},
-];
+// sizeQty, sizeByDesign, sizeByDesignColor, otherVariationsQty は product_data.js から読み込み
 const otherTop10Labels = ["番号札キーホルダー","三方よし手ぬぐい","奇岩バンダナ","動物手ぬぐい","八七七 温泉タオル","ピンバッジ","等高線手ぬぐい","877キャップ / ポリエステル","コットンマイバッグ","noppo #6"];
 const otherTop10Sales = [2464200,2293200,1257750,855150,728800,714850,672000,616000,398300,379500];
 const otherTrend = [
@@ -428,7 +407,16 @@ const colorMap = {
   'ミント':'#80cbc4','オリーブ':'#6b7b3a',
   // キャラクター名（固有色）
   'がまえじ':'#4caf50','かえちゃん':'#ff8a65','筆波山ロゴ':'#5c6bc0','ヤマドリ先輩':'#8d6e63','クキオ':'#fdd835',
+  'ナチュラル':'#e8dcc8','Gピンク':'#e91e63','スミ':'#3a3a3a',
+  '新ベージュ':'#d4c5a9','コヨーテ':'#8b6e4e','OD':'#556b2f',
+  'ミックスグレー':'#a0a0a0','綿・セージグリーン':'#8fbc8f',
+  'ベージュ':'#d4c5a9','水色':'#87ceeb','黄土色':'#c49c48',
+  '黄':'#f0c040','緑':'#4caf50','ピンク':'#e91e63',
+  '四角':'#5c6bc0','楕円':'#7986cb',
+  'ストーングリーン':'#6b8e6b','サンドカーキ':'#bfb28f',
+  'ペットボトル':'#42a5f5','紫':'#9c27b0',
 };
+// sizeByDesignColor, otherVariationsQty は product_data.js に移動済み
 function mapColors(names) { return names.map(function(n){ return colorMap[n] || '#888'; }); }
 
 const green1 = '#2c5f2d';
@@ -457,6 +445,7 @@ function showTab(n) {
     pnl.classList.add('active');
     pnl.offsetHeight;
   }
+  document.getElementById('filterBar').style.display = (n===4||n===5) ? 'flex' : 'none';
   if(!chartInited[n]) {
     setTimeout(function(){
       chartInited[n] = true;
@@ -560,27 +549,126 @@ if(n===3) {
 }
 if(n===4) {
   const sizeColorArr = [green1,green2,'#e67e22','#3498db'];
+  const sizeLabels = ["S","M","L","XL"];
   const sizeTotal = sizeQty.reduce((a,b)=>a+b,0);
   new Chart(document.getElementById('chart_size_ratio'), {
-    type:'doughnut', data:{ labels:["S","M","L","XL"], datasets:[{data:sizeQty, backgroundColor:sizeColorArr}] },
+    type:'doughnut', data:{ labels:sizeLabels, datasets:[{data:sizeQty, backgroundColor:sizeColorArr}] },
     options:{ responsive:true, plugins:{tooltip:{callbacks:{label:c=>{const pct=(c.raw/sizeTotal*100).toFixed(1);return c.label+': '+c.raw+'枚 ('+pct+'%)'}}},
-      legend:{position:'bottom'}} }
+      legend:{display:false}} }
   });
+  // サイズレジェンド
+  var legendHtml = '';
+  sizeLabels.forEach((s,i) => {
+    var pct = (sizeQty[i]/sizeTotal*100).toFixed(1);
+    legendHtml += '<div><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:'+sizeColorArr[i]+';vertical-align:middle;margin-right:6px;"></span><b>'+s+'</b>: '+sizeQty[i].toLocaleString()+'枚 ('+pct+'%)</div>';
+  });
+  legendHtml += '<div style="margin-top:8px;color:#888;font-size:12px;">合計: '+sizeTotal.toLocaleString()+'枚</div>';
+  document.getElementById('sizeLegend').innerHTML = legendHtml;
 
-  // デザイン別サイズ比率ドーナツ
+  // デザイン別アコーディオン生成
+  var accHtml = '';
   sizeByDesign.forEach((d,i) => {
-    const el = document.getElementById('chart_dsize_'+i);
-    if(!el) return;
-    const vals = [d.S,d.M,d.L,d.XL];
-    const tot = vals.reduce((a,b)=>a+b,0);
-    new Chart(el, {
-      type:'doughnut', data:{ labels:["S","M","L","XL"], datasets:[{data:vals, backgroundColor:sizeColorArr}] },
-      options:{ responsive:true, plugins:{tooltip:{callbacks:{label:c=>{const pct=(c.raw/tot*100).toFixed(1);return c.label+': '+c.raw+'枚 ('+pct+'%)'}}},
-        legend:{position:'bottom',labels:{font:{size:10}}}} }
+    var tot = d.S+d.M+d.L+d.XL;
+    var pcts = [d.S,d.M,d.L,d.XL].map(v=>(v/tot*100).toFixed(0));
+    accHtml += '<div class="accordion-card">';
+    accHtml += '<div class="accordion-header" onclick="toggleAcc(this)"><h4><span class="arrow">▶</span> '+d.name+' <span class="qty-badge">'+tot.toLocaleString()+'枚</span></h4>';
+    accHtml += '<div class="size-bar-mini">';
+    sizeColorArr.forEach((c,j) => { accHtml += '<span style="background:'+c+';width:'+pcts[j]+'%"></span>'; });
+    accHtml += '</div></div>';
+    accHtml += '<div class="accordion-body"><div class="accordion-inner">';
+    // デザイン全体のサイズ内訳（横棒バー＋枚数）
+    accHtml += '<div style="margin-bottom:16px;">';
+    sizeLabels.forEach((s,j) => {
+      var v=[d.S,d.M,d.L,d.XL][j]; var pct=(v/tot*100).toFixed(1);
+      accHtml += '<div style="display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px;">';
+      accHtml += '<span style="min-width:24px;font-weight:600;">'+s+'</span>';
+      accHtml += '<div style="flex:1;background:#eee;border-radius:4px;height:12px;max-width:300px;"><div style="background:'+sizeColorArr[j]+';height:12px;border-radius:4px;width:'+pct+'%;"></div></div>';
+      accHtml += '<span style="min-width:90px;color:#666;">'+v+'枚 ('+pct+'%)</span>';
+      accHtml += '</div>';
     });
+    accHtml += '</div>';
+    // カラバリ
+    var dc = sizeByDesignColor[i];
+    if(dc && dc.colors && dc.colors.length > 1) {
+      accHtml += '<div style="font-size:12px;color:#888;margin:12px 0 8px;font-weight:600;border-top:1px solid #eee;padding-top:12px;">カラーバリエーション別</div>';
+      accHtml += '<table class="rank-table" style="font-size:12px;"><tr><th>カラー</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>合計</th></tr>';
+      dc.colors.forEach(cv => {
+        var cvTot = cv.S+cv.M+cv.L+cv.XL;
+        var dotColor = colorMap[cv.color]||'#888';
+        accHtml += '<tr><td><span class="color-dot" style="background:'+dotColor+'"></span>'+cv.color+'</td>';
+        accHtml += '<td>'+cv.S+'</td><td>'+cv.M+'</td><td>'+cv.L+'</td><td>'+cv.XL+'</td>';
+        accHtml += '<td><b>'+cvTot+'</b></td></tr>';
+      });
+      accHtml += '</table>';
+    }
+    accHtml += '</div></div></div>';
+  });
+  document.getElementById('designAccordions').innerHTML = accHtml;
+
+  // テーブル生成
+  var tbl = document.getElementById('sizeCompTable');
+  sizeByDesign.forEach(d => {
+    var tot=d.S+d.M+d.L+d.XL;
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td>'+d.name+'</td>'
+      +[d.S,d.M,d.L,d.XL].map(v=>'<td>'+v+'枚 ('+(v/tot*100).toFixed(0)+'%)</td>').join('')
+      +'<td><b>'+tot+'枚</b></td>';
+    tbl.appendChild(tr);
   });
 }
 if(n===5) {
+  // Tシャツ カラバリアコーディオン
+  var tcHtml = '';
+  sizeByDesignColor.forEach((dc,i) => {
+    var tot = dc.colors.reduce((a,c)=>a+c.S+c.M+c.L+c.XL,0);
+    if(dc.colors.length <= 1) return;
+    tcHtml += '<div class="accordion-card">';
+    tcHtml += '<div class="accordion-header" onclick="toggleAcc(this)"><h4><span class="arrow">▶</span> '+dc.name+' <span class="qty-badge">'+tot.toLocaleString()+'枚・'+dc.colors.length+'色</span></h4></div>';
+    tcHtml += '<div class="accordion-body"><div class="accordion-inner">';
+    dc.colors.forEach(cv => {
+      var cvTot = cv.S+cv.M+cv.L+cv.XL;
+      var dotColor = colorMap[cv.color]||'#888';
+      var pct = (cvTot/tot*100).toFixed(1);
+      tcHtml += '<div style="display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px;">';
+      tcHtml += '<span style="min-width:140px;"><span class="color-dot" style="background:'+dotColor+'"></span>'+cv.color+'</span>';
+      tcHtml += '<div style="flex:1;background:#eee;border-radius:4px;height:12px;max-width:300px;"><div style="background:'+dotColor+';height:12px;border-radius:4px;width:'+pct+'%;"></div></div>';
+      tcHtml += '<span style="min-width:90px;color:#666;">'+cvTot+'枚 ('+pct+'%)</span>';
+      tcHtml += '</div>';
+    });
+    tcHtml += '</div></div></div>';
+  });
+  // カラバリが1色しかないデザインも表示（アコーディオンなし）
+  sizeByDesignColor.forEach((dc,i) => {
+    var tot = dc.colors.reduce((a,c)=>a+c.S+c.M+c.L+c.XL,0);
+    if(dc.colors.length > 1) return;
+    tcHtml += '<div class="accordion-card"><div style="padding:12px 20px;font-size:13px;color:#888;">'+dc.name+' — '+dc.colors[0].color+' ('+tot+'枚)</div></div>';
+  });
+  document.getElementById('tshirtColorAccordions').innerHTML = tcHtml;
+
+  // グッズアコーディオン生成
+  var gHtml = '';
+  otherVariationsQty.forEach((ov,i) => {
+    gHtml += '<div class="accordion-card">';
+    gHtml += '<div class="accordion-header" onclick="toggleAcc(this)"><h4><span class="arrow">▶</span> '+ov.name+' <span class="qty-badge">'+ov.total.toLocaleString()+'点</span></h4></div>';
+    gHtml += '<div class="accordion-body"><div class="accordion-inner">';
+    if(ov.colors.length > 1) {
+      ov.colors.forEach(cv => {
+        var dotColor = colorMap[cv.color]||'#888';
+        var pct = (cv.qty/ov.total*100).toFixed(1);
+        gHtml += '<div style="display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px;">';
+        gHtml += '<span style="min-width:120px;"><span class="color-dot" style="background:'+dotColor+'"></span>'+cv.color+'</span>';
+        gHtml += '<div style="flex:1;background:#eee;border-radius:4px;height:12px;max-width:300px;"><div style="background:'+dotColor+';height:12px;border-radius:4px;width:'+pct+'%;"></div></div>';
+        gHtml += '<span style="min-width:90px;color:#666;">'+cv.qty.toLocaleString()+'点 ('+pct+'%)</span>';
+        gHtml += '</div>';
+      });
+    } else {
+      gHtml += '<div style="font-size:13px;color:#888;">バリエーションなし（'+ov.total.toLocaleString()+'点）</div>';
+    }
+    gHtml += '</div></div></div>';
+  });
+  document.getElementById('goodsAccordions').innerHTML = gHtml;
+}
+if(n===6) {
   new Chart(document.getElementById('chart_other'), {
     type:'bar', data:{ labels:otherTop10Labels, datasets:[{
       label:'売上(円)', data:otherTop10Sales, backgroundColor:colors10
@@ -589,7 +677,6 @@ if(n===5) {
       scales:{x:{ticks:{callback:v=>'¥'+(v/10000).toFixed(0)+'万'}}} }
   });
 
-  // その他12ヶ月推移
   new Chart(document.getElementById('chart_other_trend'), {
     type:'line', data:{ labels:recentLabels, datasets:otherTrend.map((d,i)=>({
       label:d.name, data:d.data, borderColor:colors10[i], backgroundColor:'transparent', tension:0.3, borderWidth:2
@@ -597,18 +684,158 @@ if(n===5) {
     options:{ responsive:true, plugins:{tooltip:{callbacks:{label:c=>c.dataset.label+': ¥'+c.raw.toLocaleString()}}},
       scales:{y:{ticks:{callback:v=>'¥'+(v/10000).toFixed(0)+'万'}}} }
   });
-
-  // バリエーション
-  otherVariations.forEach((ov,i) => {
-    const el = document.getElementById('chart_ovar_'+i);
-    if(!el) return;
-    new Chart(el, {
-      type:'doughnut', data:{ labels:ov.colors, datasets:[{data:ov.sales, backgroundColor:mapColors(ov.colors)}] },
-      options:{ responsive:true, plugins:{tooltip:{callbacks:{label:c=>c.label+': ¥'+c.raw.toLocaleString()}}} }
-    });
-  });
 }
 } // end initCharts
+
+function toggleAcc(header) {
+  header.classList.toggle('open');
+  var body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+var rawData = (typeof rawData_loaded !== 'undefined') ? rawData_loaded : [];
+var rawLoaded = rawData.length > 0;
+if(rawLoaded) {
+  var dates = rawData.map(d=>d.date).sort();
+  document.getElementById('filterStatus').textContent = '期間データ: '+dates[0]+' ~ '+dates[dates.length-1]+' ('+rawData.length+'件)';
+  document.getElementById('dateFrom').setAttribute('min', dates[0]);
+  document.getElementById('dateTo').setAttribute('max', dates[dates.length-1]);
+} else {
+  document.getElementById('filterStatus').textContent = '⚠ 生データなし（product_data.jsの全期間データで表示）';
+}
+
+function applyFilter() {
+  if(!rawLoaded){alert('データ読み込み中です');return;}
+  var from = document.getElementById('dateFrom').value;
+  var to = document.getElementById('dateTo').value;
+  var filtered = rawData.filter(d=>d.date>=from && d.date<=to);
+  var result = aggregateData(filtered);
+  // product_data.jsの変数を上書き
+  sizeByDesign.length=0; result.sizeByDesign.forEach(d=>sizeByDesign.push(d));
+  sizeByDesignColor.length=0; result.sizeByDesignColor.forEach(d=>sizeByDesignColor.push(d));
+  sizeQty[0]=result.sizeQty[0]; sizeQty[1]=result.sizeQty[1]; sizeQty[2]=result.sizeQty[2]; sizeQty[3]=result.sizeQty[3];
+  otherVariationsQty.length=0; result.otherVariationsQty.forEach(d=>otherVariationsQty.push(d));
+  // Tab4,5を再描画
+  chartInited[4]=false; chartInited[5]=false; chartInited[6]=false;
+  // 既存チャートを破棄
+  ['panel4','panel5'].forEach(pid=>{
+    var pnl=document.getElementById(pid);
+    if(pnl) pnl.querySelectorAll('canvas').forEach(c=>{var ch=Chart.getChart(c);if(ch)ch.destroy();});
+  });
+  var cur = document.querySelector('.tab.active');
+  var idx = Array.from(document.querySelectorAll('.tab')).indexOf(cur);
+  if(idx===4||idx===5) showTab(idx);
+  document.getElementById('filterStatus').textContent = '✓ 期間適用済み: '+from+' ~ '+to+' ('+filtered.length+'件)';
+}
+function resetFilter() {
+  setDefaultDates();
+  if(rawLoaded) applyFilter();
+}
+function setDefaultDates() {
+  var now = new Date();
+  var to = now.toISOString().slice(0,10);
+  var from = new Date(now);
+  from.setMonth(from.getMonth() - 1);
+  document.getElementById('dateFrom').value = from.toISOString().slice(0,10);
+  document.getElementById('dateTo').value = to;
+}
+function setLast30() {
+  var now = new Date();
+  var from = new Date(now);
+  from.setDate(from.getDate() - 30);
+  document.getElementById('dateFrom').value = from.toISOString().slice(0,10);
+  document.getElementById('dateTo').value = now.toISOString().slice(0,10);
+  if(rawLoaded) applyFilter();
+}
+function setAllPeriod() {
+  document.getElementById('dateFrom').value = '2025-01-01';
+  document.getElementById('dateTo').value = '2026-03-31';
+  if(rawLoaded) applyFilter();
+}
+function aggregateData(data) {
+  var tshirt = {};
+  var goods = {};
+  var skipWords = ['フラットホワイト','ロングブラック','モカ ','キャラメルラテ','ラテ ','エスプレッソ','アメリカーノ','ココア','ワッフル','クッキー','ドリップバッグ','ホリデー','ホットチョコ','Kids','Season','Mork','デカフェ','オーツ','ソイ','Apple','Babycino','ミルクコーヒー','ミルク ','877シェイク','バナナシェイク','877Milk','コルタード','追加','持ち帰り袋','その他','チャイ','仕入原価','売上調整','シロップ','レモネード','カッサータ','Mount Tsukuba','シングルオリジン','ノベルティ','ホワイトモカ','グレープジュース','モンブラン','スチームミルク','カイロ','スタンプラリー','バナくん缶バッジ','BASE877'];
+
+  data.forEach(item => {
+    var name = item.product || '';
+    var qty = item.quantity || 0;
+    if(!name || qty<=0) return;
+
+    var sizeMatch = name.match(/[｜|]\s*(S|M|L|XL)\s*$/);
+    var isTshirt = sizeMatch && (/Tシャツ/.test(name) || /ロンT/.test(name) || /ドライロン/.test(name));
+
+    if(isTshirt) {
+      var size = sizeMatch[1];
+      var base = name.replace(/[｜|]\s*(S|M|L|XL)\s*$/, '').trim();
+      var colorMatch = base.match(/[（(]([^）)]+)[）)]/);
+      var color = colorMatch ? colorMatch[1] : '(なし)';
+      var design = base.replace(/[（(][^）)]+[）)]/, '').replace(/^\[\d+\]/, '').trim();
+      if(!tshirt[design]) tshirt[design] = {};
+      if(!tshirt[design][color]) tshirt[design][color] = {S:0,M:0,L:0,XL:0};
+      tshirt[design][color][size] += qty;
+    } else {
+      if(skipWords.some(s=>name.indexOf(s)>=0)) return;
+      if(name.indexOf('HOT')>=0 || name.indexOf('ICE')>=0) return;
+      if((/Tシャツ/.test(name)||/ロンT/.test(name)||/ドライロン/.test(name)) && sizeMatch) return;
+      var clean = name.replace(/^\[\d+\]/, '').trim();
+      var colorMatch2 = clean.match(/[（(]([^）)]+)[）)]/);
+      var colorP = colorMatch2 ? colorMatch2[1] : null;
+      var cleanNP = clean.replace(/[（(][^）)]+[）)]/, '').trim();
+      var varMatch = cleanNP.match(/[｜|／\/]\s*(.+)$/);
+      var variant = varMatch ? varMatch[1].trim() : null;
+      var baseName = cleanNP.replace(/[｜|／\/]\s*.+$/, '').trim();
+      var gColor;
+      if(colorP) { gColor = colorP; }
+      else if(variant) { gColor = variant; }
+      else { gColor = '(なし)'; }
+      if(!goods[baseName]) goods[baseName] = {};
+      if(!goods[baseName][gColor]) goods[baseName][gColor] = 0;
+      goods[baseName][gColor] += qty;
+    }
+  });
+
+  // sizeByDesign
+  var sbd = [];
+  var sbdc = [];
+  Object.keys(tshirt).sort((a,b)=>{
+    var ta=0,tb=0;
+    Object.values(tshirt[a]).forEach(c=>{ta+=c.S+c.M+c.L+c.XL;});
+    Object.values(tshirt[b]).forEach(c=>{tb+=c.S+c.M+c.L+c.XL;});
+    return tb-ta;
+  }).forEach(design => {
+    var S=0,M=0,L=0,XL=0;
+    var colors=[];
+    Object.keys(tshirt[design]).sort((a,b)=>{
+      var sa=tshirt[design][a],sb=tshirt[design][b];
+      return (sb.S+sb.M+sb.L+sb.XL)-(sa.S+sa.M+sa.L+sa.XL);
+    }).forEach(color => {
+      var c=tshirt[design][color];
+      S+=c.S; M+=c.M; L+=c.L; XL+=c.XL;
+      colors.push({color:color,S:c.S,M:c.M,L:c.L,XL:c.XL});
+    });
+    sbd.push({name:design,S:S,M:M,L:L,XL:XL});
+    sbdc.push({name:design,colors:colors});
+  });
+
+  var sq = [sbd.reduce((a,d)=>a+d.S,0), sbd.reduce((a,d)=>a+d.M,0), sbd.reduce((a,d)=>a+d.L,0), sbd.reduce((a,d)=>a+d.XL,0)];
+
+  // goods
+  var multi=[], single=[];
+  Object.keys(goods).forEach(p => {
+    var cs = goods[p];
+    var total = Object.values(cs).reduce((a,b)=>a+b,0);
+    if(total<5) return;
+    var arr = Object.keys(cs).sort((a,b)=>cs[b]-cs[a]).map(c=>({color:c,qty:cs[c]}));
+    var item = {name:p, total:total, colors:arr};
+    if(arr.length>1) multi.push(item); else single.push(item);
+  });
+  multi.sort((a,b)=>b.total-a.total);
+  single.sort((a,b)=>b.total-a.total);
+  var ovq = multi.concat(single);
+
+  return {sizeByDesign:sbd, sizeByDesignColor:sbdc, sizeQty:sq, otherVariationsQty:ovq};
+}
+setDefaultDates();
 </script>
 </body>
 </html>
