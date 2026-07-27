@@ -23,23 +23,23 @@
 </head>
 <body>
 <h1>877 クッキー販売推移</h1>
-<p class="subtitle">2026/2/6（オープン）〜 3/28｜週次・全店合計</p>
+<p class="subtitle">2026/2/6（オープン）〜 7/26｜週次・全店合計｜最終週は7/24〜26の3日分</p>
 
 <div class="summary">
   <div class="card">
     <div class="label">チャンクチョコ</div>
-    <div class="value chunk">627</div>
-    <div class="sub">¥301,100</div>
+    <div class="value chunk">1,232</div>
+    <div class="sub">¥588,350</div>
   </div>
   <div class="card">
     <div class="label">ダブルチョコ</div>
-    <div class="value double">280</div>
-    <div class="sub">¥135,050</div>
+    <div class="value double">533</div>
+    <div class="sub">¥255,350</div>
   </div>
   <div class="card">
-    <div class="label">877クッキー(バナナ)</div>
-    <div class="value banana">155</div>
-    <div class="sub">¥74,350</div>
+    <div class="label">バナナ（877クッキー）</div>
+    <div class="value banana">437</div>
+    <div class="sub">¥208,500</div>
   </div>
 </div>
 
@@ -52,37 +52,37 @@ const ctx = document.getElementById('chart').getContext('2d');
 new Chart(ctx, {
   type: 'line',
   data: {
-    labels: ['2/6-2/12', '2/13-2/19', '2/20-2/26', '2/27-3/5', '3/6-3/12', '3/13-3/19', '3/20-3/28'],
+    labels: ['2/6', '2/13', '2/20', '2/27', '3/6', '3/13', '3/20', '3/27', '4/3', '4/10', '4/17', '4/24', '5/1', '5/8', '5/15', '5/22', '5/29', '6/5', '6/12', '6/19', '6/26', '7/3', '7/10', '7/17', '7/24'],
     datasets: [
       {
         label: 'チャンクチョコ',
-        data: [92, 91, 93, 95, 59, 82, 114],
+        data: [92, 91, 93, 95, 59, 82, 88, 59, 44, 57, 45, 74, 98, 19, 22, 37, 25, 31, 20, 13, 13, 20, 29, 13, 13],
         borderColor: '#E8927C',
         backgroundColor: 'rgba(232,146,124,0.1)',
         borderWidth: 2.5,
-        pointRadius: 4,
+        pointRadius: 3,
         pointBackgroundColor: '#E8927C',
         tension: 0.3,
         fill: true,
       },
       {
         label: 'ダブルチョコ',
-        data: [45, 50, 50, 39, 26, 28, 42],
+        data: [45, 50, 50, 39, 26, 28, 35, 21, 10, 10, 25, 35, 52, 18, 12, 15, 10, 8, 11, 7, 3, 8, 5, 3, 7],
         borderColor: '#7C9EE8',
         backgroundColor: 'rgba(124,158,232,0.1)',
         borderWidth: 2.5,
-        pointRadius: 4,
+        pointRadius: 3,
         pointBackgroundColor: '#7C9EE8',
         tension: 0.3,
         fill: true,
       },
       {
-        label: '877クッキー(バナナ)',
-        data: [0, 0, 0, 36, 29, 43, 47],
+        label: 'バナナ（877クッキー）',
+        data: [0, 0, 0, 36, 29, 43, 37, 19, 25, 21, 24, 28, 40, 18, 14, 16, 9, 15, 10, 4, 8, 8, 13, 8, 12],
         borderColor: '#A8D5A2',
         backgroundColor: 'rgba(168,213,162,0.1)',
         borderWidth: 2.5,
-        pointRadius: 4,
+        pointRadius: 3,
         pointBackgroundColor: '#A8D5A2',
         tension: 0.3,
         fill: true,
@@ -97,7 +97,7 @@ new Chart(ctx, {
     },
     scales: {
       y: { beginAtZero: true, title: { display: true, text: '販売数（個）' }, grid: { color: '#eee' } },
-      x: { grid: { display: false } },
+      x: { grid: { display: false }, ticks: { maxRotation: 45, autoSkip: false, font: { size: 10 } }, title: { display: true, text: '週の開始日（金曜起点）' } },
     },
   },
 });
