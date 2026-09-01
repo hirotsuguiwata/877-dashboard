@@ -211,7 +211,7 @@
 </div>
 
 <div class="note">
-  <span class="updated">最終更新: 2026年8月3日 | v1.2</span>
+  <span class="updated">最終更新: 2026年9月1日 | v1.2</span>
   ※ 売上データはスマレジAPIより自動取得。人件費はタイムカードAPI速報値（25日締め）。その他経費は会計PDF投入後に反映。カテゴリデータ（ドリンク・軽食・物販）は2026年1月以降のみ。<br>
   ※ 877（中腹店）は2026年2月6日開店。2026年1月はプレオープンのテスト取引（¥600）のため分析対象外。<br>
   ※ 前年（2024年）データはNotion「山事業 月次損益データ」より取得。売上合計で比較。
@@ -238,7 +238,8 @@ const standData = [
   { month: '2026/04', label: '26年4月', net: 4254572, gross: 4252322, cost: 1232688, margin: 3021884, tax: 0, discount: 0, txn: 2920, cust: 2920, txnPrice: 1457, custPrice: 1457, items: 5335, returns: 0, costRate: 0.2897, drinkPct: 0.5228, drinkQty: 2788, foodPct: 0.1748, foodQty: 932, retailPct: 0.3025, retailQty: 1613 },
   { month: '2026/05', label: '26年5月', net: 6609230, gross: 6606430, cost: 1855905, margin: 4753325, tax: 0, discount: 0, txn: 4339, cust: 4339, txnPrice: 1523, custPrice: 1523, items: 8041, returns: 0, costRate: 0.2808, drinkPct: 0.5126, drinkQty: 4121, foodPct: 0.1546, foodQty: 1243, retailPct: 0.3328, retailQty: 2676 },
   { month: '2026/06', label: '26年6月', net: 3176820, gross: 3174770, cost: 881251, margin: 2295569, tax: 0, discount: 0, txn: 1965, cust: 1965, txnPrice: 1616, custPrice: 1616, items: 3495, returns: 0, costRate: 0.2774, drinkPct: 0.485, drinkQty: 1695, foodPct: 0.1536, foodQty: 537, retailPct: 0.3614, retailQty: 1263 },
-  { month: '2026/07', label: '26年7月', net: 3776685, gross: 3774285, cost: 1005261, margin: 2771424, tax: 0, discount: 0, txn: 2276, cust: 2276, txnPrice: 1659, custPrice: 1659, items: 3866, returns: 0, costRate: 0.2662, drinkPct: 0.4943, drinkQty: 1910, foodPct: 0.1017, foodQty: 393, retailPct: 0.404, retailQty: 1561 }
+  { month: '2026/07', label: '26年7月', net: 3776685, gross: 3774285, cost: 1005261, margin: 2771424, tax: 0, discount: 0, txn: 2276, cust: 2276, txnPrice: 1659, custPrice: 1659, items: 3866, returns: 0, costRate: 0.2662, drinkPct: 0.4943, drinkQty: 1910, foodPct: 0.1017, foodQty: 393, retailPct: 0.404, retailQty: 1561 },
+  { month: '2026/08', label: '26年8月', net: 3978540, gross: 3977290, cost: 1013766, margin: 2964774, tax: 0, discount: 0, txn: 2358, cust: 2358, txnPrice: 1687, custPrice: 1687, items: 4332, returns: 0, costRate: 0.2548, drinkPct: 0.5007, drinkQty: 2169, foodPct: 0.13, foodQty: 563, retailPct: 0.3693, retailQty: 1600 }
 ];
 
 const s877Data = [
@@ -248,7 +249,8 @@ const s877Data = [
   { month: '2026/04', label: '26年4月', net: 1106060, gross: 1103360, cost: 165629, margin: 940431, tax: 0, discount: 0, txn: 621, cust: 621, txnPrice: 1781, custPrice: 1781, items: 1382, returns: 0, costRate: 0.1497, drinkPct: 0.2845, drinkQty: 328, foodPct: 0.3452, foodQty: 398, retailPct: 0.3703, retailQty: 427 },
   { month: '2026/05', label: '26年5月', net: 1529810, gross: 1525682, cost: 262831, margin: 1266979, tax: 0, discount: 0, txn: 747, cust: 747, txnPrice: 2047, custPrice: 2047, items: 1583, returns: 0, costRate: 0.1718, drinkPct: 0.3546, drinkQty: 544, foodPct: 0.2601, foodQty: 399, retailPct: 0.3853, retailQty: 591 },
   { month: '2026/06', label: '26年6月', net: 849590, gross: 844650, cost: 135284, margin: 714306, tax: 0, discount: 0, txn: 430, cust: 430, txnPrice: 1975, custPrice: 1975, items: 848, returns: 0, costRate: 0.1592, drinkPct: 0.4561, drinkQty: 384, foodPct: 0.177, foodQty: 149, retailPct: 0.367, retailQty: 309 },
-  { month: '2026/07', label: '26年7月', net: 956810, gross: 955310, cost: 156696, margin: 800114, tax: 0, discount: 0, txn: 503, cust: 503, txnPrice: 1902, custPrice: 1902, items: 941, returns: 0, costRate: 0.1638, drinkPct: 0.459, drinkQty: 431, foodPct: 0.1651, foodQty: 155, retailPct: 0.3759, retailQty: 353 }
+  { month: '2026/07', label: '26年7月', net: 956810, gross: 955310, cost: 156696, margin: 800114, tax: 0, discount: 0, txn: 503, cust: 503, txnPrice: 1902, custPrice: 1902, items: 941, returns: 0, costRate: 0.1638, drinkPct: 0.459, drinkQty: 431, foodPct: 0.1651, foodQty: 155, retailPct: 0.3759, retailQty: 353 },
+  { month: '2026/08', label: '26年8月', net: 1209550, gross: 1209250, cost: 196071, margin: 1013479, tax: 0, discount: 0, txn: 623, cust: 623, txnPrice: 1941, custPrice: 1941, items: 1259, returns: 0, costRate: 0.1621, drinkPct: 0.436, drinkQty: 531, foodPct: 0.1675, foodQty: 204, retailPct: 0.3966, retailQty: 483 }
 ];
 
 // 2024年データ（Notion「山事業 月次損益データ」より）
